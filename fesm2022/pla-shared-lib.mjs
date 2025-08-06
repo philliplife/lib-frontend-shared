@@ -34,11 +34,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
 
 class PlaButtonPrimaryComponent {
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonPrimaryComponent, isStandalone: true, selector: "lib-pla-button-primary", ngImport: i0, template: "<button class=\"btn btn-primary\" >\n  <ng-content></ng-content>\n</button>\n", styles: [""] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonPrimaryComponent, isStandalone: true, selector: "lib-pla-button-primary", ngImport: i0, template: "<p-button severity=\"primary\">\n  <ng-content></ng-content>\n</p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'lib-pla-button-primary', imports: [], template: "<button class=\"btn btn-primary\" >\n  <ng-content></ng-content>\n</button>\n" }]
+            args: [{ selector: 'lib-pla-button-primary', imports: [ButtonModule], template: "<p-button severity=\"primary\">\n  <ng-content></ng-content>\n</p-button>\n" }]
         }] });
 
 class PlaButtonSecondaryComponent {
