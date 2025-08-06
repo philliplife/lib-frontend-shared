@@ -41,11 +41,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
 
 class PlaButtonSecondaryComponent {
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonSecondaryComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonSecondaryComponent, isStandalone: true, selector: "lib-pla-button-secondary", ngImport: i0, template: "<button class=\"btn btn-secondary\" >\n  <ng-content></ng-content>\n</button>\n", styles: [""] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonSecondaryComponent, isStandalone: true, selector: "lib-pla-button-secondary", ngImport: i0, template: "<button class=\"btn btn-secondary\" >\n  <ng-content></ng-content>555\n</button>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonSecondaryComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'lib-pla-button-secondary', imports: [], template: "<button class=\"btn btn-secondary\" >\n  <ng-content></ng-content>\n</button>\n" }]
+            args: [{ selector: 'lib-pla-button-secondary', imports: [], template: "<button class=\"btn btn-secondary\" >\n  <ng-content></ng-content>555\n</button>\n" }]
         }] });
 
 /*
