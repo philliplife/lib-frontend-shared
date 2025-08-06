@@ -1,14 +1,5 @@
 import * as i0 from '@angular/core';
-import { Component, Injectable } from '@angular/core';
-
-class PlaButtonPrimaryComponent {
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonPrimaryComponent, isStandalone: true, selector: "lib-pla-button-primary", ngImport: i0, template: "<button class=\"btn btn-primary\" >\n  <ng-content></ng-content>\n</button>\n", styles: [""] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryComponent, decorators: [{
-            type: Component,
-            args: [{ selector: 'lib-pla-button-primary', imports: [], template: "<button class=\"btn btn-primary\" >\n  <ng-content></ng-content>\n</button>\n" }]
-        }] });
+import { Injectable, Component } from '@angular/core';
 
 class PlaSharedLibService {
     constructor() { }
@@ -39,6 +30,24 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
   ` }]
         }] });
 
+class PlaButtonPrimaryComponent {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonPrimaryComponent, isStandalone: true, selector: "lib-pla-button-primary", ngImport: i0, template: "<button class=\"btn btn-primary\" >\n  <ng-content></ng-content>\n</button>\n", styles: [""] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'lib-pla-button-primary', imports: [], template: "<button class=\"btn btn-primary\" >\n  <ng-content></ng-content>\n</button>\n" }]
+        }] });
+
+class PlaButtonSecondaryComponent {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonSecondaryComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonSecondaryComponent, isStandalone: true, selector: "lib-pla-button-secondary", ngImport: i0, template: "<button class=\"btn btn-secondary\" >\n  <ng-content></ng-content>\n</button>\n", styles: [""] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonSecondaryComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'lib-pla-button-secondary', imports: [], template: "<button class=\"btn btn-secondary\" >\n  <ng-content></ng-content>\n</button>\n" }]
+        }] });
+
 /*
  * Public API Surface of pla-shared-lib
  */
@@ -47,5 +56,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
  * Generated bundle index. Do not edit.
  */
 
-export { PlaButtonPrimaryComponent, PlaSharedLibComponent, PlaSharedLibService };
+export { PlaButtonPrimaryComponent, PlaButtonSecondaryComponent, PlaSharedLibComponent, PlaSharedLibService };
 //# sourceMappingURL=pla-shared-lib.mjs.map
