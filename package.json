@@ -9,6 +9,9 @@
     "test": "ng test"
   },
   "private": true,
+  "main": "fesm2022/pla-shared-lib.mjs",
+  "module": "fesm2022/pla-shared-lib.mjs",
+  "typings": "index.d.ts",
   "dependencies": {
     "@angular/common": "^19.2.0",
     "@angular/compiler": "^19.2.0",
