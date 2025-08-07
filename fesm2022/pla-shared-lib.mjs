@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Injectable, Component, Input } from '@angular/core';
+import { Injectable, Component, Input, EventEmitter, Output } from '@angular/core';
 import * as i1 from 'primeng/button';
 import { ButtonModule } from 'primeng/button';
 
@@ -53,6 +53,21 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Input
             }] } });
 
+class PlaButtonSaveComponent {
+    onSave = new EventEmitter();
+    onSaveClick() {
+        this.onSave.emit();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonSaveComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonSaveComponent, isStandalone: true, selector: "lib-pla-button-save", outputs: { onSave: "onSave" }, ngImport: i0, template: "<p-button label=\"Save\" icon=\"pi pi-save\" (onClick)=\"onSaveClick()\"></p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonSaveComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'lib-pla-button-save', imports: [ButtonModule], template: "<p-button label=\"Save\" icon=\"pi pi-save\" (onClick)=\"onSaveClick()\"></p-button>\n" }]
+        }], propDecorators: { onSave: [{
+                type: Output
+            }] } });
+
 /*
  * Public API Surface of pla-shared-lib
  */
@@ -61,5 +76,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
  * Generated bundle index. Do not edit.
  */
 
-export { PlaButtonPrimaryComponent, PlaButtonSecondaryComponent, PlaSharedLibComponent, PlaSharedLibService };
+export { PlaButtonPrimaryComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaSharedLibComponent, PlaSharedLibService };
 //# sourceMappingURL=pla-shared-lib.mjs.map
