@@ -53,6 +53,18 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Input
             }] } });
 
+class PlaButtonSuccessComponent {
+    label = '';
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonSuccessComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonSuccessComponent, isStandalone: true, selector: "lib-pla-button-success", inputs: { label: "label" }, ngImport: i0, template: "<p-button label=\"Success\" severity=\"success\" />\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonSuccessComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'lib-pla-button-success', imports: [ButtonModule], template: "<p-button label=\"Success\" severity=\"success\" />\n" }]
+        }], propDecorators: { label: [{
+                type: Input
+            }] } });
+
 /*
  * Public API Surface of pla-shared-lib
  */
@@ -61,5 +73,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
  * Generated bundle index. Do not edit.
  */
 
-export { PlaButtonPrimaryComponent, PlaButtonSecondaryComponent, PlaSharedLibComponent, PlaSharedLibService };
+export { PlaButtonPrimaryComponent, PlaButtonSecondaryComponent, PlaButtonSuccessComponent, PlaSharedLibComponent, PlaSharedLibService };
 //# sourceMappingURL=pla-shared-lib.mjs.map
