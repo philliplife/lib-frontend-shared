@@ -76,11 +76,11 @@ class PlaButtonOutlinedComponent {
         this.onSave.emit();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonOutlinedComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonOutlinedComponent, isStandalone: true, selector: "lib-pla-button-outlined", inputs: { label: "label", icon: "icon" }, outputs: { onSave: "onSave" }, ngImport: i0, template: "<p-button [label]=\"label\" [icon]=\"icon\" (onClick)=\"onActionClick()\" outlined></p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonOutlinedComponent, isStandalone: true, selector: "lib-pla-button-outlined", inputs: { label: "label", icon: "icon" }, outputs: { onSave: "onSave" }, ngImport: i0, template: "<p-button [label]=\"label\" [icon]=\"icon\" (onClick)=\"onActionClick()\" severity=\"secondary\" outlined></p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonOutlinedComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'lib-pla-button-outlined', imports: [ButtonModule], template: "<p-button [label]=\"label\" [icon]=\"icon\" (onClick)=\"onActionClick()\" outlined></p-button>\n" }]
+            args: [{ selector: 'lib-pla-button-outlined', imports: [ButtonModule], template: "<p-button [label]=\"label\" [icon]=\"icon\" (onClick)=\"onActionClick()\" severity=\"secondary\" outlined></p-button>\n" }]
         }], propDecorators: { label: [{
                 type: Input
             }], icon: [{
