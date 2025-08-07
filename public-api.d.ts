@@ -3,3 +3,5 @@ export * from './lib/pla-shared-lib.component';
 export * from './lib/pla-button-primary/pla-button-primary.component';
 export * from './lib/pla-button-secondary/pla-button-secondary.component';
 export * from './lib/pla-button-save/pla-button-save.component';
+export * from './lib/pla-button-outlined/pla-button-outlined.component';
+export * from './lib/pla-button-primary-icon/pla-button-primary-icon.component';
