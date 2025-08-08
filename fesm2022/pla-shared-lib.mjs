@@ -3,7 +3,7 @@ import { Injectable, Component, Input, EventEmitter, Output } from '@angular/cor
 import * as i1 from 'primeng/button';
 import { ButtonModule } from 'primeng/button';
 import * as i2 from '@angular/forms';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import * as i1$1 from 'primeng/inputtext';
 import { InputTextModule } from 'primeng/inputtext';
 import * as i3 from 'primeng/floatlabel';
@@ -158,12 +158,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
 class PlaInputText {
     field = '';
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaInputText, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaInputText, isStandalone: true, selector: "pla-input-text", providers: [], ngImport: i0, template: "<p-floatlabel variant=\"in\">\n  <input pInputText id=\"value2\" [(ngModel)]=\"field\" autocomplete=\"off\" />\n  <label for=\"value2\">Username</label>\n</p-floatlabel>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: InputTextModule }, { kind: "directive", type: i1$1.InputText, selector: "[pInputText]", inputs: ["variant", "fluid", "pSize"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i2.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "ngmodule", type: FloatLabelModule }, { kind: "component", type: i3.FloatLabel, selector: "p-floatlabel, p-floatLabel, p-float-label", inputs: ["variant"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaInputText, isStandalone: true, selector: "pla-input-text", inputs: { field: "field" }, providers: [], ngImport: i0, template: "<p-floatlabel variant=\"in\">\n  <input pInputText id=\"value2\" [(ngModel)]=\"field\" autocomplete=\"off\" />\n  <label for=\"value2\">Username</label>\n</p-floatlabel>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: InputTextModule }, { kind: "directive", type: i1$1.InputText, selector: "[pInputText]", inputs: ["variant", "fluid", "pSize"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i2.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }, { kind: "ngmodule", type: FloatLabelModule }, { kind: "component", type: i3.FloatLabel, selector: "p-floatlabel, p-floatLabel, p-float-label", inputs: ["variant"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaInputText, decorators: [{
             type: Component,
-            args: [{ selector: 'pla-input-text', imports: [InputTextModule, FormsModule, ReactiveFormsModule, FloatLabelModule], providers: [], template: "<p-floatlabel variant=\"in\">\n  <input pInputText id=\"value2\" [(ngModel)]=\"field\" autocomplete=\"off\" />\n  <label for=\"value2\">Username</label>\n</p-floatlabel>\n" }]
-        }] });
+            args: [{ selector: 'pla-input-text', imports: [InputTextModule, FormsModule, FloatLabelModule], providers: [], template: "<p-floatlabel variant=\"in\">\n  <input pInputText id=\"value2\" [(ngModel)]=\"field\" autocomplete=\"off\" />\n  <label for=\"value2\">Username</label>\n</p-floatlabel>\n" }]
+        }], propDecorators: { field: [{
+                type: Input
+            }] } });
 
 /*
  * Public API Surface of pla-shared-lib
