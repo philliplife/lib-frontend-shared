@@ -6,4 +6,5 @@ export * from './lib/pla-button-save/pla-button-save.component';
 export * from './lib/pla-button-outlined/pla-button-outlined.component';
 export * from './lib/pla-button-primary-icon/pla-button-primary-icon.component';
 export * from './lib/pla-input-text/pla-input-text.component';
+export * from './lib/pla-button-fon/pla-button-fon.component';
 export * from './lib/pla-button-wut/pla-button-wut.component';
