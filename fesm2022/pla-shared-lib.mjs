@@ -108,53 +108,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Output
             }] } });
 
-// import {
-//   Component,
-//   forwardRef,
-//   Input,
-// } from '@angular/core';
-// import {
-//   ControlValueAccessor,
-//   NG_VALUE_ACCESSOR,
-//   NG_VALIDATORS,
-//   Validator,
-//   AbstractControl,
-//   ValidationErrors
-// } from '@angular/forms';
-// import { FloatLabelModule } from 'primeng/floatlabel';
-// import { InputTextModule } from 'primeng/inputtext';
-// @Component({
-//   selector: 'pla-input-text',
-//   imports: [InputTextModule, FloatLabelModule],
-//   templateUrl: './pla-input-text.component.html',
-//   styleUrl: './pla-input-text.component.css',
-//   providers: [
-//     {
-//       provide: NG_VALUE_ACCESSOR,
-//       useExisting: forwardRef(() => PlaInputText),
-//       multi: true
-//     }
-//   ]
-// })
-// export class PlaInputText implements ControlValueAccessor {
-//   @Input() type: string = 'text';
-//   value: any;
-//   disabled = false;
-//   onChange: any = () => { };
-//   onTouched: any = () => { };
-//   writeValue(value: any): void {
-//     this.value = value;
-//   }
-//   registerOnChange(fn: any): void {
-//     this.onChange = fn;
-//   }
-//   registerOnTouched(fn: any): void {
-//     this.onTouched = fn;
-//   }
-//   setDisabledState(isDisabled: boolean): void {
-//     this.disabled = isDisabled;
-//   }
-// }
 class PlaInputText {
     field = '';
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaInputText, deps: [], target: i0.ɵɵFactoryTarget.Component });
