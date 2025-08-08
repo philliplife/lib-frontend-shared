@@ -147,6 +147,15 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
             args: [{ selector: 'pla-button-wut', imports: [ButtonModule], template: "<p-button severity=\"secondary\">\n  <ng-content></ng-content>\n</p-button>\n" }]
         }] });
 
+class PlaButtonFei {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonFei, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonFei, isStandalone: true, selector: "pla-button-fei", ngImport: i0, template: "<!-- <p>pla-button-fei works!</p> -->\n<p-button\n  [label]=\"'Fei Button'\"\n  severity=\"secondary\"\n  outlined\n></p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonFei, decorators: [{
+            type: Component,
+            args: [{ selector: 'pla-button-fei', imports: [ButtonModule], template: "<!-- <p>pla-button-fei works!</p> -->\n<p-button\n  [label]=\"'Fei Button'\"\n  severity=\"secondary\"\n  outlined\n></p-button>\n" }]
+        }] });
+
 /*
  * Public API Surface of pla-shared-lib
  */
@@ -155,5 +164,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
  * Generated bundle index. Do not edit.
  */
 
-export { PlaButtonFonComponent, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaButtonWut, PlaInputText, PlaSharedLibComponent, PlaSharedLibService };
+export { PlaButtonFei, PlaButtonFonComponent, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaButtonWut, PlaInputText, PlaSharedLibComponent, PlaSharedLibService };
 //# sourceMappingURL=pla-shared-lib.mjs.map
