@@ -119,7 +119,7 @@ class PlaInputText {
     onChange = () => { };
     onTouched = () => { };
     writeValue(value) {
-        this.value = value;
+        this.value = value ?? '';
     }
     registerOnChange(fn) {
         this.onChange = fn;
