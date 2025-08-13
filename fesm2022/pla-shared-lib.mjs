@@ -2,10 +2,13 @@ import * as i0 from '@angular/core';
 import { Injectable, Component, Input, EventEmitter, Output, forwardRef } from '@angular/core';
 import * as i1 from 'primeng/button';
 import { ButtonModule } from 'primeng/button';
-import { ReactiveFormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import * as i2 from '@angular/forms';
+import { ReactiveFormsModule, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 import * as i1$1 from 'primeng/floatlabel';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
+import * as i3 from 'primeng/select';
+import { SelectModule } from 'primeng/select';
 
 class PlaSharedLibService {
     constructor() { }
@@ -195,6 +198,56 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
             args: [{ selector: 'pla-button-fei', imports: [ButtonModule], template: "<!-- <p>pla-button-fei works!</p> -->\n<p-button\n  [label]=\"'Fei Button'\"\n  severity=\"secondary\"\n  outlined\n></p-button>\n" }]
         }] });
 
+class PlaInputSelect {
+    drpData = [];
+    label = '';
+    style = {};
+    class = '';
+    innerControl = new FormControl();
+    onChange = (_) => { };
+    onTouched = () => { };
+    writeValue(value) {
+        this.innerControl.setValue(value, { emitEvent: false });
+    }
+    registerOnChange(fn) {
+        this.onChange = fn;
+        this.innerControl.valueChanges.subscribe(fn);
+    }
+    registerOnTouched(fn) {
+        this.onTouched = fn;
+    }
+    setDisabledState(isDisabled) {
+        isDisabled ? this.innerControl.disable({ emitEvent: false })
+            : this.innerControl.enable({ emitEvent: false });
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaInputSelect, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaInputSelect, isStandalone: true, selector: "pla-input-select", inputs: { drpData: "drpData", label: "label", style: "style", class: "class" }, providers: [
+            {
+                provide: NG_VALUE_ACCESSOR,
+                useExisting: forwardRef(() => PlaInputSelect),
+                multi: true
+            }
+        ], ngImport: i0, template: "<p-floatlabel class=\"w-full md:w-56\" variant=\"in\">\n  <p-select\n    [style]=\"style\"\n    [class]=\"class\"\n    [id]=\"`${label}_frm`\"\n    optionLabel=\"name\"\n    [options]=\"drpData\"\n    [formControl]=\"innerControl\"\n    (blur)=\"onTouched()\"\n  ></p-select>\n  <label [for]=\"`${label}_frm`\">{{label}}</label>\n</p-floatlabel>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: FloatLabelModule }, { kind: "component", type: i1$1.FloatLabel, selector: "p-floatlabel, p-floatLabel, p-float-label", inputs: ["variant"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.FormControlDirective, selector: "[formControl]", inputs: ["formControl", "disabled", "ngModel"], outputs: ["ngModelChange"], exportAs: ["ngForm"] }, { kind: "ngmodule", type: SelectModule }, { kind: "component", type: i3.Select, selector: "p-select", inputs: ["id", "scrollHeight", "filter", "name", "style", "panelStyle", "styleClass", "panelStyleClass", "readonly", "required", "editable", "appendTo", "tabindex", "placeholder", "loadingIcon", "filterPlaceholder", "filterLocale", "variant", "inputId", "dataKey", "filterBy", "filterFields", "autofocus", "resetFilterOnHide", "checkmark", "dropdownIcon", "loading", "optionLabel", "optionValue", "optionDisabled", "optionGroupLabel", "optionGroupChildren", "autoDisplayFirst", "group", "showClear", "emptyFilterMessage", "emptyMessage", "lazy", "virtualScroll", "virtualScrollItemSize", "virtualScrollOptions", "size", "overlayOptions", "ariaFilterLabel", "ariaLabel", "ariaLabelledBy", "filterMatchMode", "maxlength", "tooltip", "tooltipPosition", "tooltipPositionStyle", "tooltipStyleClass", "focusOnHover", "selectOnFocus", "autoOptionFocus", "autofocusFilter", "fluid", "disabled", "itemSize", "autoZIndex", "baseZIndex", "showTransitionOptions", "hideTransitionOptions", "filterValue", "options"], outputs: ["onChange", "onFilter", "onFocus", "onBlur", "onClick", "onShow", "onHide", "onClear", "onLazyLoad"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaInputSelect, decorators: [{
+            type: Component,
+            args: [{ selector: 'pla-input-select', standalone: true, imports: [FloatLabelModule, ReactiveFormsModule, SelectModule], providers: [
+                        {
+                            provide: NG_VALUE_ACCESSOR,
+                            useExisting: forwardRef(() => PlaInputSelect),
+                            multi: true
+                        }
+                    ], template: "<p-floatlabel class=\"w-full md:w-56\" variant=\"in\">\n  <p-select\n    [style]=\"style\"\n    [class]=\"class\"\n    [id]=\"`${label}_frm`\"\n    optionLabel=\"name\"\n    [options]=\"drpData\"\n    [formControl]=\"innerControl\"\n    (blur)=\"onTouched()\"\n  ></p-select>\n  <label [for]=\"`${label}_frm`\">{{label}}</label>\n</p-floatlabel>\n" }]
+        }], propDecorators: { drpData: [{
+                type: Input
+            }], label: [{
+                type: Input
+            }], style: [{
+                type: Input
+            }], class: [{
+                type: Input
+            }] } });
+
 /*
  * Public API Surface of pla-shared-lib
  */
@@ -203,5 +256,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
  * Generated bundle index. Do not edit.
  */
 
-export { PlaButtonFei, PlaButtonFonComponent, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaButtonWut, PlaInputText, PlaSharedLibComponent, PlaSharedLibService };
+export { PlaButtonFei, PlaButtonFonComponent, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaButtonWut, PlaInputSelect, PlaInputText, PlaSharedLibComponent, PlaSharedLibService };
 //# sourceMappingURL=pla-shared-lib.mjs.map
