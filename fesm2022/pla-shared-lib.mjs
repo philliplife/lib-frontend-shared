@@ -159,6 +159,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
 class PlaInputTextFrm {
     label = '';
     type = 'text';
+    class = '';
+    style = {};
     value = '';
     onChange = () => { };
     onTouched = () => { };
@@ -180,13 +182,13 @@ class PlaInputTextFrm {
         this.onTouched();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaInputTextFrm, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaInputTextFrm, isStandalone: true, selector: "pla-input-text-frm", inputs: { label: "label", type: "type" }, providers: [
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaInputTextFrm, isStandalone: true, selector: "pla-input-text-frm", inputs: { label: "label", type: "type", class: "class", style: "style" }, providers: [
             {
                 provide: NG_VALUE_ACCESSOR,
                 useExisting: forwardRef(() => PlaInputTextFrm),
                 multi: true
             }
-        ], ngImport: i0, template: "<p-floatlabel variant=\"in\">\n  <input pInputText [id]=\"`${label}_frm`\" (input)=\"onInputChange($event)\" (blur)=\"onTouched()\" autocomplete=\"off\" />\n  <label [for]=\"`${label}_frm`\">{{ label }}</label>\n</p-floatlabel>\n", styles: [""], dependencies: [{ kind: "directive", type: InputText, selector: "[pInputText]", inputs: ["variant", "fluid", "pSize"] }, { kind: "ngmodule", type: FloatLabelModule }, { kind: "component", type: i3.FloatLabel, selector: "p-floatlabel, p-floatLabel, p-float-label", inputs: ["variant"] }, { kind: "ngmodule", type: ReactiveFormsModule }] });
+        ], ngImport: i0, template: "<p-floatlabel variant=\"in\">\n  <input pInputText [style]=\"style\" [class]=\"class\" [id]=\"`${label}_frm`\" (input)=\"onInputChange($event)\" (blur)=\"onTouched()\" autocomplete=\"off\" />\n  <label [for]=\"`${label}_frm`\">{{ label }}</label>\n</p-floatlabel>\n", styles: [""], dependencies: [{ kind: "directive", type: InputText, selector: "[pInputText]", inputs: ["variant", "fluid", "pSize"] }, { kind: "ngmodule", type: FloatLabelModule }, { kind: "component", type: i3.FloatLabel, selector: "p-floatlabel, p-floatLabel, p-float-label", inputs: ["variant"] }, { kind: "ngmodule", type: ReactiveFormsModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaInputTextFrm, decorators: [{
             type: Component,
@@ -196,10 +198,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                             useExisting: forwardRef(() => PlaInputTextFrm),
                             multi: true
                         }
-                    ], template: "<p-floatlabel variant=\"in\">\n  <input pInputText [id]=\"`${label}_frm`\" (input)=\"onInputChange($event)\" (blur)=\"onTouched()\" autocomplete=\"off\" />\n  <label [for]=\"`${label}_frm`\">{{ label }}</label>\n</p-floatlabel>\n" }]
+                    ], template: "<p-floatlabel variant=\"in\">\n  <input pInputText [style]=\"style\" [class]=\"class\" [id]=\"`${label}_frm`\" (input)=\"onInputChange($event)\" (blur)=\"onTouched()\" autocomplete=\"off\" />\n  <label [for]=\"`${label}_frm`\">{{ label }}</label>\n</p-floatlabel>\n" }]
         }], propDecorators: { label: [{
                 type: Input
             }], type: [{
+                type: Input
+            }], class: [{
+                type: Input
+            }], style: [{
                 type: Input
             }] } });
 

@@ -3,6 +3,8 @@ import * as i0 from "@angular/core";
 export declare class PlaInputTextFrm implements ControlValueAccessor {
     label: string;
     type: string;
+    class: string;
+    style: {};
     value: any;
     onChange: any;
     onTouched: any;
@@ -12,5 +14,5 @@ export declare class PlaInputTextFrm implements ControlValueAccessor {
     setDisabledState?(isDisabled: boolean): void;
     onInputChange(event: any): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<PlaInputTextFrm, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<PlaInputTextFrm, "pla-input-text-frm", never, { "label": { "alias": "label"; "required": false; }; "type": { "alias": "type"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<PlaInputTextFrm, "pla-input-text-frm", never, { "label": { "alias": "label"; "required": false; }; "type": { "alias": "type"; "required": false; }; "class": { "alias": "class"; "required": false; }; "style": { "alias": "style"; "required": false; }; }, {}, never, never, true, never>;
 }
