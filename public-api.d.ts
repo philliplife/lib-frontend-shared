@@ -9,4 +9,4 @@ export * from './lib/pla-input-text/pla-input-text.component';
 export * from './lib/pla-button-fon/pla-button-fon.component';
 export * from './lib/pla-button-wut/pla-button-wut.component';
 export * from './lib/pla-button-fei/pla-button-fei.component';
-export * from './lib/pla-input-text-frm/pla-input-text-frm.component';
+export * from './lib/pla-input-text/pla-input-text.component';

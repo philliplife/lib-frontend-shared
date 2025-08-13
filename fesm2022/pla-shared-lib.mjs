@@ -2,12 +2,10 @@ import * as i0 from '@angular/core';
 import { Injectable, Component, Input, EventEmitter, Output, forwardRef } from '@angular/core';
 import * as i1 from 'primeng/button';
 import { ButtonModule } from 'primeng/button';
-import * as i2 from '@angular/forms';
-import { FormsModule, ReactiveFormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import * as i1$1 from 'primeng/inputtext';
-import { InputTextModule, InputText } from 'primeng/inputtext';
-import * as i3 from 'primeng/floatlabel';
+import { ReactiveFormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import * as i1$1 from 'primeng/floatlabel';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputText } from 'primeng/inputtext';
 
 class PlaSharedLibService {
     constructor() { }
@@ -109,14 +107,55 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
             }] } });
 
 class PlaInputText {
-    field = '';
+    label = '';
+    type = 'text';
+    class = '';
+    style = {};
+    value = '';
+    onChange = () => { };
+    onTouched = () => { };
+    writeValue(value) {
+        this.value = value;
+    }
+    registerOnChange(fn) {
+        this.onChange = fn;
+    }
+    registerOnTouched(fn) {
+        this.onTouched = fn;
+    }
+    setDisabledState(isDisabled) {
+        // Implement logic to handle disabled state if needed
+    }
+    onInputChange(event) {
+        this.value = event.target.value;
+        this.onChange(this.value);
+        this.onTouched();
+    }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaInputText, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaInputText, isStandalone: true, selector: "pla-input-text", inputs: { field: "field" }, providers: [], ngImport: i0, template: "<p-floatlabel variant=\"in\">\n  <input pInputText id=\"value2\" [(ngModel)]=\"field\" autocomplete=\"off\" />\n  <label for=\"value2\">Username</label>\n</p-floatlabel>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: InputTextModule }, { kind: "directive", type: i1$1.InputText, selector: "[pInputText]", inputs: ["variant", "fluid", "pSize"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i2.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }, { kind: "ngmodule", type: FloatLabelModule }, { kind: "component", type: i3.FloatLabel, selector: "p-floatlabel, p-floatLabel, p-float-label", inputs: ["variant"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaInputText, isStandalone: true, selector: "pla-input-text", inputs: { label: "label", type: "type", class: "class", style: "style" }, providers: [
+            {
+                provide: NG_VALUE_ACCESSOR,
+                useExisting: forwardRef(() => PlaInputText),
+                multi: true
+            }
+        ], ngImport: i0, template: "<p-floatlabel variant=\"in\">\n  <input pInputText [style]=\"style\" [class]=\"class\" [id]=\"`${label}_frm`\" (input)=\"onInputChange($event)\" (blur)=\"onTouched()\" autocomplete=\"off\" />\n  <label [for]=\"`${label}_frm`\">{{ label }}</label>\n</p-floatlabel>\n", styles: [""], dependencies: [{ kind: "directive", type: InputText, selector: "[pInputText]", inputs: ["variant", "fluid", "pSize"] }, { kind: "ngmodule", type: FloatLabelModule }, { kind: "component", type: i1$1.FloatLabel, selector: "p-floatlabel, p-floatLabel, p-float-label", inputs: ["variant"] }, { kind: "ngmodule", type: ReactiveFormsModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaInputText, decorators: [{
             type: Component,
-            args: [{ selector: 'pla-input-text', imports: [InputTextModule, FormsModule, FloatLabelModule], providers: [], template: "<p-floatlabel variant=\"in\">\n  <input pInputText id=\"value2\" [(ngModel)]=\"field\" autocomplete=\"off\" />\n  <label for=\"value2\">Username</label>\n</p-floatlabel>\n" }]
-        }], propDecorators: { field: [{
+            args: [{ selector: 'pla-input-text', imports: [InputText, FloatLabelModule, ReactiveFormsModule], providers: [
+                        {
+                            provide: NG_VALUE_ACCESSOR,
+                            useExisting: forwardRef(() => PlaInputText),
+                            multi: true
+                        }
+                    ], template: "<p-floatlabel variant=\"in\">\n  <input pInputText [style]=\"style\" [class]=\"class\" [id]=\"`${label}_frm`\" (input)=\"onInputChange($event)\" (blur)=\"onTouched()\" autocomplete=\"off\" />\n  <label [for]=\"`${label}_frm`\">{{ label }}</label>\n</p-floatlabel>\n" }]
+        }], propDecorators: { label: [{
+                type: Input
+            }], type: [{
+                type: Input
+            }], class: [{
+                type: Input
+            }], style: [{
                 type: Input
             }] } });
 
@@ -156,59 +195,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
             args: [{ selector: 'pla-button-fei', imports: [ButtonModule], template: "<!-- <p>pla-button-fei works!</p> -->\n<p-button\n  [label]=\"'Fei Button'\"\n  severity=\"secondary\"\n  outlined\n></p-button>\n" }]
         }] });
 
-class PlaInputTextFrm {
-    label = '';
-    type = 'text';
-    class = '';
-    style = {};
-    value = '';
-    onChange = () => { };
-    onTouched = () => { };
-    writeValue(value) {
-        this.value = value;
-    }
-    registerOnChange(fn) {
-        this.onChange = fn;
-    }
-    registerOnTouched(fn) {
-        this.onTouched = fn;
-    }
-    setDisabledState(isDisabled) {
-        // Implement logic to handle disabled state if needed
-    }
-    onInputChange(event) {
-        this.value = event.target.value;
-        this.onChange(this.value);
-        this.onTouched();
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaInputTextFrm, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaInputTextFrm, isStandalone: true, selector: "pla-input-text-frm", inputs: { label: "label", type: "type", class: "class", style: "style" }, providers: [
-            {
-                provide: NG_VALUE_ACCESSOR,
-                useExisting: forwardRef(() => PlaInputTextFrm),
-                multi: true
-            }
-        ], ngImport: i0, template: "<p-floatlabel variant=\"in\">\n  <input pInputText [style]=\"style\" [class]=\"class\" [id]=\"`${label}_frm`\" (input)=\"onInputChange($event)\" (blur)=\"onTouched()\" autocomplete=\"off\" />\n  <label [for]=\"`${label}_frm`\">{{ label }}</label>\n</p-floatlabel>\n", styles: [""], dependencies: [{ kind: "directive", type: InputText, selector: "[pInputText]", inputs: ["variant", "fluid", "pSize"] }, { kind: "ngmodule", type: FloatLabelModule }, { kind: "component", type: i3.FloatLabel, selector: "p-floatlabel, p-floatLabel, p-float-label", inputs: ["variant"] }, { kind: "ngmodule", type: ReactiveFormsModule }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaInputTextFrm, decorators: [{
-            type: Component,
-            args: [{ selector: 'pla-input-text-frm', imports: [InputText, FloatLabelModule, ReactiveFormsModule], providers: [
-                        {
-                            provide: NG_VALUE_ACCESSOR,
-                            useExisting: forwardRef(() => PlaInputTextFrm),
-                            multi: true
-                        }
-                    ], template: "<p-floatlabel variant=\"in\">\n  <input pInputText [style]=\"style\" [class]=\"class\" [id]=\"`${label}_frm`\" (input)=\"onInputChange($event)\" (blur)=\"onTouched()\" autocomplete=\"off\" />\n  <label [for]=\"`${label}_frm`\">{{ label }}</label>\n</p-floatlabel>\n" }]
-        }], propDecorators: { label: [{
-                type: Input
-            }], type: [{
-                type: Input
-            }], class: [{
-                type: Input
-            }], style: [{
-                type: Input
-            }] } });
-
 /*
  * Public API Surface of pla-shared-lib
  */
@@ -217,5 +203,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
  * Generated bundle index. Do not edit.
  */
 
-export { PlaButtonFei, PlaButtonFonComponent, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaButtonWut, PlaInputText, PlaInputTextFrm, PlaSharedLibComponent, PlaSharedLibService };
+export { PlaButtonFei, PlaButtonFonComponent, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaButtonWut, PlaInputText, PlaSharedLibComponent, PlaSharedLibService };
 //# sourceMappingURL=pla-shared-lib.mjs.map
