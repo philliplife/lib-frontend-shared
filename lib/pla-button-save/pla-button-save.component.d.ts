@@ -4,5 +4,5 @@ export declare class PlaButtonSaveComponent {
     onSave: EventEmitter<void>;
     onSaveClick(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<PlaButtonSaveComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<PlaButtonSaveComponent, "lib-pla-button-save", never, {}, { "onSave": "onSave"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<PlaButtonSaveComponent, "pla-button-save", never, {}, { "onSave": "onSave"; }, never, never, true, never>;
 }
