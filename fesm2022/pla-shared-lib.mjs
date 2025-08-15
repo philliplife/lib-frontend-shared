@@ -33,18 +33,21 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
         }] });
 
 class PlaButtonPrimaryComponent {
-    fullWidth = false;
+    class = '';
+    style = {};
     disabled = false;
     setDisabledState(isDisabled) {
         this.disabled = isDisabled;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonPrimaryComponent, isStandalone: true, selector: "pla-button-primary", inputs: { fullWidth: "fullWidth", disabled: "disabled" }, ngImport: i0, template: "<p-button severity=\"primary\" [style]=\"{ width: fullWidth ? '100%' : null }\">\n  <ng-content></ng-content>\n</p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonPrimaryComponent, isStandalone: true, selector: "pla-button-primary", inputs: { class: "class", style: "style", disabled: "disabled" }, ngImport: i0, template: "<p-button severity=\"primary\" [style]=\"style\" [class]=\"class\">\n  <ng-content></ng-content>\n</p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'pla-button-primary', imports: [ButtonModule, CommonModule], template: "<p-button severity=\"primary\" [style]=\"{ width: fullWidth ? '100%' : null }\">\n  <ng-content></ng-content>\n</p-button>\n" }]
-        }], propDecorators: { fullWidth: [{
+            args: [{ selector: 'pla-button-primary', imports: [ButtonModule, CommonModule], template: "<p-button severity=\"primary\" [style]=\"style\" [class]=\"class\">\n  <ng-content></ng-content>\n</p-button>\n" }]
+        }], propDecorators: { class: [{
+                type: Input
+            }], style: [{
                 type: Input
             }], disabled: [{
                 type: Input
@@ -52,17 +55,25 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
 
 class PlaButtonSecondaryComponent {
     label = '';
+    class = '';
+    style = {};
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonSecondaryComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonSecondaryComponent, isStandalone: true, selector: "lib-pla-button-secondary", inputs: { label: "label" }, ngImport: i0, template: "<p-button [label]=\"label\" severity=\"secondary\">\n</p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonSecondaryComponent, isStandalone: true, selector: "lib-pla-button-secondary", inputs: { label: "label", class: "class", style: "style" }, ngImport: i0, template: "<p-button [style]=\"style\" [class]=\"class\" [label]=\"label\" severity=\"secondary\">\n</p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonSecondaryComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'lib-pla-button-secondary', imports: [ButtonModule, CommonModule], template: "<p-button [label]=\"label\" severity=\"secondary\">\n</p-button>\n" }]
+            args: [{ selector: 'lib-pla-button-secondary', imports: [ButtonModule, CommonModule], template: "<p-button [style]=\"style\" [class]=\"class\" [label]=\"label\" severity=\"secondary\">\n</p-button>\n" }]
         }], propDecorators: { label: [{
+                type: Input
+            }], class: [{
+                type: Input
+            }], style: [{
                 type: Input
             }] } });
 
 class PlaButtonSaveComponent {
+    class = '';
+    style = {};
     disabled = false;
     onSave = new EventEmitter();
     setDisabledState(isDisabled) {
@@ -72,12 +83,16 @@ class PlaButtonSaveComponent {
         this.onSave.emit();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonSaveComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonSaveComponent, isStandalone: true, selector: "pla-button-save", inputs: { disabled: "disabled" }, outputs: { onSave: "onSave" }, ngImport: i0, template: "<p-button label=\"Save\" icon=\"pi pi-save\" [disabled]=\"disabled\" (onClick)=\"onSaveClick()\"></p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonSaveComponent, isStandalone: true, selector: "pla-button-save", inputs: { class: "class", style: "style", disabled: "disabled" }, outputs: { onSave: "onSave" }, ngImport: i0, template: "<p-button [style]=\"style\" [class]=\"class\" label=\"Save\" icon=\"pi pi-save\" [disabled]=\"disabled\" (onClick)=\"onSaveClick()\"></p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonSaveComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'pla-button-save', imports: [ButtonModule, CommonModule], template: "<p-button label=\"Save\" icon=\"pi pi-save\" [disabled]=\"disabled\" (onClick)=\"onSaveClick()\"></p-button>\n" }]
-        }], propDecorators: { disabled: [{
+            args: [{ selector: 'pla-button-save', imports: [ButtonModule, CommonModule], template: "<p-button [style]=\"style\" [class]=\"class\" label=\"Save\" icon=\"pi pi-save\" [disabled]=\"disabled\" (onClick)=\"onSaveClick()\"></p-button>\n" }]
+        }], propDecorators: { class: [{
+                type: Input
+            }], style: [{
+                type: Input
+            }], disabled: [{
                 type: Input
             }], onSave: [{
                 type: Output
@@ -117,6 +132,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
             }] } });
 
 class PlaButtonPrimaryIconComponent {
+    class = '';
+    style = {};
     disabled = false;
     label = '';
     icon = '';
@@ -128,12 +145,16 @@ class PlaButtonPrimaryIconComponent {
         this.onClick.emit();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryIconComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonPrimaryIconComponent, isStandalone: true, selector: "pla-button-primary-icon", inputs: { disabled: "disabled", label: "label", icon: "icon" }, outputs: { onClick: "onClick" }, ngImport: i0, template: "<p-button [label]=\"label\" [icon]=\"icon\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\"></p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonPrimaryIconComponent, isStandalone: true, selector: "pla-button-primary-icon", inputs: { class: "class", style: "style", disabled: "disabled", label: "label", icon: "icon" }, outputs: { onClick: "onClick" }, ngImport: i0, template: "<p-button [style]=\"style\" [class]=\"class\" [label]=\"label\" [icon]=\"icon\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\"></p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryIconComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'pla-button-primary-icon', imports: [ButtonModule, CommonModule], template: "<p-button [label]=\"label\" [icon]=\"icon\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\"></p-button>\n" }]
-        }], propDecorators: { disabled: [{
+            args: [{ selector: 'pla-button-primary-icon', imports: [ButtonModule, CommonModule], template: "<p-button [style]=\"style\" [class]=\"class\" [label]=\"label\" [icon]=\"icon\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\"></p-button>\n" }]
+        }], propDecorators: { class: [{
+                type: Input
+            }], style: [{
+                type: Input
+            }], disabled: [{
                 type: Input
             }], label: [{
                 type: Input
