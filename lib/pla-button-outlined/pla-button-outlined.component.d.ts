@@ -1,6 +1,7 @@
 import { EventEmitter } from '@angular/core';
 import * as i0 from "@angular/core";
 export declare class PlaButtonOutlinedComponent {
+    hostClass: string;
     customClass: string | string[] | Set<string> | {
         [klass: string]: any;
     };
