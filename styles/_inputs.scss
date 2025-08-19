@@ -1,0 +1,118 @@
+.p-inputtext {
+  height: var(--input-height);
+  border-radius: 0.625rem !important;
+  color: #000000 !important;
+}
+
+.p-textarea {
+  border-radius: 0.625rem !important;
+  color: #000000 !important;
+}
+
+.p-inputtext:hover,
+.p-inputtext:focus,
+.p-inputtext:active {
+  border-width: 1px;
+  border-color: var(--color-primary-9) !important;
+  box-shadow: 0 0 0 3px var(--select-background-color) !important;
+}
+
+.p-textarea:hover,
+.p-textarea:focus,
+.p-textarea:active {
+  border-width: 1px;
+  border-color: var(--color-primary-9) !important;
+  box-shadow: 0 0 0 3px var(--select-background-color) !important;
+}
+
+.p-inputtext:disabled,
+.p-select:disabled,
+.p-select.p-disabled,
+.p-multiselect.p-disabled,
+.p-textarea:disabled {
+  background-color: var(--color-background-disabled) !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+  /* override PrimeNG opacity */
+}
+
+// * This style causes the icon in the input form hide when input form is disabled.
+.p-select.p-disabled .p-select-dropdown,
+.p-multiselect.p-disabled .p-multiselect-dropdown,
+p-datepicker:has(.p-datepicker-input[disabled])
+  .p-datepicker-input-icon-container,
+p-floatlabel:has(textarea[disabled]) small[char-counted="true"],
+p-floatlabel:has(input[disabled]) small[char-counted="true"] {
+  display: none;
+}
+
+// * This style causes p-floatlabel to enter the floating state when the input form is disabled.
+.p-floatlabel-in:has(.p-disabled):not(:has(.p-inputwrapper-filled)) label,
+.p-floatlabel-in:has(input[disabled]):not(:has(.p-filled)) label,
+.p-floatlabel-in:has(input[readonly]):not(:has(.p-filled)) label,
+.p-floatlabel-in:has(textarea[disabled]):not(:has(.p-filled)) label {
+  top: var(--p-floatlabel-in-active-top);
+  transform: translateY(0);
+  font-size: var(--p-floatlabel-active-font-size);
+  font-weight: var(--p-floatlabel-label-active-font-weight);
+  color: #808080 !important;
+}
+
+.p-message-error.p-message-simple {
+  color: var(--color-text-error) !important;
+  font-size: var(--font-size-7) !important;
+  margin-top: 6px;
+}
+
+p-datepicker.w-full > span {
+  width: 100%;
+}
+
+.p-floatlabel-in .p-datepicker-input::placeholder {
+  transition: opacity 0.2s ease;
+}
+
+.p-floatlabel-in .p-datepicker-input:not(:focus)::placeholder {
+  opacity: 0;
+}
+
+p-autocomplete.col-12 > .p-autocomplete,
+p-autocomplete.w-full > .p-autocomplete {
+  width: 100%;
+}
+
+p-autocomplete > .p-autocomplete:has(button.p-autocomplete-dropdown) > input {
+  height: var(--input-height);
+  border-top-left-radius: 10px !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-left-radius: 10px !important;
+  border-bottom-right-radius: 0px !important;
+  border-right: 0px !important;
+}
+
+p-autocomplete > .p-autocomplete > button.p-autocomplete-dropdown {
+  border-bottom-right-radius: 10px !important;
+  border-top-right-radius: 10px !important;
+  background-color: transparent !important;
+  border-left: 0px !important;
+}
+
+p-autocomplete.ng-dirty.ng-invalid > .p-autocomplete > input:not(:focus) {
+  border-color: var(--p-inputtext-invalid-border-color) !important;
+}
+
+p-autocomplete.ng-dirty.ng-invalid
+  > .p-autocomplete:not(:has(input:focus))
+  > button.p-autocomplete-dropdown {
+  border-color: var(--p-inputtext-invalid-border-color) !important;
+}
+
+p-autocomplete > .p-autocomplete:has(input[disabled]) {
+  &.p-disabled {
+    opacity: 1;
+  }
+
+  & > button.p-autocomplete-dropdown {
+    background-color: var(--color-background-disabled) !important;
+  }
+}

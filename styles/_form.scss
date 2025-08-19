@@ -1,0 +1,70 @@
+input::placeholder {
+  font-family: var(--font-family);
+  font-weight: 100;
+  font-size: var(--font-size);
+  padding: var(--input-padding);
+}
+
+.form-control {
+  width: 100%;
+  font-size: var(--font-size);
+  font-family: var(--font-family) !important;
+  padding: var(--input-padding);
+  color: var(--color-primary-1);
+}
+
+.p-inputtext {
+  @extend .form-control;
+}
+.p-inputtext:disabled {
+  background-color: #e5e5e5;
+  color: #000;
+  border-color: #bfbfbf;
+}
+
+// .p-dropdown {
+// .p-disabled {
+//   background-color: #e5e5e5 !important;
+//   color: #000 !important;
+// border-color: #bfbfbf !important;
+// }
+// }
+
+textarea {
+  resize: none;
+}
+
+.p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
+  width: 10px;
+  height: 10px;
+}
+
+.p-inputwrapper-filled {
+  &.p-disabled {
+    background-color: #e5e5e5 !important;
+    color: #000 !important;
+    border-color: #bfbfbf !important;
+  }
+}
+
+.p-password {
+  width: 100%;
+}
+
+.p-calendar-clear-icon {
+  margin-top: unset;
+  margin-right: 1rem;
+}
+
+.p-datatable .p-sortable-column .p-sortable-column-icon {
+  color: #b0b0b0;
+}
+
+.field-error {
+  border-color: var(--color-text-error);
+  color: var(--color-text-error);
+}
+
+.field {
+  margin-bottom: 0px;
+}
