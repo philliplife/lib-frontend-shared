@@ -13,3 +13,5 @@ export * from './lib/pla-input-text/pla-input-text.component';
 export * from './lib/pla-input-select/pla-input-select.component';
 export * from './lib/pla-dynamic-form/pla-dynamic-form.component';
 export * from './lib/pla-dynamic-form/form.interface';
+export * from './pipes/pla-message-mapping.pipe';
+export * from './directives/char-count.directive';
