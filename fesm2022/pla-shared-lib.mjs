@@ -502,6 +502,30 @@ class TYPE {
 //   data: any[];
 // }
 
+class PlaTopbar {
+    appName = '';
+    firstName = '';
+    department = '';
+    onMenuButtonClick = new EventEmitter();
+    onClick() {
+        this.onMenuButtonClick.emit();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTopbar, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaTopbar, isStandalone: true, selector: "pla-topbar", inputs: { appName: "appName", firstName: "firstName", department: "department" }, outputs: { onMenuButtonClick: "onMenuButtonClick" }, ngImport: i0, template: "<div class=\"topbar-start\">\n  <button pButton #menubutton type=\"button\" class=\"topbar-menubutton p-trigger duration-300\" (click)=\"onClick()\">\n    <i class=\"pi pi-bars\"></i>\n    <!-- <img src=\"icon/c-menu.svg\" style=\"width: 1.5rem; margin-left: 0.5rem;\" /> -->\n  </button>\n  <h4 class=\"text-2xl\" style=\"font-weight: 600;text-transform: uppercase;\">{{ appName }}</h4>\n</div>\n<div class=\"layout-topbar-menu-section\">\n  <div app-sidebar></div>\n</div>\n<div class=\"topbar-end\">\n  <ul class=\"topbar-menu\">\n    <li> EN </li>\n    <li class=\"topbar-item\">\n      <ng-container true>\n        <div style=\" display: flex; gap: 15px; align-items: center;\">\n          <div style=\"display: flex; flex-wrap: nowrap; flex-direction: column; align-items: flex-end\">\n            <b style=\"color: var(--color-primary-1); font-size: var(--font-size-4); font-weight: 700\">\n              {{firstName}}\n            </b>\n            <small style=\"font-size: var(--font-size-7); font-weight: 300\">\n              {{department}}\n            </small>\n          </div>\n          <img src=\"icon/user.svg\" style=\"width: 25px\" alt=\"\" />\n        </div>\n      </ng-container>\n    </li>\n  </ul>\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "directive", type: i1.ButtonDirective, selector: "[pButton]", inputs: ["iconPos", "loadingIcon", "loading", "severity", "raised", "rounded", "text", "outlined", "size", "plain", "fluid", "label", "icon", "buttonProps"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTopbar, decorators: [{
+            type: Component,
+            args: [{ selector: 'pla-topbar', imports: [ButtonModule], template: "<div class=\"topbar-start\">\n  <button pButton #menubutton type=\"button\" class=\"topbar-menubutton p-trigger duration-300\" (click)=\"onClick()\">\n    <i class=\"pi pi-bars\"></i>\n    <!-- <img src=\"icon/c-menu.svg\" style=\"width: 1.5rem; margin-left: 0.5rem;\" /> -->\n  </button>\n  <h4 class=\"text-2xl\" style=\"font-weight: 600;text-transform: uppercase;\">{{ appName }}</h4>\n</div>\n<div class=\"layout-topbar-menu-section\">\n  <div app-sidebar></div>\n</div>\n<div class=\"topbar-end\">\n  <ul class=\"topbar-menu\">\n    <li> EN </li>\n    <li class=\"topbar-item\">\n      <ng-container true>\n        <div style=\" display: flex; gap: 15px; align-items: center;\">\n          <div style=\"display: flex; flex-wrap: nowrap; flex-direction: column; align-items: flex-end\">\n            <b style=\"color: var(--color-primary-1); font-size: var(--font-size-4); font-weight: 700\">\n              {{firstName}}\n            </b>\n            <small style=\"font-size: var(--font-size-7); font-weight: 300\">\n              {{department}}\n            </small>\n          </div>\n          <img src=\"icon/user.svg\" style=\"width: 25px\" alt=\"\" />\n        </div>\n      </ng-container>\n    </li>\n  </ul>\n</div>\n" }]
+        }], propDecorators: { appName: [{
+                type: Input
+            }], firstName: [{
+                type: Input
+            }], department: [{
+                type: Input
+            }], onMenuButtonClick: [{
+                type: Output
+            }] } });
+
 /*
  * Public API Surface of pla-shared-lib
  */
@@ -510,5 +534,5 @@ class TYPE {
  * Generated bundle index. Do not edit.
  */
 
-export { CharCountDirective, PlaButtonFei, PlaButtonFonComponent, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaButtonWut, PlaDynamicForm, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, TYPE, messageModels };
+export { CharCountDirective, PlaButtonFei, PlaButtonFonComponent, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaButtonWut, PlaDynamicForm, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaTopbar, TYPE, messageModels };
 //# sourceMappingURL=pla-shared-lib.mjs.map

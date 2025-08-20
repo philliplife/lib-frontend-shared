@@ -15,3 +15,4 @@ export * from './lib/pla-dynamic-form/pla-dynamic-form.component';
 export * from './lib/pla-dynamic-form/form.interface';
 export * from './pipes/pla-message-mapping.pipe';
 export * from './directives/char-count.directive';
+export * from './lib/pla-topbar/pla-topbar.component';
