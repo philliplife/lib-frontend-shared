@@ -115,8 +115,8 @@ class PlaButtonOutlinedComponent {
     disabled = false;
     label = '';
     icon = '';
-    class = '';
-    style = {};
+    styleClass = ''; // ใช้สำหรับ CSS class
+    style = {}; //ใช้สำหรับ inline style
     onClick = new EventEmitter();
     setDisabledState(isDisabled) {
         this.disabled = isDisabled;
@@ -125,18 +125,18 @@ class PlaButtonOutlinedComponent {
         this.onClick.emit();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonOutlinedComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonOutlinedComponent, isStandalone: true, selector: "pla-button-outlined", inputs: { disabled: "disabled", label: "label", icon: "icon", class: "class", style: "style" }, outputs: { onClick: "onClick" }, ngImport: i0, template: "<p-button [style]=\"style\" [styleClass]=\"class\" [label]=\"label\" [icon]=\"icon\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\" severity=\"secondary\" outlined [style]=\"{ color: '#000000'}\"></p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonOutlinedComponent, isStandalone: true, selector: "pla-button-outlined", inputs: { disabled: "disabled", label: "label", icon: "icon", styleClass: "styleClass", style: "style" }, outputs: { onClick: "onClick" }, ngImport: i0, template: "<p-button [label]=\"label\" [icon]=\"icon\" [disabled]=\"disabled\" [style]=\"style\" [styleClass]=\"styleClass\"\n  (onClick)=\"onActionClick()\" severity=\"secondary\" outlined>\n</p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonOutlinedComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'pla-button-outlined', imports: [ButtonModule, CommonModule], template: "<p-button [style]=\"style\" [styleClass]=\"class\" [label]=\"label\" [icon]=\"icon\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\" severity=\"secondary\" outlined [style]=\"{ color: '#000000'}\"></p-button>\n" }]
+            args: [{ selector: 'pla-button-outlined', imports: [ButtonModule, CommonModule], template: "<p-button [label]=\"label\" [icon]=\"icon\" [disabled]=\"disabled\" [style]=\"style\" [styleClass]=\"styleClass\"\n  (onClick)=\"onActionClick()\" severity=\"secondary\" outlined>\n</p-button>\n" }]
         }], propDecorators: { disabled: [{
                 type: Input
             }], label: [{
                 type: Input
             }], icon: [{
                 type: Input
-            }], class: [{
+            }], styleClass: [{
                 type: Input
             }], style: [{
                 type: Input
