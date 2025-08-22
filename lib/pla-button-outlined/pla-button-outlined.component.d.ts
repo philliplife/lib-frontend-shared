@@ -9,6 +9,9 @@ export declare class PlaButtonOutlinedComponent {
         [klass: string]: any;
     };
     onClick: EventEmitter<void>;
+    get mergedStyle(): {
+        color: string;
+    };
     setDisabledState(isDisabled: boolean): void;
     onActionClick(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<PlaButtonOutlinedComponent, never>;
