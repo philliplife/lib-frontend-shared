@@ -157,6 +157,7 @@ class PlaButtonPrimaryIconComponent {
     label = '';
     icon = '';
     onClick = new EventEmitter();
+    iconPos = 'left';
     get mergedStyle() {
         return { ...this.style };
     }
@@ -167,11 +168,11 @@ class PlaButtonPrimaryIconComponent {
         this.onClick.emit();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryIconComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonPrimaryIconComponent, isStandalone: true, selector: "pla-button-primary-icon", inputs: { styleClass: "styleClass", style: "style", disabled: "disabled", label: "label", icon: "icon" }, outputs: { onClick: "onClick" }, ngImport: i0, template: "<p-button  [style]=\"mergedStyle\" [styleClass]=\"styleClass\" [label]=\"label\" [icon]=\"icon\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\"></p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonPrimaryIconComponent, isStandalone: true, selector: "pla-button-primary-icon", inputs: { styleClass: "styleClass", style: "style", disabled: "disabled", label: "label", icon: "icon", iconPos: "iconPos" }, outputs: { onClick: "onClick" }, ngImport: i0, template: "<p-button  [style]=\"mergedStyle\" [styleClass]=\"styleClass\" [label]=\"label\" [icon]=\"icon\" [iconPos]=\"iconPos\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\"></p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryIconComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'pla-button-primary-icon', imports: [ButtonModule, CommonModule], template: "<p-button  [style]=\"mergedStyle\" [styleClass]=\"styleClass\" [label]=\"label\" [icon]=\"icon\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\"></p-button>\n" }]
+            args: [{ selector: 'pla-button-primary-icon', imports: [ButtonModule, CommonModule], template: "<p-button  [style]=\"mergedStyle\" [styleClass]=\"styleClass\" [label]=\"label\" [icon]=\"icon\" [iconPos]=\"iconPos\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\"></p-button>\n" }]
         }], propDecorators: { styleClass: [{
                 type: Input
             }], style: [{
@@ -184,6 +185,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Input
             }], onClick: [{
                 type: Output
+            }], iconPos: [{
+                type: Input
             }] } });
 
 class PlaInputText {
