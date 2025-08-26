@@ -1,0 +1,65 @@
+.p-multiselect {
+  min-height: var(--input-height) !important;
+  border-radius: var(--select-border-radius) !important;
+
+  .p-multiselect-dropdown {
+    align-items: start;
+    padding-top: 1rem;
+  }
+}
+
+div[data-type="multiselect"].h-full > .h-full {
+  min-height: var(--input-height) !important;
+}
+
+div[data-type="multiselect"]:not(.h-full) > .h-full {
+  height: var(--input-height) !important;
+}
+
+.p-multiselect-label {
+  padding-top: 1.25rem !important;
+  padding-left: 0.75rem !important;
+  color: #000000 !important;
+  flex-wrap: wrap;
+}
+
+.p-multiselect-label .p-chip {
+  padding-top: 0rem !important;
+  padding-bottom: 0rem !important;
+}
+
+p-multiselect.p-disabled .p-chip-remove-icon {
+  display: none !important;
+}
+
+p-multiselect.p-disabled .p-chip {
+  background-color: rgba(var(--button-disabled-text-color), 0.25);
+}
+
+.p-multiselect-label-container {
+  display: flex !important;
+  align-items: start !important;
+  padding-top: 0px !important;
+}
+
+.p-multiselect-overlay {
+  border-radius: var(--select-border-radius) !important;
+
+  .p-multiselect-list {
+    padding: var(--select-list-padding) !important;
+  }
+}
+
+.p-multiselect-option {
+  border-radius: var(--p-border-radius-lg) !important;
+
+  &.p-multiselect-option-selected {
+    background: var(--p-primary-800) !important;
+    color: white !important;
+  }
+
+  &:not(.p-multiselect-option-selected):not(.p-disabled).p-focus {
+    background: var(--select-background-color) !important;
+    color: var(--p-select-option-focus-color);
+  }
+}

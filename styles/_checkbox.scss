@@ -1,0 +1,26 @@
+.radio-button-type {
+  .field-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0px !important;
+    border-radius: 0.625rem;
+    background: #fff;
+    min-width: 7.5rem;
+    min-height: 1.625rem;
+    padding: 0.75rem;
+    border: 1px solid #e6e6e6;
+
+    p-checkbox {
+      margin-top: -0.3125rem;
+    }
+  }
+
+  .field-checkbox:has(p-checkbox > .p-checkbox.p-checkbox-checked) {
+    border: 1px solid var(--primary-color);
+  }
+}
+
+.p-checkbox {
+  vertical-align: middle !important;
+}

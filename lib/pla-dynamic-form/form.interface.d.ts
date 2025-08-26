@@ -23,7 +23,8 @@ export interface ICommonData {
     disabled?: boolean;
 }
 export interface IFormControlDynamic {
-    type: 'text' | 'number' | 'decimal' | 'textarea' | 'dropdown' | 'empty' | 'select' | 'datepicker' | 'radio' | 'multiselect' | 'checkbox' | 'input-group' | 'select-button';
+    type?: 'text' | 'number' | 'decimal' | 'textarea' | 'dropdown' | 'empty' | 'select' | 'datepicker' | 'radio' | 'multiselect' | 'checkbox' | 'input-group' | 'select-button';
+    value?: any;
     formControlName?: string;
     subFormControlName?: string;
     selectControlName?: string;

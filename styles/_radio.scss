@@ -1,0 +1,26 @@
+.radio-button-type {
+  .field-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0px !important;
+    border-radius: 0.625rem;
+    background: #FFF;
+    min-width: 7.5rem;
+    min-height: 1.625rem;
+    padding: 0.75rem;
+    border: 1px solid #E6E6E6;
+
+    p-radiobutton {
+      margin-top: -0.3125rem;
+    }
+  }
+
+  .field-checkbox:has(p-radiobutton > .p-radiobutton.p-radiobutton-checked) {
+    border: 1px solid var(--primary-color);
+  }
+
+  .field-checkbox:has(p-radiobutton.ng-invalid.ng-dirty > .p-radiobutton) {
+    border: 1px solid var(--p-inputtext-invalid-border-color);
+  }
+}
