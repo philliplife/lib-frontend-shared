@@ -164,7 +164,6 @@ class PlaButtonPrimaryIconComponent {
     icon = '';
     onClick = new EventEmitter();
     iconPos = 'left';
-    ngClass = {};
     get mergedStyle() {
         return { ...this.style };
     }
@@ -175,11 +174,11 @@ class PlaButtonPrimaryIconComponent {
         this.onClick.emit();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryIconComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonPrimaryIconComponent, isStandalone: true, selector: "pla-button-primary-icon", inputs: { styleClass: "styleClass", style: "style", disabled: "disabled", label: "label", icon: "icon", iconPos: "iconPos", ngClass: "ngClass" }, outputs: { onClick: "onClick" }, ngImport: i0, template: "<p-button  [style]=\"mergedStyle\" [styleClass]=\"styleClass\" [ngClass]=\"ngClass\" [label]=\"label\" [icon]=\"icon\" [iconPos]=\"iconPos\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\">\n  <ng-content></ng-content>\n</p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaButtonPrimaryIconComponent, isStandalone: true, selector: "pla-button-primary-icon", inputs: { styleClass: "styleClass", style: "style", disabled: "disabled", label: "label", icon: "icon", iconPos: "iconPos" }, outputs: { onClick: "onClick" }, ngImport: i0, template: "<p-button  [style]=\"mergedStyle\" [styleClass]=\"styleClass\" [label]=\"label\" [icon]=\"icon\" [iconPos]=\"iconPos\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\">\n  <ng-content></ng-content>\n</p-button>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaButtonPrimaryIconComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'pla-button-primary-icon', imports: [ButtonModule, CommonModule], template: "<p-button  [style]=\"mergedStyle\" [styleClass]=\"styleClass\" [ngClass]=\"ngClass\" [label]=\"label\" [icon]=\"icon\" [iconPos]=\"iconPos\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\">\n  <ng-content></ng-content>\n</p-button>\n" }]
+            args: [{ selector: 'pla-button-primary-icon', imports: [ButtonModule, CommonModule], template: "<p-button  [style]=\"mergedStyle\" [styleClass]=\"styleClass\" [label]=\"label\" [icon]=\"icon\" [iconPos]=\"iconPos\" [disabled]=\"disabled\" (onClick)=\"onActionClick()\">\n  <ng-content></ng-content>\n</p-button>\n" }]
         }], propDecorators: { styleClass: [{
                 type: Input
             }], style: [{
@@ -193,8 +192,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
             }], onClick: [{
                 type: Output
             }], iconPos: [{
-                type: Input
-            }], ngClass: [{
                 type: Input
             }] } });
 
