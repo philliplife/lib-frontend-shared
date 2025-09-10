@@ -20,3 +20,4 @@ export * from './lib/pla-form-text-area/pla-form-text-area.component';
 export * from './pipes/pla-message-mapping.pipe';
 export * from './directives/char-count.directive';
 export * from './lib/pla-topbar/pla-topbar.component';
+export * from './lib/pla-dialog/pla-dialog.component';

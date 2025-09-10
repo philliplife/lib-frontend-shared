@@ -29,6 +29,8 @@ import { CheckboxModule } from 'primeng/checkbox';
 import * as i4$2 from 'primeng/multiselect';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { Message } from 'primeng/message';
+import * as i1$2 from 'primeng/dialog';
+import { DialogModule } from 'primeng/dialog';
 
 class PlaSharedLibService {
     constructor() { }
@@ -774,6 +776,53 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Output
             }] } });
 
+class PlaDialogComponent {
+    visible = false;
+    title = '';
+    message = '';
+    icon = '';
+    actionLabel = '';
+    width = '450px';
+    height = '396px';
+    visibleChange = new EventEmitter();
+    confirm = new EventEmitter();
+    cancel = new EventEmitter();
+    onCancel() {
+        this.visibleChange.emit(false);
+        this.cancel.emit();
+    }
+    onConfirm() {
+        this.confirm.emit();
+        this.visibleChange.emit(false);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaDialogComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaDialogComponent, isStandalone: true, selector: "pla-dialog", inputs: { visible: "visible", title: "title", message: "message", icon: "icon", actionLabel: "actionLabel", width: "width", height: "height" }, outputs: { visibleChange: "visibleChange", confirm: "confirm", cancel: "cancel" }, ngImport: i0, template: "<p-dialog [modal]=\"true\" [(visible)]=\"visible\" [style]=\"{ width: width, height: height }\">\n\n  <div class=\"flex flex-column items-center gap-4 mb-4\">\n    <img [src]=\"icon\" alt=\"dialog-icon\" style=\"width: 100px; height: 100px;\" />\n    <h2>{{ title }}</h2>\n    <p>{{ message }}</p>\n  </div>\n\n  <ng-content></ng-content>\n\n  <div class=\"flex flex-row justify-content-center gap-2\">\n    <pla-button-outlined [style]=\"{ width: '150px', height: '50px' }\" label=\"Cancel\"\n      (click)=\"onCancel()\"></pla-button-outlined>\n\n    <pla-button-primary-icon [style]=\"{ width: '150px', height: '50px' }\" [label]=\"actionLabel\"\n      (click)=\"onConfirm()\"></pla-button-primary-icon>\n  </div>\n</p-dialog>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: DialogModule }, { kind: "component", type: i1$2.Dialog, selector: "p-dialog", inputs: ["header", "draggable", "resizable", "positionLeft", "positionTop", "contentStyle", "contentStyleClass", "modal", "closeOnEscape", "dismissableMask", "rtl", "closable", "responsive", "appendTo", "breakpoints", "styleClass", "maskStyleClass", "maskStyle", "showHeader", "breakpoint", "blockScroll", "autoZIndex", "baseZIndex", "minX", "minY", "focusOnShow", "maximizable", "keepInViewport", "focusTrap", "transitionOptions", "closeIcon", "closeAriaLabel", "closeTabindex", "minimizeIcon", "maximizeIcon", "closeButtonProps", "maximizeButtonProps", "visible", "style", "position", "role", "content", "contentTemplate", "footerTemplate", "closeIconTemplate", "maximizeIconTemplate", "minimizeIconTemplate", "headlessTemplate"], outputs: ["onShow", "onHide", "visibleChange", "onResizeInit", "onResizeEnd", "onDragEnd", "onMaximize"] }, { kind: "component", type: PlaButtonOutlinedComponent, selector: "pla-button-outlined", inputs: ["disabled", "label", "icon", "styleClass", "style", "iconPos"], outputs: ["onClick"] }, { kind: "component", type: PlaButtonPrimaryIconComponent, selector: "pla-button-primary-icon", inputs: ["styleClass", "style", "disabled", "label", "icon", "iconPos"], outputs: ["onClick"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaDialogComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'pla-dialog', imports: [CommonModule, DialogModule, PlaButtonOutlinedComponent, PlaButtonPrimaryIconComponent], template: "<p-dialog [modal]=\"true\" [(visible)]=\"visible\" [style]=\"{ width: width, height: height }\">\n\n  <div class=\"flex flex-column items-center gap-4 mb-4\">\n    <img [src]=\"icon\" alt=\"dialog-icon\" style=\"width: 100px; height: 100px;\" />\n    <h2>{{ title }}</h2>\n    <p>{{ message }}</p>\n  </div>\n\n  <ng-content></ng-content>\n\n  <div class=\"flex flex-row justify-content-center gap-2\">\n    <pla-button-outlined [style]=\"{ width: '150px', height: '50px' }\" label=\"Cancel\"\n      (click)=\"onCancel()\"></pla-button-outlined>\n\n    <pla-button-primary-icon [style]=\"{ width: '150px', height: '50px' }\" [label]=\"actionLabel\"\n      (click)=\"onConfirm()\"></pla-button-primary-icon>\n  </div>\n</p-dialog>\n" }]
+        }], propDecorators: { visible: [{
+                type: Input
+            }], title: [{
+                type: Input
+            }], message: [{
+                type: Input
+            }], icon: [{
+                type: Input
+            }], actionLabel: [{
+                type: Input
+            }], width: [{
+                type: Input
+            }], height: [{
+                type: Input
+            }], visibleChange: [{
+                type: Output
+            }], confirm: [{
+                type: Output
+            }], cancel: [{
+                type: Output
+            }] } });
+
 /*
  * Public API Surface of pla-shared-lib
  */
@@ -782,5 +831,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
  * Generated bundle index. Do not edit.
  */
 
-export { CharCountDirective, PlaButtonFei, PlaButtonFonComponent, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaButtonWut, PlaDynamicForm, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaTopbar, TYPE, messageModels };
+export { CharCountDirective, PlaButtonFei, PlaButtonFonComponent, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaButtonWut, PlaDialogComponent, PlaDynamicForm, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaTopbar, TYPE, messageModels };
 //# sourceMappingURL=pla-shared-lib.mjs.map
