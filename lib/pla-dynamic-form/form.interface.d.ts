@@ -12,6 +12,7 @@ export declare class TYPE {
     static readonly CHECKBOX = "checkbox";
     static readonly EMPTY = "empty";
     static readonly DATEPICKER = "datepicker";
+    static readonly TOGGLESWITCH = "toggleswitch";
 }
 export interface ICommonData {
     code: string | number | string[];
@@ -23,7 +24,7 @@ export interface ICommonData {
     disabled?: boolean;
 }
 export interface IFormControlDynamic {
-    type?: 'text' | 'number' | 'decimal' | 'textarea' | 'dropdown' | 'empty' | 'select' | 'datepicker' | 'radio' | 'multiselect' | 'checkbox' | 'input-group' | 'select-button';
+    type?: 'text' | 'number' | 'decimal' | 'textarea' | 'dropdown' | 'empty' | 'select' | 'datepicker' | 'toggleswitch' | 'radio' | 'multiselect' | 'checkbox' | 'input-group' | 'select-button';
     value?: any;
     formControlName?: string;
     subFormControlName?: string;
@@ -81,4 +82,6 @@ export interface IFormControlDynamic {
     appCharCount?: boolean;
     inputTypeCount?: 'input' | 'textarea';
     floatingSuffix?: string;
+    trueValue?: any;
+    falseValue?: any;
 }
