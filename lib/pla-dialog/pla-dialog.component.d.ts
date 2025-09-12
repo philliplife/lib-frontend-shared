@@ -2,9 +2,9 @@ import { EventEmitter } from '@angular/core';
 import * as i0 from "@angular/core";
 export declare class PlaDialogComponent {
     visible: boolean;
-    title: string;
-    message: string;
-    icon: string;
+    title?: string;
+    message?: string;
+    icon?: string;
     actionLabel: string;
     width: string;
     height: string;
