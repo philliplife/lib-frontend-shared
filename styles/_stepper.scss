@@ -1,0 +1,62 @@
+.p-step:has(~ .p-step-active) .p-stepper-separator {
+  background-image: linear-gradient(to left,
+      rgba(59, 130, 246, 0.3),
+      rgba(59, 130, 246, 0.8),
+      rgba(249, 250, 252, 0.8),
+      rgb(255, 253, 253)) !important;
+}
+
+.icon {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.button-step-active {
+  color: #fff;
+  background-color: var(--p-primary-color);
+
+  .icon {
+    fill: var(--p-primary-color);
+  }
+}
+
+.button-step-default {
+  color: #4e4e4e;
+  background-color: #d9d9d9;
+
+  .icon {
+    fill: #fff;
+  }
+}
+
+.button-step-error {
+  background-color: #fceaea;
+  color: #f04438;
+
+  .icon {
+    fill: #f04438;
+  }
+}
+
+.button-step-selected {
+  // box-shadow: var(--box-shadow);
+  box-shadow: 0px 0.5rem 0.625rem 0.1875rem rgba(0, 0, 0, 0.25);
+  //  box-shadow: 0px 10px 10px -5px rgba(0, 0, 0, 0.1),
+}
+
+.steps-title-default {
+  color: #4e4e4e !important;
+}
+
+.steps-title-error {
+  color: red !important;
+}
+
+.selected-step-title {
+  color: var(--p-primary-color) !important;
+  font-weight: 700;
+}
+
+.p-steplist {
+  padding: 1rem 3rem !important;
+}

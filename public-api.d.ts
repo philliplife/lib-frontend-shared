@@ -23,3 +23,4 @@ export * from './pipes/pla-message-mapping.pipe';
 export * from './directives/char-count.directive';
 export * from './lib/pla-topbar/pla-topbar.component';
 export * from './lib/pla-dialog/pla-dialog.component';
+export * from './lib/pla-stepper/pla-stepper.component';
