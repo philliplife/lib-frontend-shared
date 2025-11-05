@@ -45,6 +45,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import * as i2$2 from 'primeng/stepper';
 import { StepperModule } from 'primeng/stepper';
 import { StepsModule } from 'primeng/steps';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 class PlaSharedLibService {
     constructor() { }
@@ -1066,6 +1067,25 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Output
             }] } });
 
+const webApiInterceptor = (req, next) => {
+    //   const token = localStorage.getItem('authToken'); // or inject a token service if available
+    const token = 'Test Token for interceptor';
+    const clonedRequest = token
+        ? req.clone({
+            setHeaders: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+        : req;
+    return next(clonedRequest);
+};
+
+const AUTH_INTERCEPTOR_PROVIDER = {
+    provide: HTTP_INTERCEPTORS,
+    useValue: webApiInterceptor,
+    multi: true,
+};
+
 /*
  * Public API Surface of pla-shared-lib
  */
@@ -1074,5 +1094,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
  * Generated bundle index. Do not edit.
  */
 
-export { CharCountDirective, OverlayTextDirective, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, messageModels };
+export { AUTH_INTERCEPTOR_PROVIDER, CharCountDirective, OverlayTextDirective, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, messageModels, webApiInterceptor };
 //# sourceMappingURL=pla-shared-lib.mjs.map
