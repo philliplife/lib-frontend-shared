@@ -1070,6 +1070,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
 const webApiInterceptor = (req, next) => {
     //   const token = localStorage.getItem('authToken'); // or inject a token service if available
     const token = 'Test Token for interceptor';
+    console.log('testValue1.1', token);
     const clonedRequest = token
         ? req.clone({
             setHeaders: {
