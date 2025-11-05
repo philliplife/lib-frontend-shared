@@ -7,7 +7,7 @@
     border-radius: 0.625rem;
     background: #fff;
     min-width: 7.5rem;
-    min-height: 1.625rem;
+    height: var(--input-height);
     padding: 0.75rem;
     border: 1px solid #e6e6e6;
 
@@ -17,7 +17,7 @@
   }
 
   .field-checkbox:has(p-checkbox > .p-checkbox.p-checkbox-checked) {
-    border: 1px solid var(--primary-color);
+    border: 1px solid var(--color-primary-1);
   }
 }
 

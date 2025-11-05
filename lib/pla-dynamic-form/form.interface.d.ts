@@ -35,6 +35,7 @@ export interface IFormControlDynamic {
     class?: string;
     readOnly?: true;
     classIcon?: string;
+    iconPosition?: 'left' | 'right';
     fluid?: boolean;
     hidden?: boolean;
     isViewMode?: boolean;

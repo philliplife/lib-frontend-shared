@@ -1,0 +1,26 @@
+.p-selectbutton p-togglebutton .p-togglebutton {
+  background: #e9eaeb !important;
+  border: 1px solid #eaeaea;
+  box-shadow: 0px 5.8px 11.6px 0px rgba(229, 229, 229, 0.2);
+}
+
+.p-selectbutton .p-togglebutton > .p-togglebutton-content {
+  min-width: 3rem;
+  border-radius: 0.275rem !important;
+  padding: 0.35rem 0.55rem !important;
+}
+
+.p-selectbutton
+  .p-togglebutton.p-togglebutton-checked
+  > .p-togglebutton-content {
+  background-color: #fff !important;
+
+  color: #00317a !important;
+}
+
+.p-selectbutton .p-togglebutton {
+  color: var(--color-text-5) !important;
+  background-color: #fff !important;
+  border: none !important;
+  font-size: 0.625rem !important;
+}

@@ -3,7 +3,7 @@ import * as i0 from "@angular/core";
 export declare class CharCountDirective implements AfterViewInit, OnDestroy {
     private readonly el;
     private readonly renderer;
-    maxLength: number;
+    maxLength: number | null | undefined;
     inputTypeCount: 'input' | 'textarea';
     private counterEl;
     private wrapperEl;
