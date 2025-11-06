@@ -1,2 +1,2 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-export declare const webApiInterceptor: HttpInterceptorFn;
+export declare function createWebApiInterceptor(clientId: string, redirectUrl: string): HttpInterceptorFn;
