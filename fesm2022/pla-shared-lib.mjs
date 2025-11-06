@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Injectable, Component, Input, EventEmitter, Output, forwardRef, Directive, Pipe } from '@angular/core';
+import { Injectable, Component, Input, EventEmitter, Output, forwardRef, Directive, Pipe, inject } from '@angular/core';
 import * as i1$1 from '@angular/common';
 import { CommonModule } from '@angular/common';
 import * as i1 from 'primeng/button';
@@ -17,7 +17,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import * as i4 from 'primeng/iconfield';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
-import { fromEvent, interval, merge, startWith, map, distinctUntilChanged } from 'rxjs';
+import { fromEvent, interval, merge, startWith, map, distinctUntilChanged, BehaviorSubject, tap, EMPTY, catchError, filter, take, switchMap, finalize, throwError } from 'rxjs';
 import * as i4$1 from 'primeng/textarea';
 import { TextareaModule } from 'primeng/textarea';
 import * as i5$1 from 'primeng/inputnumber';
@@ -45,7 +45,9 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import * as i2$2 from 'primeng/stepper';
 import { StepperModule } from 'primeng/stepper';
 import { StepsModule } from 'primeng/steps';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import * as i1$2 from '@angular/common/http';
+import { HttpHeaders, HttpErrorResponse, HTTP_INTERCEPTORS } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 class PlaSharedLibService {
     constructor() { }
@@ -1067,18 +1069,201 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Output
             }] } });
 
+// import { CookiesServices } from './cookies.service';
+// import {
+//   IUamRes,
+//   IUserProfile,
+//   IResVerifyToken,
+// } from '@app-root/shared/interfaces/auth/authorization';
+// import { Router } from '@angular/router';
+// import { StateManagementService } from '@/shared/storage/state-management.service';
+// import { environment } from '@env/environment';
+// import { IUAMMenu } from '../interfaces/menu.inteface';
+class LoginService {
+    http;
+    isLoggedInSubject = new BehaviorSubject(false);
+    isLoggedIn$ = this.isLoggedInSubject.asObservable();
+    constructor(
+    // private readonly state: StateManagementService,
+    http) {
+        this.http = http;
+    }
+    refreshToken() {
+        const url = "https://portalapi-dev.philliplife.com/uam/api/" + 'v1.1/Authorization/refresh-token';
+        const clientId = "f8d4aced-ad61-4191-8648-78da41f48c56";
+        const _httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                'X-ClientId': clientId,
+            }),
+        };
+        const data = {
+            targetClientId: clientId,
+        };
+        return this.http.post(url, data, _httpOptions);
+    }
+    verifyToken() {
+        return this.http
+            .get("https://portalapi-dev.philliplife.com/uam/api/" + `v1.1/Authorization/verify-token`)
+            .pipe(tap((res) => this.isLoggedInSubject.next(res.isValid)));
+    }
+    uamAuthentication(body) {
+        return this.http.post("https://portalapi-dev.philliplife.com/uam/api/" + 'v1/authentication/login', body);
+    }
+    checkAuth() {
+        return this.isLoggedInSubject.getValue();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, deps: [{ token: i1$2.HttpClient }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: 'root',
+                }]
+        }], ctorParameters: () => [{ type: i1$2.HttpClient }] });
+
+class MSG_MODAL {
+    static TITLE_INFORMATION = 'Information';
+    static TITLE_SUCCESS = 'Success';
+    static TITLE_WARN = 'Warning';
+    static TITLE_ERROR = 'Error';
+    static TITLE_INFO = 'Info';
+    static TITLE_CONFIRM = 'Confirm';
+    static TITLE_DELETE = 'Delete';
+    static TITLE_INSERT = 'Inserted';
+    static TITLE_UPDATE = 'Updated';
+    static ICON_SUCCESS = 'success';
+    static ICON_WARN = 'warning';
+    static ICON_ERROR = 'error';
+    static MSG_REQUIRED = 'Some required information is missing, please correct and try again.';
+    static MSG_SUCCESSFULLY = 'Successfully';
+    static MSG_SUCCESSFULLY_UPDATE = 'Successfully updated';
+    static MSG_DELETE = 'Delete selected record, are you sure?';
+    static MSG_COUNT = 'The total percentage is not equal to 100.';
+    static TITLE_UPDATE_SUCCESS = 'Successfully Update';
+    static TITLE_INSERT_SUCCESS = 'Successfully Insert';
+    static TITLE_INVALID_INPUT = 'Invalid Input';
+    static MSG_CHECK_AGAIN = 'Please check and try again';
+    static MSG_INVALID_DUPLICATED_SYSTEM = 'Duplicate system detected. Please check and select a different system.';
+    static MSG_INVALID_USER_AD = 'The user information retrieved from Active Directory is incomplete. Please update the required details in Active Directory before processing with user registration.';
+}
+
+let refreshTokenInProgress = false;
+const refreshTokenSubject = new BehaviorSubject(null);
+const clientId = 'f8d4aced-ad61-4191-8648-78da41f48c56';
 const webApiInterceptor = (req, next) => {
-    //   const token = localStorage.getItem('authToken'); // or inject a token service if available
-    const token = 'Test Token for interceptor';
-    console.log('testValue1.1', token);
-    const clonedRequest = token
-        ? req.clone({
-            setHeaders: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-        : req;
-    return next(clonedRequest);
+    const loginService = inject(LoginService);
+    const addAuthenticationToken = (request) => {
+        let headers = request.headers
+            .set('Authorization-Type', 'JWT')
+            .set('X-ClientId', clientId);
+        const userType = localStorage.getItem('userType');
+        if (userType) {
+            headers = headers.set('X-UserType', userType);
+        }
+        return request.clone({ headers, withCredentials: true });
+    };
+    const refreshAccessToken = () => {
+        return loginService.refreshToken();
+    };
+    const get422Message = (response) => {
+        if (response.ModelState) {
+            return Object.keys(response.ModelState)
+                .map((key) => `<li>${response.ModelState[key]}</li>`)
+                .join('');
+        }
+        return '';
+    };
+    const getError = (response) => {
+        const err = {
+            status: response.status,
+            statusText: response.statusText,
+            ModelState: {},
+            message: '',
+        };
+        switch (response.status) {
+            case 0:
+                err.message = 'Network Error!!!';
+                break;
+            case 422:
+                err.ModelState = response.error.ModelState;
+                err.message = get422Message(response.error);
+                break;
+            default:
+                err.message =
+                    response.error?.message ||
+                        response.error?.Message ||
+                        response.error?.error_description ||
+                        response.message ||
+                        response;
+        }
+        return new HttpErrorResponse({
+            status: err.status,
+            statusText: err.statusText,
+            error: err,
+        });
+    };
+    const showModalError = (unknownError, errorMessage) => {
+        if (!unknownError) {
+            Swal.fire({
+                title: MSG_MODAL.TITLE_CONFIRM,
+                text: 'Your session has expired. Please log in again to continue.',
+                icon: MSG_MODAL.ICON_WARN,
+                showLoaderOnConfirm: true,
+                preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'https://test.com';
+                }
+            });
+        }
+        else {
+            Swal.fire({
+                title: MSG_MODAL.TITLE_CONFIRM,
+                text: errorMessage,
+                icon: MSG_MODAL.ICON_WARN,
+                showLoaderOnConfirm: true,
+                preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
+            });
+        }
+        return EMPTY;
+    };
+    const authReq = addAuthenticationToken(req);
+    return next(authReq).pipe(catchError((event) => {
+        debugger;
+        if (event.status === 401 ||
+            event.error.statusCode === 40101 ||
+            event.error.statusCode === 40102) {
+            if (event.error.statusCode === 40103 ||
+                event.error.statusCode === 40104) {
+                // 40103 Refresh token has expired. Please login again.
+                // 40104 Invalid refresh token. Please login again.
+                // stateManagementService.clearData();
+                showModalError(false);
+            }
+            if (refreshTokenInProgress) {
+                return refreshTokenSubject.pipe(filter((result) => result !== null), take(1), switchMap(() => next(addAuthenticationToken(req))));
+            }
+            else {
+                refreshTokenInProgress = true;
+                refreshTokenSubject.next(null);
+                return refreshAccessToken().pipe(switchMap((response) => {
+                    refreshTokenSubject.next(response);
+                    return next(addAuthenticationToken(req));
+                }), catchError(() => showModalError(false)), finalize(() => (refreshTokenInProgress = false)));
+            }
+        }
+        else {
+            if (event.status === 0 || event.statusText === 'Unknown Error') {
+                return showModalError(true, event.message);
+            }
+            if (event.url.includes('.json')) {
+                return throwError(() => null);
+            }
+            return throwError(() => getError(event));
+        }
+    }));
 };
 
 const AUTH_INTERCEPTOR_PROVIDER = {
