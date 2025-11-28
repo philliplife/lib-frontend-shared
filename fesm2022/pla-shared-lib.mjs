@@ -17,7 +17,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import * as i4 from 'primeng/iconfield';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
-import { fromEvent, interval, merge, startWith, map, distinctUntilChanged, BehaviorSubject, tap, EMPTY, catchError, filter, take, switchMap, finalize, throwError } from 'rxjs';
+import { fromEvent, interval, merge, startWith, map, distinctUntilChanged, BehaviorSubject, tap, EMPTY, throwError, filter, take, switchMap, catchError, finalize } from 'rxjs';
 import * as i4$1 from 'primeng/textarea';
 import { TextareaModule } from 'primeng/textarea';
 import * as i5$1 from 'primeng/inputnumber';
@@ -1150,109 +1150,147 @@ class MSG_MODAL {
 }
 
 // web-api.interceptor.ts
-function createWebApiInterceptor(clientId, redirectUrl) {
-    let refreshTokenInProgress = false;
-    const refreshTokenSubject = new BehaviorSubject(null);
+let refreshTokenInProgress = false;
+const refreshTokenSubject = new BehaviorSubject(null);
+function addAuthenticationToken(request, clientId) {
+    let headers = request.headers
+        .set('Authorization-Type', 'JWT')
+        .set('X-ClientId', clientId);
+    const userType = localStorage.getItem('userType');
+    if (userType)
+        headers = headers.set('X-UserType', userType);
+    return request.clone({ headers, withCredentials: true });
+}
+function showModalError(unknownError, redirectUrl, errorMessage) {
+    if (unknownError) {
+        Swal.fire({
+            title: MSG_MODAL.TITLE_CONFIRM,
+            text: errorMessage,
+            icon: MSG_MODAL.ICON_WARN,
+            showLoaderOnConfirm: true,
+            preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
+        });
+    }
+    else {
+        Swal.fire({
+            title: MSG_MODAL.TITLE_CONFIRM,
+            text: 'Your session has expired. Please log in again to continue.',
+            icon: MSG_MODAL.ICON_WARN,
+            showLoaderOnConfirm: true,
+            preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = redirectUrl;
+            }
+        });
+    }
+    return EMPTY;
+}
+function get422Message(response) {
+    if (response.ModelState) {
+        return Object.keys(response.ModelState)
+            .map((key) => `<li>${response.ModelState[key]}</li>`)
+            .join('');
+    }
+    return '';
+}
+function getError(response) {
+    const err = {
+        status: response.status,
+        statusText: response.statusText,
+        ModelState: {},
+        message: '',
+    };
+    switch (response.status) {
+        case 0:
+            err.message = 'Network Error!!!';
+            break;
+        case 422:
+            err.ModelState = response.error.ModelState;
+            err.message = get422Message(response.error);
+            break;
+        default:
+            err.message =
+                response.error?.message ||
+                    response.error?.Message ||
+                    response.error?.error_description ||
+                    response.message ||
+                    response;
+    }
+    return new HttpErrorResponse({
+        status: err.status,
+        statusText: err.statusText,
+        error: err,
+    });
+}
+/** ==============================
+ *  Error Handling (DI-Safe Version)
+ *  ============================== */
+function handleErrorByStatusCode(event, req, next, deps, clientId, redirectUrl, localStorageKey) {
+    // const { spinner, plaToast, state, login } = deps;
+    const { login } = deps;
+    const errorStatus = event?.error?.statusCode;
+    const errorMessage = event?.error?.message;
+    const status = event?.status;
+    const url = event?.url ?? '';
+    const showErrorModal = (reload, message) => showModalError(reload, redirectUrl, message);
+    const isAuthError = [401, 40101, 40102, 40103, 40104].includes(errorStatus) || status === 401;
+    const refreshAccessToken = () => login.refreshToken();
+    // === Handle 401 Family Errors ===
+    if (isAuthError) {
+        if (errorStatus === 40103 || errorStatus === 40104) {
+            // state.clearData();
+            localStorage.removeItem(localStorageKey);
+            localStorage.removeItem('UAM-STORAGE');
+            localStorage.removeItem('userType');
+            return showErrorModal(false);
+        }
+        const isTimeout = errorStatus === 40101 && errorMessage === 'Token Timeout';
+        const isInvalidToken = errorStatus === 40102 && errorMessage === 'Invalid Token';
+        const isInvalidAudience = errorStatus === 40102 && errorMessage === 'Invalid audience system';
+        if (isInvalidAudience)
+            return showErrorModal(false);
+        if (isTimeout || isInvalidToken)
+            return handleTokenRefresh(req, next, refreshAccessToken, showErrorModal, clientId);
+        return showErrorModal(false);
+    }
+    // === Handle Non-401 Errors ===
+    // spinner.hide();
+    if (status === 0 || event.statusText === 'Unknown Error') {
+        return showErrorModal(true, event.message);
+    }
+    if (url.includes('.json')) {
+        return throwError(() => null);
+    }
+    // plaToast.show({
+    //   severity: event.error?.messageType === 'Warning' ? 'warning' : 'error',
+    //   summary: event.error?.messageType,
+    //   description: event.error?.message,
+    //   life: 5000,
+    // });
+    return throwError(() => getError(event));
+}
+function handleTokenRefresh(req, next, refreshAccessToken, showErrorModal, clientId) {
+    if (refreshTokenInProgress) {
+        return refreshTokenSubject.pipe(filter((result) => result !== null), take(1), switchMap(() => next(addAuthenticationToken(req, clientId))), catchError(() => showErrorModal(false)));
+    }
+    refreshTokenInProgress = true;
+    refreshTokenSubject.next(null);
+    return refreshAccessToken().pipe(switchMap((response) => {
+        refreshTokenSubject.next(response);
+        return next(addAuthenticationToken(req, clientId));
+    }), catchError(() => showErrorModal(false)), finalize(() => (refreshTokenInProgress = false)));
+}
+function createWebApiInterceptor(clientId, redirectUrl, localStorageKey) {
     return (req, next) => {
-        const loginService = inject(LoginService);
-        const addAuthenticationToken = (request) => {
-            let headers = request.headers
-                .set('Authorization-Type', 'JWT')
-                .set('X-ClientId', clientId);
-            const userType = localStorage.getItem('userType');
-            if (userType)
-                headers = headers.set('X-UserType', userType);
-            return request.clone({ headers, withCredentials: true });
+        const deps = {
+            // spinner: inject(NgxSpinnerService),
+            // plaToast: inject(PlaToastService),
+            // state: inject(StateManagementService),
+            login: inject(LoginService),
         };
-        const refreshAccessToken = () => loginService.refreshToken();
-        const get422Message = (response) => {
-            if (response.ModelState) {
-                return Object.keys(response.ModelState)
-                    .map((key) => `<li>${response.ModelState[key]}</li>`)
-                    .join('');
-            }
-            return '';
-        };
-        const getError = (response) => {
-            const err = {
-                status: response.status,
-                statusText: response.statusText,
-                ModelState: {},
-                message: '',
-            };
-            switch (response.status) {
-                case 0:
-                    err.message = 'Network Error!!!';
-                    break;
-                case 422:
-                    err.ModelState = response.error.ModelState;
-                    err.message = get422Message(response.error);
-                    break;
-                default:
-                    err.message =
-                        response.error?.message ||
-                            response.error?.Message ||
-                            response.error?.error_description ||
-                            response.message ||
-                            response;
-            }
-            return new HttpErrorResponse({ status: err.status, statusText: err.statusText, error: err });
-        };
-        const showModalError = (unknownError, errorMessage) => {
-            if (!unknownError) {
-                Swal.fire({
-                    title: MSG_MODAL.TITLE_CONFIRM,
-                    text: 'Your session has expired. Please log in again to continue.',
-                    icon: MSG_MODAL.ICON_WARN,
-                    showLoaderOnConfirm: true,
-                    preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = redirectUrl;
-                    }
-                });
-            }
-            else {
-                Swal.fire({
-                    title: MSG_MODAL.TITLE_CONFIRM,
-                    text: errorMessage,
-                    icon: MSG_MODAL.ICON_WARN,
-                    showLoaderOnConfirm: true,
-                    preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
-                });
-            }
-            return EMPTY;
-        };
-        const authReq = addAuthenticationToken(req);
-        return next(authReq).pipe(catchError((event) => {
-            if (event.status === 401 ||
-                event.error.statusCode === 40101 ||
-                event.error.statusCode === 40102) {
-                if (event.error.statusCode === 40103 || event.error.statusCode === 40104) {
-                    showModalError(false);
-                }
-                if (refreshTokenInProgress) {
-                    return refreshTokenSubject.pipe(filter((result) => result !== null), take(1), switchMap(() => next(addAuthenticationToken(req))));
-                }
-                else {
-                    refreshTokenInProgress = true;
-                    refreshTokenSubject.next(null);
-                    return refreshAccessToken().pipe(switchMap((response) => {
-                        refreshTokenSubject.next(response);
-                        return next(addAuthenticationToken(req));
-                    }), catchError(() => showModalError(false)), finalize(() => (refreshTokenInProgress = false)));
-                }
-            }
-            else {
-                if (event.status === 0 || event.statusText === 'Unknown Error') {
-                    return showModalError(true, event.message);
-                }
-                if (event.url.includes('.json')) {
-                    return throwError(() => null);
-                }
-                return throwError(() => getError(event));
-            }
-        }));
+        const authReq = addAuthenticationToken(req, clientId);
+        return next(authReq).pipe(catchError((event) => handleErrorByStatusCode(event, req, next, deps, clientId, redirectUrl, localStorageKey)));
     };
 }
 
