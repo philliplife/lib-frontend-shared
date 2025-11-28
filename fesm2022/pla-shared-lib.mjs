@@ -1152,26 +1152,9 @@ class MSG_MODAL {
 // web-api.interceptor.ts
 let refreshTokenInProgress = false;
 const refreshTokenSubject = new BehaviorSubject(null);
-function addAuthenticationToken(request, clientId) {
-    let headers = request.headers
-        .set('Authorization-Type', 'JWT')
-        .set('X-ClientId', clientId);
-    const userType = localStorage.getItem('userType');
-    if (userType)
-        headers = headers.set('X-UserType', userType);
-    return request.clone({ headers, withCredentials: true });
-}
-function showModalError(unknownError, redirectUrl, errorMessage) {
-    if (unknownError) {
-        Swal.fire({
-            title: MSG_MODAL.TITLE_CONFIRM,
-            text: errorMessage,
-            icon: MSG_MODAL.ICON_WARN,
-            showLoaderOnConfirm: true,
-            preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
-        });
-    }
-    else {
+function showModalError(isTokenExpire, urlLogin, localStorageKey, errorMessage) {
+    if (isTokenExpire) {
+        // Case1: Expired case
         Swal.fire({
             title: MSG_MODAL.TITLE_CONFIRM,
             text: 'Your session has expired. Please log in again to continue.',
@@ -1180,13 +1163,25 @@ function showModalError(unknownError, redirectUrl, errorMessage) {
             preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = redirectUrl;
+                localStorage.removeItem(localStorageKey);
+                window.location.href = urlLogin;
             }
+        });
+    }
+    else {
+        // Case2: Other cases
+        Swal.fire({
+            title: MSG_MODAL.TITLE_CONFIRM,
+            text: errorMessage,
+            icon: MSG_MODAL.ICON_WARN,
+            showLoaderOnConfirm: true,
+            preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
         });
     }
     return EMPTY;
 }
 function get422Message(response) {
+    // Remark: Custom 422 error(Unknown Handler case. Should we remove it???)
     if (response.ModelState) {
         return Object.keys(response.ModelState)
             .map((key) => `<li>${response.ModelState[key]}</li>`)
@@ -1226,69 +1221,97 @@ function getError(response) {
 /** ==============================
  *  Error Handling (DI-Safe Version)
  *  ============================== */
-function handleErrorByStatusCode(event, req, next, deps, clientId, redirectUrl, localStorageKey) {
+function handleErrorByStatusCode(event, req, next, deps, clientId, urlLogin, localStorageKey) {
     // const { spinner, plaToast, state, login } = deps;
     const { login } = deps;
     const errorStatus = event?.error?.statusCode;
     const errorMessage = event?.error?.message;
     const status = event?.status;
     const url = event?.url ?? '';
-    const showErrorModal = (reload, message) => showModalError(reload, redirectUrl, message);
     const isAuthError = [401, 40101, 40102, 40103, 40104].includes(errorStatus) || status === 401;
     const refreshAccessToken = () => login.refreshToken();
     // === Handle 401 Family Errors ===
     if (isAuthError) {
-        if (errorStatus === 40103 || errorStatus === 40104) {
-            // state.clearData();
-            localStorage.removeItem(localStorageKey);
-            localStorage.removeItem('UAM-STORAGE');
-            localStorage.removeItem('userType');
-            return showErrorModal(false);
-        }
         const isTimeout = errorStatus === 40101 && errorMessage === 'Token Timeout';
         const isInvalidToken = errorStatus === 40102 && errorMessage === 'Invalid Token';
         const isInvalidAudience = errorStatus === 40102 && errorMessage === 'Invalid audience system';
-        if (isInvalidAudience)
-            return showErrorModal(false);
-        if (isTimeout || isInvalidToken)
-            return handleTokenRefresh(req, next, refreshAccessToken, showErrorModal, clientId);
-        return showErrorModal(false);
+        if (errorStatus === 40103 || errorStatus === 40104) {
+            //Remark: These cases need to re-login.
+            return showModalError(true, urlLogin, localStorageKey);
+        }
+        // Remark: These cases can use retry logic.
+        if (isTimeout || isInvalidToken || isInvalidAudience) {
+            return handleTokenRefresh(req, next, refreshAccessToken, clientId, urlLogin, localStorageKey);
+        }
+        return showModalError(false, urlLogin, localStorageKey);
     }
-    // === Handle Non-401 Errors ===
-    // spinner.hide();
+    // TO DO: Unknown handler??? or Block request(in devtool)
     if (status === 0 || event.statusText === 'Unknown Error') {
-        return showErrorModal(true, event.message);
+        return showModalError(false, urlLogin, localStorageKey);
     }
-    if (url.includes('.json')) {
+    // TO DO: Error response from svg file or language request such as en.json
+    if (url.includes('.json') || url.includes('.svg')) {
         return throwError(() => null);
     }
+    // === Hide Spinner and Show Toast message ===
+    // spinner.hide();
     // plaToast.show({
     //   severity: event.error?.messageType === 'Warning' ? 'warning' : 'error',
     //   summary: event.error?.messageType,
     //   description: event.error?.message,
     //   life: 5000,
     // });
+    // Remark: This function is in catchError so return HttpErrorResponse for every cases normally.
+    // They will be displayed at console.
     return throwError(() => getError(event));
 }
-function handleTokenRefresh(req, next, refreshAccessToken, showErrorModal, clientId) {
+function handleTokenRefresh(req, next, refreshAccessToken, clientId, urlLogin, localStorageKey) {
     if (refreshTokenInProgress) {
-        return refreshTokenSubject.pipe(filter((result) => result !== null), take(1), switchMap(() => next(addAuthenticationToken(req, clientId))), catchError(() => showErrorModal(false)));
+        // Remark: For the second attempt
+        // if Refresh Token are expired too, Expired modal must be displayed to redirect user to the UAM login page.
+        return refreshTokenSubject.pipe(filter((result) => result !== null), take(1), switchMap(() => next(addAuthenticationToken(req, clientId))), catchError(() => showModalError(true, urlLogin, localStorageKey)));
     }
-    refreshTokenInProgress = true;
-    refreshTokenSubject.next(null);
-    return refreshAccessToken().pipe(switchMap((response) => {
-        refreshTokenSubject.next(response);
-        return next(addAuthenticationToken(req, clientId));
-    }), catchError(() => showErrorModal(false)), finalize(() => (refreshTokenInProgress = false)));
+    else {
+        // Remark: For the first attempt(refreshTokenInProgress = false at initialize)
+        // Call Refresh Token API to extend Access Token's time.
+        refreshTokenInProgress = true;
+        refreshTokenSubject.next(null);
+        return refreshAccessToken().pipe(switchMap((response) => {
+            // refreshTokenSubject will be use at authGuard.
+            refreshTokenSubject.next(response);
+            return next(addAuthenticationToken(req, clientId));
+        }), catchError((err) => {
+            // return Empty then try second attempt before display the Expired Modal.
+            console.error(err);
+            return EMPTY;
+        }), finalize(() => (refreshTokenInProgress = false)));
+    }
 }
-function createWebApiInterceptor(clientId, redirectUrl, localStorageKey) {
+function addAuthenticationToken(request, clientId) {
+    // Remark: addtional Headers including Authorization-Type, JWT, and X-UserType for now.
+    let headers = request.headers
+        .set('Authorization-Type', 'JWT')
+        .set('X-ClientId', clientId);
+    const userType = localStorage.getItem('userType');
+    if (userType)
+        headers = headers.set('X-UserType', userType);
+    // Remark: Don't forget to make withCredentials: true to let browser attach crediential to a request.
+    return request.clone({ headers, withCredentials: true });
+}
+/** ==============================
+ *  Final Interceptor
+ *  ============================== */
+// addHeaderInterceptor
+function addHeaderInterceptor(clientId, redirectUrl, localStorageKey) {
     return (req, next) => {
+        // ✅ inject once at root, then pass down (keeps DI context valid)
         const deps = {
             // spinner: inject(NgxSpinnerService),
             // plaToast: inject(PlaToastService),
             // state: inject(StateManagementService),
             login: inject(LoginService),
         };
+        // Remark: Every request must be attach additional Headers.
         const authReq = addAuthenticationToken(req, clientId);
         return next(authReq).pipe(catchError((event) => handleErrorByStatusCode(event, req, next, deps, clientId, redirectUrl, localStorageKey)));
     };
@@ -1296,7 +1319,7 @@ function createWebApiInterceptor(clientId, redirectUrl, localStorageKey) {
 
 const AUTH_INTERCEPTOR_PROVIDER = {
     provide: HTTP_INTERCEPTORS,
-    useValue: createWebApiInterceptor,
+    useValue: addHeaderInterceptor,
     multi: true,
 };
 
@@ -1308,5 +1331,5 @@ const AUTH_INTERCEPTOR_PROVIDER = {
  * Generated bundle index. Do not edit.
  */
 
-export { AUTH_INTERCEPTOR_PROVIDER, CharCountDirective, OverlayTextDirective, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, createWebApiInterceptor, messageModels };
+export { AUTH_INTERCEPTOR_PROVIDER, CharCountDirective, OverlayTextDirective, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, addHeaderInterceptor, messageModels };
 //# sourceMappingURL=pla-shared-lib.mjs.map

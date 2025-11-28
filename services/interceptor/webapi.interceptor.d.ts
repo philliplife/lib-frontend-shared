@@ -1,2 +1,5 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-export declare function createWebApiInterceptor(clientId: string, redirectUrl: string, localStorageKey: string): HttpInterceptorFn;
+/** ==============================
+ *  Final Interceptor
+ *  ============================== */
+export declare function addHeaderInterceptor(clientId: string, redirectUrl: string, localStorageKey: string): HttpInterceptorFn;
