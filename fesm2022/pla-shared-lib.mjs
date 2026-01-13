@@ -1155,16 +1155,43 @@ const refreshTokenSubject = new BehaviorSubject(null);
 function showModalError(isTokenExpire, urlLogin, localStorageKey, errorMessage) {
     if (isTokenExpire) {
         // Case1: Expired case
+        const text = 'Your session has expired. Please log in again to continue.';
+        const title = MSG_MODAL.TITLE_CONFIRM;
         Swal.fire({
-            title: MSG_MODAL.TITLE_CONFIRM,
-            text: 'Your session has expired. Please log in again to continue.',
-            icon: MSG_MODAL.ICON_WARN,
+            html: `
+    <div style="text-align: center;">
+      <div style="display: flex; justify-content: center; align-items: center; padding:15px">
+        <div class="custom-swal-icon-container">
+          <img class="custom-swal-icon" src="assets/svg/icon-bell.svg">
+        </div>
+      </div>
+      <h2 style="margin: 1rem 0 1rem 0; font-size: 1.875rem; font-weight: 600;">${title}</h2>
+      <p style="margin:0; color: #545454;">${text}</p>
+      <div>
+      </div>
+    </div>
+  `,
+            confirmButtonText: 'Confirm',
             showLoaderOnConfirm: true,
+            buttonsStyling: false, // Disable default SweetAlert2 button styling
+            customClass: {
+                popup: 'custom-swal-popup',
+                confirmButton: 'p-button btn-small btn-primary-linear-gradient',
+                actions: 'custom-actions-container',
+            },
             preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
         }).then((result) => {
             if (result.isConfirmed) {
                 localStorage.removeItem(localStorageKey);
-                window.location.href = urlLogin;
+                localStorage.removeItem('userType');
+                localStorage.removeItem('UAM-STORAGE');
+                // Remark: setItem logout-event with new value to trigger logout multiple inactive logic
+                // The logic is in app.component of UAM to handle manual log out by target system(GIO for now).
+                // The logic is in app.component of GIO to handle manual log out by UAM.
+                localStorage.setItem('logout-event', Date.now().toString());
+                setTimeout(() => {
+                    window.location.href = urlLogin;
+                }, 1000);
             }
         });
     }
@@ -1184,7 +1211,7 @@ function get422Message(response) {
     // Remark: Custom 422 error(Unknown Handler case. Should we remove it???)
     if (response.ModelState) {
         return Object.keys(response.ModelState)
-            .map((key) => `<li>${response.ModelState[key]}</li>`)
+            .map((key) => `<li>${response.ModelState?.[key]}</li>`)
             .join('');
     }
     return '';
