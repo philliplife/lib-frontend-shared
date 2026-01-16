@@ -6,9 +6,8 @@ export declare class LoginService {
     private readonly isLoggedInSubject;
     isLoggedIn$: Observable<boolean>;
     constructor(http: HttpClient);
-    refreshToken(): Observable<any>;
-    verifyToken(): Observable<any>;
-    uamAuthentication(body: any): Observable<any>;
+    refreshToken(uamBaseApiUrl: string, clientId: string): Observable<any>;
+    verifyToken(uamBaseApiUrl: string): Observable<any>;
     checkAuth(): boolean;
     static ɵfac: i0.ɵɵFactoryDeclaration<LoginService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<LoginService>;

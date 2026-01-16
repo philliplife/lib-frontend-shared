@@ -1070,28 +1070,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Output
             }] } });
 
-// import { CookiesServices } from './cookies.service';
-// import {
-//   IUamRes,
-//   IUserProfile,
-//   IResVerifyToken,
-// } from '@app-root/shared/interfaces/auth/authorization';
-// import { Router } from '@angular/router';
-// import { StateManagementService } from '@/shared/storage/state-management.service';
-// import { environment } from '@env/environment';
-// import { IUAMMenu } from '../interfaces/menu.inteface';
 class LoginService {
     http;
     isLoggedInSubject = new BehaviorSubject(false);
     isLoggedIn$ = this.isLoggedInSubject.asObservable();
-    constructor(
-    // private readonly state: StateManagementService,
-    http) {
+    constructor(http) {
         this.http = http;
     }
-    refreshToken() {
-        const url = "https://portalapi-dev.philliplife.com/uam/api/" + 'v1.1/Authorization/refresh-token';
-        const clientId = "f8d4aced-ad61-4191-8648-78da41f48c56";
+    refreshToken(uamBaseApiUrl, clientId) {
         const _httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
@@ -1101,15 +1087,12 @@ class LoginService {
         const data = {
             targetClientId: clientId,
         };
-        return this.http.post(url, data, _httpOptions);
+        return this.http.post(uamBaseApiUrl + 'v1.1/Authorization/refresh-token', data, _httpOptions);
     }
-    verifyToken() {
+    verifyToken(uamBaseApiUrl) {
         return this.http
-            .get("https://portalapi-dev.philliplife.com/uam/api/" + `v1.1/Authorization/verify-token`)
+            .get(uamBaseApiUrl + `v1.1/Authorization/verify-token`)
             .pipe(tap((res) => this.isLoggedInSubject.next(res.isValid)));
-    }
-    uamAuthentication(body) {
-        return this.http.post("https://portalapi-dev.philliplife.com/uam/api/" + 'v1/authentication/login', body);
     }
     checkAuth() {
         return this.isLoggedInSubject.getValue();
@@ -1260,7 +1243,7 @@ function getError(response) {
 /** ==============================
  *  Error Handling (DI-Safe Version)
  *  ============================== */
-function handleErrorByStatusCode(event, req, next, deps, clientId, urlLogin, currentAppStorageKey) {
+function handleErrorByStatusCode(event, req, next, deps, clientId, urlConfig, currentAppStorageKey) {
     const { login } = deps;
     // const { spinner, plaToast, state, login } = deps;
     if (shouldSkipAuthHandling(event)) {
@@ -1268,10 +1251,10 @@ function handleErrorByStatusCode(event, req, next, deps, clientId, urlLogin, cur
         // urlLogin: string,
         // currentAppStorageKey: string,
         // errorMessage?: string
-        showModalError(false, event.message, urlLogin, currentAppStorageKey);
+        showModalError(false, event.message, urlConfig.uamLoginURL, currentAppStorageKey);
         return throwError(() => getError(event));
     }
-    return handleAuthError(event, req, next, clientId, login, urlLogin, currentAppStorageKey);
+    return handleAuthError(event, req, next, clientId, login, urlConfig, currentAppStorageKey);
 }
 function shouldSkipAuthHandling(event) {
     return isNetworkError(event) || isStaticResourceError(event.url);
@@ -1285,15 +1268,15 @@ function isStaticResourceError(url) {
     }
     return false;
 }
-function handleAuthError(event, req, next, clientId, loginService, urlLogin, currentAppStorageKey) {
+function handleAuthError(event, req, next, clientId, loginService, urlConfig, currentAppStorageKey) {
     const errorCode = event?.error?.errorCode;
     if (errorCode === AUTH_ERROR_CODE.TOKEN_EXPIRED) {
         // Remark: Try to refresh token once
-        return attemptTokenRefresh(req, next, clientId, loginService, urlLogin, currentAppStorageKey);
+        return attemptTokenRefresh(req, next, clientId, loginService, urlConfig, currentAppStorageKey);
     }
     else {
         // Remark: Check Auth Error or other error
-        return handleAuthenticationFailure(event, errorCode, urlLogin, currentAppStorageKey);
+        return handleAuthenticationFailure(event, errorCode, urlConfig.uamLoginURL, currentAppStorageKey);
     }
 }
 function handleAuthenticationFailure(event, errorCode, urlLogin, currentAppStorageKey) {
@@ -1322,11 +1305,11 @@ function requiresReauthentication(errorCode) {
 /** ==============================
  *  Refresh Token
  *  ============================== */
-function attemptTokenRefresh(req, next, clientId, loginService, urlLogin, currentAppStorageKey) {
-    return handleTokenRefresh(req, next, clientId, () => loginService.refreshToken().pipe(catchError((err) => {
-        showModalError(true, undefined, urlLogin, currentAppStorageKey);
+function attemptTokenRefresh(req, next, clientId, loginService, urlConfig, currentAppStorageKey) {
+    return handleTokenRefresh(req, next, clientId, () => loginService.refreshToken(urlConfig.uamBaseApiUrl, clientId).pipe(catchError((err) => {
+        showModalError(true, undefined, urlConfig.uamLoginURL, currentAppStorageKey);
         return throwError(() => getError(err));
-    })), urlLogin, currentAppStorageKey);
+    })), urlConfig.uamLoginURL, currentAppStorageKey);
 }
 function handleTokenRefresh(req, next, clientId, refreshAccessToken, urlLogin, currentAppStorageKey) {
     if (refreshTokenInProgress) {
@@ -1367,7 +1350,7 @@ function addAuthenticationToken(request, clientId) {
 /** ==============================
  *  Final Interceptor
  *  ============================== */
-function addHeaderInterceptor(clientId, redirectUrl, localStorageKey) {
+function addHeaderInterceptor(config) {
     return (req, next) => {
         // ✅ inject once at root, then pass down (keeps DI context valid)
         const deps = {
@@ -1377,8 +1360,8 @@ function addHeaderInterceptor(clientId, redirectUrl, localStorageKey) {
             login: inject(LoginService),
         };
         // Remark: Every request must be attach additional Headers.
-        const authReq = addAuthenticationToken(req, clientId);
-        return next(authReq).pipe(catchError((event) => handleErrorByStatusCode(event, req, next, deps, clientId, redirectUrl, localStorageKey)));
+        const authReq = addAuthenticationToken(req, config.clientId);
+        return next(authReq).pipe(catchError((event) => handleErrorByStatusCode(event, req, next, deps, config.clientId, config.urlConfig, config.localStorageKey)));
     };
 }
 
@@ -1396,5 +1379,5 @@ const AUTH_INTERCEPTOR_PROVIDER = {
  * Generated bundle index. Do not edit.
  */
 
-export { AUTH_INTERCEPTOR_PROVIDER, CharCountDirective, OverlayTextDirective, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, addHeaderInterceptor, messageModels };
+export { AUTH_INTERCEPTOR_PROVIDER, CharCountDirective, LoginService, OverlayTextDirective, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, addHeaderInterceptor, messageModels };
 //# sourceMappingURL=pla-shared-lib.mjs.map
