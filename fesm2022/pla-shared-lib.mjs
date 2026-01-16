@@ -17,7 +17,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import * as i4 from 'primeng/iconfield';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
-import { fromEvent, interval, merge, startWith, map, distinctUntilChanged, BehaviorSubject, tap, EMPTY, throwError, filter, take, switchMap, catchError, finalize } from 'rxjs';
+import { fromEvent, interval, merge, startWith, map, distinctUntilChanged, BehaviorSubject, tap, throwError } from 'rxjs';
 import * as i4$1 from 'primeng/textarea';
 import { TextareaModule } from 'primeng/textarea';
 import * as i5$1 from 'primeng/inputnumber';
@@ -47,6 +47,7 @@ import { StepperModule } from 'primeng/stepper';
 import { StepsModule } from 'primeng/steps';
 import * as i1$2 from '@angular/common/http';
 import { HttpHeaders, HttpErrorResponse, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { catchError, filter, take, switchMap, finalize } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 
 class PlaSharedLibService {
@@ -1149,10 +1150,21 @@ class MSG_MODAL {
     static MSG_INVALID_USER_AD = 'The user information retrieved from Active Directory is incomplete. Please update the required details in Active Directory before processing with user registration.';
 }
 
-// web-api.interceptor.ts
+var AUTH_ERROR_CODE;
+(function (AUTH_ERROR_CODE) {
+    AUTH_ERROR_CODE["SSO_SESSION_INVALID"] = "SSO_SESSION_INVALID";
+    AUTH_ERROR_CODE["SSO_SESSION_EXPIRED"] = "SSO_SESSION_EXPIRED";
+    AUTH_ERROR_CODE["TOKEN_INVALID"] = "TOKEN_INVALID";
+    AUTH_ERROR_CODE["TOKEN_EXPIRED"] = "TOKEN_EXPIRED";
+    AUTH_ERROR_CODE["AUDIENCE_MISSING"] = "AUDIENCE_MISSING";
+    AUTH_ERROR_CODE["INTERNAL_ERROR"] = "INTERNAL_ERROR";
+    AUTH_ERROR_CODE["REFRESH_TOKEN_INVALID"] = "REFRESH_TOKEN_INVALID";
+    AUTH_ERROR_CODE["REFRESH_TOKEN_EXPIRED"] = "REFRESH_TOKEN_EXPIRED";
+})(AUTH_ERROR_CODE || (AUTH_ERROR_CODE = {}));
+
 let refreshTokenInProgress = false;
 const refreshTokenSubject = new BehaviorSubject(null);
-function showModalError(isTokenExpire, urlLogin, localStorageKey, errorMessage) {
+function showModalError(isTokenExpire, errorMessage, urlLogin, currentAppStorageKey) {
     if (isTokenExpire) {
         // Case1: Expired case
         const text = 'Your session has expired. Please log in again to continue.';
@@ -1172,6 +1184,7 @@ function showModalError(isTokenExpire, urlLogin, localStorageKey, errorMessage) 
     </div>
   `,
             confirmButtonText: 'Confirm',
+            // reverseButtons: true,
             showLoaderOnConfirm: true,
             buttonsStyling: false, // Disable default SweetAlert2 button styling
             customClass: {
@@ -1182,9 +1195,9 @@ function showModalError(isTokenExpire, urlLogin, localStorageKey, errorMessage) 
             preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
         }).then((result) => {
             if (result.isConfirmed) {
-                localStorage.removeItem(localStorageKey);
                 localStorage.removeItem('userType');
                 localStorage.removeItem('UAM-STORAGE');
+                localStorage.removeItem(currentAppStorageKey);
                 // Remark: setItem logout-event with new value to trigger logout multiple inactive logic
                 // The logic is in app.component of UAM to handle manual log out by target system(GIO for now).
                 // The logic is in app.component of GIO to handle manual log out by UAM.
@@ -1205,7 +1218,6 @@ function showModalError(isTokenExpire, urlLogin, localStorageKey, errorMessage) 
             preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
         });
     }
-    return EMPTY;
 }
 function get422Message(response) {
     // Remark: Custom 422 error(Unknown Handler case. Should we remove it???)
@@ -1248,55 +1260,82 @@ function getError(response) {
 /** ==============================
  *  Error Handling (DI-Safe Version)
  *  ============================== */
-function handleErrorByStatusCode(event, req, next, deps, clientId, urlLogin, localStorageKey) {
-    // const { spinner, plaToast, state, login } = deps;
+function handleErrorByStatusCode(event, req, next, deps, clientId, urlLogin, currentAppStorageKey) {
     const { login } = deps;
-    const errorStatus = event?.error?.statusCode;
-    const errorMessage = event?.error?.message;
-    const status = event?.status;
-    const url = event?.url ?? '';
-    const isAuthError = [401, 40101, 40102, 40103, 40104].includes(errorStatus) || status === 401;
-    const refreshAccessToken = () => login.refreshToken();
-    // === Handle 401 Family Errors ===
-    if (isAuthError) {
-        const isTimeout = errorStatus === 40101 && errorMessage === 'Token Timeout';
-        const isInvalidToken = errorStatus === 40102 && errorMessage === 'Invalid Token';
-        const isInvalidAudience = errorStatus === 40102 && errorMessage === 'Invalid audience system';
-        if (errorStatus === 40103 || errorStatus === 40104) {
-            //Remark: These cases need to re-login.
-            return showModalError(true, urlLogin, localStorageKey);
-        }
-        // Remark: These cases can use retry logic.
-        if (isTimeout || isInvalidToken || isInvalidAudience) {
-            return handleTokenRefresh(req, next, refreshAccessToken, clientId, urlLogin, localStorageKey);
-        }
-        return showModalError(false, urlLogin, localStorageKey);
+    // const { spinner, plaToast, state, login } = deps;
+    if (shouldSkipAuthHandling(event)) {
+        //    isTokenExpire: boolean,
+        // urlLogin: string,
+        // currentAppStorageKey: string,
+        // errorMessage?: string
+        showModalError(false, event.message, urlLogin, currentAppStorageKey);
+        return throwError(() => getError(event));
     }
-    // TO DO: Unknown handler??? or Block request(in devtool)
-    if (status === 0 || event.statusText === 'Unknown Error') {
-        return showModalError(false, urlLogin, localStorageKey);
+    return handleAuthError(event, req, next, clientId, login, urlLogin, currentAppStorageKey);
+}
+function shouldSkipAuthHandling(event) {
+    return isNetworkError(event) || isStaticResourceError(event.url);
+}
+function isNetworkError(event) {
+    return event?.status === 0 || event.statusText === 'Unknown Error';
+}
+function isStaticResourceError(url) {
+    if (url) {
+        return url.includes('.json') || url.includes('.svg');
     }
-    // TO DO: Error response from svg file or language request such as en.json
-    if (url.includes('.json') || url.includes('.svg')) {
-        return throwError(() => null);
+    return false;
+}
+function handleAuthError(event, req, next, clientId, loginService, urlLogin, currentAppStorageKey) {
+    const errorCode = event?.error?.errorCode;
+    if (errorCode === AUTH_ERROR_CODE.TOKEN_EXPIRED) {
+        // Remark: Try to refresh token once
+        return attemptTokenRefresh(req, next, clientId, loginService, urlLogin, currentAppStorageKey);
     }
-    // === Hide Spinner and Show Toast message ===
-    // spinner.hide();
-    // plaToast.show({
-    //   severity: event.error?.messageType === 'Warning' ? 'warning' : 'error',
-    //   summary: event.error?.messageType,
-    //   description: event.error?.message,
-    //   life: 5000,
-    // });
-    // Remark: This function is in catchError so return HttpErrorResponse for every cases normally.
-    // They will be displayed at console.
+    else {
+        // Remark: Check Auth Error or other error
+        return handleAuthenticationFailure(event, errorCode, urlLogin, currentAppStorageKey);
+    }
+}
+function handleAuthenticationFailure(event, errorCode, urlLogin, currentAppStorageKey) {
+    const needsReauth = requiresReauthentication(errorCode);
+    if (needsReauth) {
+        // Remark: Check to show Expired Modal that redirect to UAM login or other error modal.
+        showModalError(true, undefined, urlLogin, currentAppStorageKey);
+    }
+    else {
+        showModalError(false, event.message, urlLogin, currentAppStorageKey);
+    }
     return throwError(() => getError(event));
 }
-function handleTokenRefresh(req, next, refreshAccessToken, clientId, urlLogin, localStorageKey) {
+function requiresReauthentication(errorCode) {
+    const reauthErrorCodes = new Set([
+        AUTH_ERROR_CODE.INTERNAL_ERROR,
+        AUTH_ERROR_CODE.TOKEN_INVALID,
+        AUTH_ERROR_CODE.AUDIENCE_MISSING,
+        AUTH_ERROR_CODE.SSO_SESSION_INVALID,
+        AUTH_ERROR_CODE.SSO_SESSION_EXPIRED,
+        AUTH_ERROR_CODE.REFRESH_TOKEN_INVALID,
+        AUTH_ERROR_CODE.REFRESH_TOKEN_EXPIRED,
+    ]);
+    return reauthErrorCodes.has(errorCode);
+}
+/** ==============================
+ *  Refresh Token
+ *  ============================== */
+function attemptTokenRefresh(req, next, clientId, loginService, urlLogin, currentAppStorageKey) {
+    return handleTokenRefresh(req, next, clientId, () => loginService.refreshToken().pipe(catchError((err) => {
+        showModalError(true, undefined, urlLogin, currentAppStorageKey);
+        return throwError(() => getError(err));
+    })), urlLogin, currentAppStorageKey);
+}
+function handleTokenRefresh(req, next, clientId, refreshAccessToken, urlLogin, currentAppStorageKey) {
     if (refreshTokenInProgress) {
         // Remark: For the second attempt
         // if Refresh Token are expired too, Expired modal must be displayed to redirect user to the UAM login page.
-        return refreshTokenSubject.pipe(filter((result) => result !== null), take(1), switchMap(() => next(addAuthenticationToken(req, clientId))), catchError(() => showModalError(true, urlLogin, localStorageKey)));
+        return refreshTokenSubject.pipe(filter((result) => result !== null), take(1), switchMap(() => next(addAuthenticationToken(req, clientId))), catchError((err) => {
+            showModalError(true, undefined, urlLogin, currentAppStorageKey);
+            return throwError(() => getError(err));
+        }));
     }
     else {
         // Remark: For the first attempt(refreshTokenInProgress = false at initialize)
@@ -1310,7 +1349,7 @@ function handleTokenRefresh(req, next, refreshAccessToken, clientId, urlLogin, l
         }), catchError((err) => {
             // return Empty then try second attempt before display the Expired Modal.
             console.error(err);
-            return EMPTY;
+            return throwError(() => getError(err));
         }), finalize(() => (refreshTokenInProgress = false)));
     }
 }
@@ -1328,7 +1367,6 @@ function addAuthenticationToken(request, clientId) {
 /** ==============================
  *  Final Interceptor
  *  ============================== */
-// addHeaderInterceptor
 function addHeaderInterceptor(clientId, redirectUrl, localStorageKey) {
     return (req, next) => {
         // ✅ inject once at root, then pass down (keeps DI context valid)
