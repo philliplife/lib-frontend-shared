@@ -1245,6 +1245,7 @@ function getError(response) {
  *  ============================== */
 function handleErrorByStatusCode(event, req, next, deps, clientId, urlConfig, currentAppStorageKey) {
     const { login } = deps;
+    alert('testValue1.1 ' + JSON.stringify(event));
     // const { spinner, plaToast, state, login } = deps;
     if (shouldSkipAuthHandling(event)) {
         //    isTokenExpire: boolean,
@@ -1361,7 +1362,7 @@ function addHeaderInterceptor(config) {
         };
         // Remark: Every request must be attach additional Headers.
         const authReq = addAuthenticationToken(req, config.clientId);
-        return next(authReq).pipe(catchError((event) => handleErrorByStatusCode(event, req, next, deps, config.clientId, config.urlConfig, config.localStorageKey)));
+        return next(authReq).pipe(catchError((event) => handleErrorByStatusCode(event, req, next, deps, config.clientId, config.urlConfig, config.currentAppStorageKey)));
     };
 }
 

@@ -6,7 +6,7 @@ export interface IResRefreshToken {
 export interface IWebapiInterceptor {
     clientId: string;
     urlConfig: IUrlConfig;
-    localStorageKey: string;
+    currentAppStorageKey: string;
 }
 export interface IUrlConfig {
     uamLoginURL: string;
