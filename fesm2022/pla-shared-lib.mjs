@@ -1345,6 +1345,9 @@ function addAuthenticationToken(request, clientId) {
     const userType = localStorage.getItem('userType');
     if (userType)
         headers = headers.set('X-UserType', userType);
+    const sessionId = localStorage.getItem('session_id');
+    if (sessionId)
+        headers = headers.set('X-Sso-Session', sessionId);
     // Remark: Don't forget to make withCredentials: true to let browser attach crediential to a request.
     return request.clone({ headers, withCredentials: true });
 }
