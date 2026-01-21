@@ -14,13 +14,9 @@ export interface IResRefreshToken {
 export interface IWebapiInterceptor {
     clientId: string;
     urlConfig: IUrlConfig;
-    environment: IEnvironment;
-    currentAppStorageKey: string;
-}
-export interface IEnvironment {
     authorizationType: string;
-    clientId: string;
-    envName: string;
+    envName: 'dev' | 'uat' | 'preprod' | 'prod';
+    currentAppStorageKey: string;
 }
 export interface IUrlConfig {
     uamLoginURL: string;

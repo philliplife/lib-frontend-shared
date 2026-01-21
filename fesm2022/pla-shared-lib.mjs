@@ -1108,20 +1108,19 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 }]
         }], ctorParameters: () => [{ type: i1$2.HttpClient }] });
 
-// import { environment } from '@env/environment';
 /**
  * Manages authentication headers for HTTP requests
  */
 class AuthHeaderService {
-    addAuthHeaders(request, environment) {
+    addAuthHeaders(request, envName, clientId, authorizationType) {
         let headers = new HttpHeaders()
-            .set('Authorization-Type', environment.authorizationType)
-            .set('X-ClientId', environment.clientId);
+            .set('Authorization-Type', authorizationType)
+            .set('X-ClientId', clientId);
         const userType = this.getUserType();
         if (userType) {
             headers = headers.set('X-UserType', userType);
         }
-        const sessionId = this.getSessionId(environment.envName);
+        const sessionId = this.getSessionId(envName);
         if (sessionId) {
             headers = headers.set('X-Sso-Session', sessionId);
         }
@@ -1344,7 +1343,6 @@ var AUTH_ERROR_CODE;
 class HttpErrorHandler {
     // private spinner = inject(NgxSpinnerService);
     errorModal = inject(ErrorModalService);
-    authState = inject(AuthStateService);
     REAUTH_ERROR_CODES = new Set([
         AUTH_ERROR_CODE.INTERNAL_ERROR,
         AUTH_ERROR_CODE.TOKEN_INVALID,
@@ -1499,7 +1497,7 @@ function authInterceptor(config) {
             return throwError(() => new Error('Session invalidated'));
         }
         // Add authentication headers to request
-        const authReq = authHeaderService.addAuthHeaders(req, config.environment);
+        const authReq = authHeaderService.addAuthHeaders(req, config.envName, config.clientId, config.authorizationType);
         return next(authReq).pipe(catchError((error) => {
             // Skip auth handling for network errors and static resources
             if (httpErrorHandler.shouldSkipAuthHandling(error)) {
@@ -1516,7 +1514,7 @@ function authInterceptor(config) {
             const processedError = httpErrorHandler.processError(error);
             // If token expired, attempt refresh and retry
             if (processedError.shouldRetry) {
-                return tokenRefreshService.refreshAndRetry(authReq, next, config.urlConfig, config.environment.clientId);
+                return tokenRefreshService.refreshAndRetry(authReq, next, config.urlConfig, config.clientId);
             }
             // Handle other errors (show modal if needed, invalidate session if reauth required)
             httpErrorHandler.handleProcessedError(processedError, config.urlConfig.uamLoginURL);

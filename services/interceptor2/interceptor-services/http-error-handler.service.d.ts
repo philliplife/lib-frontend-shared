@@ -13,7 +13,6 @@ export interface ProcessedError {
  */
 export declare class HttpErrorHandler {
     private errorModal;
-    private authState;
     private readonly REAUTH_ERROR_CODES;
     processError(error: HttpErrorResponse): ProcessedError;
     shouldSkipAuthHandling(error: HttpErrorResponse): boolean;
