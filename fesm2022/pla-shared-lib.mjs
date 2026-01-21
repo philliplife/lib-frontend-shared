@@ -46,8 +46,8 @@ import * as i2$2 from 'primeng/stepper';
 import { StepperModule } from 'primeng/stepper';
 import { StepsModule } from 'primeng/steps';
 import * as i1$2 from '@angular/common/http';
-import { HttpHeaders, HttpErrorResponse, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { catchError, filter, take, switchMap, finalize } from 'rxjs/operators';
+import { HttpHeaders, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { filter, take, switchMap, catchError } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 
 class PlaSharedLibService {
@@ -1078,21 +1078,22 @@ class LoginService {
         this.http = http;
     }
     refreshToken(uamBaseApiUrl, clientId) {
+        const url = uamBaseApiUrl + 'v1/appauth/refresh-token';
         const _httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
                 'X-ClientId': clientId,
             }),
         };
-        const data = {
-            targetClientId: clientId,
+        const payload = {
+            SystemId: clientId,
         };
-        return this.http.post(uamBaseApiUrl + 'v1.1/Authorization/refresh-token', data, _httpOptions);
+        return this.http.post(url, payload, _httpOptions);
     }
     verifyToken(uamBaseApiUrl) {
         return this.http
-            .get(uamBaseApiUrl + `v1.1/Authorization/verify-token`)
-            .pipe(tap((res) => this.isLoggedInSubject.next(res.isValid)));
+            .get(uamBaseApiUrl + `v1/appauth/app-token`)
+            .pipe(tap((res) => this.isLoggedInSubject.next(res.data.result.isValid)));
     }
     checkAuth() {
         return this.isLoggedInSubject.getValue();
@@ -1106,6 +1107,44 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                     providedIn: 'root',
                 }]
         }], ctorParameters: () => [{ type: i1$2.HttpClient }] });
+
+// import { environment } from '@env/environment';
+/**
+ * Manages authentication headers for HTTP requests
+ */
+class AuthHeaderService {
+    addAuthHeaders(request, environment) {
+        let headers = new HttpHeaders()
+            .set('Authorization-Type', environment.authorizationType)
+            .set('X-ClientId', environment.clientId);
+        const userType = this.getUserType();
+        if (userType) {
+            headers = headers.set('X-UserType', userType);
+        }
+        const sessionId = this.getSessionId(environment.envName);
+        if (sessionId) {
+            headers = headers.set('X-Sso-Session', sessionId);
+        }
+        return request.clone({
+            headers,
+            withCredentials: true,
+        });
+    }
+    getUserType() {
+        return localStorage.getItem('userType');
+    }
+    getSessionId(envName) {
+        return localStorage.getItem(`${envName}_session_id`);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthHeaderService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthHeaderService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthHeaderService, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: 'root',
+                }]
+        }] });
 
 class MSG_MODAL {
     static TITLE_INFORMATION = 'Information';
@@ -1133,6 +1172,159 @@ class MSG_MODAL {
     static MSG_INVALID_USER_AD = 'The user information retrieved from Active Directory is incomplete. Please update the required details in Active Directory before processing with user registration.';
 }
 
+/**
+ * Manages token refresh state and session invalidation to prevent concurrent refresh requests
+ * and stop requests when session becomes invalid
+ */
+class AuthStateService {
+    refreshInProgress$ = new BehaviorSubject(false);
+    refreshResult$ = new BehaviorSubject(null);
+    sessionInvalidated$ = new BehaviorSubject(false);
+    get isRefreshing() {
+        return this.refreshInProgress$.value;
+    }
+    get isSessionInvalidated() {
+        return this.sessionInvalidated$.value;
+    }
+    startRefresh() {
+        this.refreshInProgress$.next(true);
+        this.refreshResult$.next(null);
+    }
+    completeRefresh(result) {
+        this.refreshResult$.next(result);
+        this.refreshInProgress$.next(false);
+    }
+    failRefresh() {
+        this.refreshResult$.next(null);
+        this.refreshInProgress$.next(false);
+    }
+    waitForRefresh() {
+        return this.refreshResult$.pipe(filter((result) => result !== null), take(1));
+    }
+    invalidateSession() {
+        this.sessionInvalidated$.next(true);
+    }
+    reset() {
+        this.refreshInProgress$.next(false);
+        this.refreshResult$.next(null);
+        this.sessionInvalidated$.next(false);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthStateService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthStateService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthStateService, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: 'root',
+                }]
+        }] });
+
+/**
+ * Handles error modal display and session management
+ */
+class ErrorModalService {
+    sessionExpiredShown = false;
+    authState = inject(AuthStateService);
+    showSessionExpired(uamLoginURL) {
+        // Prevent showing multiple session expired modals
+        if (this.sessionExpiredShown) {
+            return;
+        }
+        this.authState.invalidateSession();
+        this.sessionExpiredShown = true;
+        const title = MSG_MODAL.TITLE_CONFIRM;
+        const text = 'Your session has expired. Please log in again to continue.';
+        Swal.fire({
+            html: this.buildModalHtml(title, text),
+            confirmButtonText: 'Confirm',
+            showLoaderOnConfirm: true,
+            buttonsStyling: false,
+            customClass: {
+                popup: 'custom-swal-popup',
+                confirmButton: 'p-button btn-small btn-primary-linear-gradient',
+                actions: 'custom-actions-container',
+            },
+            preConfirm: () => this.createDelay(1000),
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.handleLogout(uamLoginURL);
+            }
+        });
+    }
+    showError(message) {
+        Swal.fire({
+            title: MSG_MODAL.TITLE_CONFIRM,
+            text: message,
+            icon: MSG_MODAL.ICON_WARN,
+            showLoaderOnConfirm: true,
+            preConfirm: () => this.createDelay(1000),
+        });
+    }
+    buildModalHtml(title, text) {
+        return `
+      <div style="text-align: center;">
+        <div style="display: flex; justify-content: center; align-items: center; padding:15px">
+          <div class="custom-swal-icon-container">
+            <img class="custom-swal-icon" src="assets/svg/icon-bell.svg">
+          </div>
+        </div>
+        <h2 style="margin: 1rem 0 1rem 0; font-size: 1.875rem; font-weight: 600;">${title}</h2>
+        <p style="margin:0; color: #545454;">${text}</p>
+      </div>
+    `;
+    }
+    createDelay(ms) {
+        return new Promise((resolve) => setTimeout(() => resolve(null), ms));
+    }
+    handleLogout(uamLoginURL) {
+        // Trigger cross-tab logout event
+        localStorage.setItem('logout-event', Date.now().toString());
+        this.cleanupAndRedirect(uamLoginURL);
+        // const username = this.getUsernameFromStorage();
+        // const payload = {
+        //   Username: username,
+        //   ClientId: environment.clientId,
+        // };
+        // this.loginService.logout(payload).subscribe({
+        //   next: () => {
+        //     this.cleanupAndRedirect();
+        //   },
+        //   error: err => {
+        //     console.error('Logout error:', err);
+        //     this.cleanupAndRedirect();
+        //   },
+        // });
+    }
+    getUsernameFromStorage() {
+        const gioStorage = localStorage.getItem('GIO-STORAGE');
+        if (!gioStorage)
+            return '';
+        try {
+            return JSON.parse(gioStorage).user?.userName || '';
+        }
+        catch {
+            return '';
+        }
+    }
+    cleanupAndRedirect(uamLoginURL) {
+        localStorage.removeItem('GIO-STORAGE');
+        setTimeout(() => {
+            window.location.href = uamLoginURL;
+        }, 500);
+    }
+    resetSessionExpiredFlag() {
+        this.sessionExpiredShown = false;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: ErrorModalService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: ErrorModalService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: ErrorModalService, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: 'root',
+                }]
+        }] });
+
 var AUTH_ERROR_CODE;
 (function (AUTH_ERROR_CODE) {
     AUTH_ERROR_CODE["SSO_SESSION_INVALID"] = "SSO_SESSION_INVALID";
@@ -1143,156 +1335,17 @@ var AUTH_ERROR_CODE;
     AUTH_ERROR_CODE["INTERNAL_ERROR"] = "INTERNAL_ERROR";
     AUTH_ERROR_CODE["REFRESH_TOKEN_INVALID"] = "REFRESH_TOKEN_INVALID";
     AUTH_ERROR_CODE["REFRESH_TOKEN_EXPIRED"] = "REFRESH_TOKEN_EXPIRED";
+    AUTH_ERROR_CODE["APPLICATION_TIMEOUT"] = "APPLICATION_TIMEOUT";
 })(AUTH_ERROR_CODE || (AUTH_ERROR_CODE = {}));
 
-let refreshTokenInProgress = false;
-const refreshTokenSubject = new BehaviorSubject(null);
-function showModalError(isTokenExpire, errorMessage, urlLogin, currentAppStorageKey) {
-    if (isTokenExpire) {
-        // Case1: Expired case
-        const text = 'Your session has expired. Please log in again to continue.';
-        const title = MSG_MODAL.TITLE_CONFIRM;
-        Swal.fire({
-            html: `
-    <div style="text-align: center;">
-      <div style="display: flex; justify-content: center; align-items: center; padding:15px">
-        <div class="custom-swal-icon-container">
-          <img class="custom-swal-icon" src="assets/svg/icon-bell.svg">
-        </div>
-      </div>
-      <h2 style="margin: 1rem 0 1rem 0; font-size: 1.875rem; font-weight: 600;">${title}</h2>
-      <p style="margin:0; color: #545454;">${text}</p>
-      <div>
-      </div>
-    </div>
-  `,
-            confirmButtonText: 'Confirm',
-            // reverseButtons: true,
-            showLoaderOnConfirm: true,
-            buttonsStyling: false, // Disable default SweetAlert2 button styling
-            customClass: {
-                popup: 'custom-swal-popup',
-                confirmButton: 'p-button btn-small btn-primary-linear-gradient',
-                actions: 'custom-actions-container',
-            },
-            preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
-        }).then((result) => {
-            if (result.isConfirmed) {
-                localStorage.removeItem('userType');
-                localStorage.removeItem('UAM-STORAGE');
-                localStorage.removeItem(currentAppStorageKey);
-                // Remark: setItem logout-event with new value to trigger logout multiple inactive logic
-                // The logic is in app.component of UAM to handle manual log out by target system(GIO for now).
-                // The logic is in app.component of GIO to handle manual log out by UAM.
-                localStorage.setItem('logout-event', Date.now().toString());
-                setTimeout(() => {
-                    window.location.href = urlLogin;
-                }, 1000);
-            }
-        });
-    }
-    else {
-        // Case2: Other cases
-        Swal.fire({
-            title: MSG_MODAL.TITLE_CONFIRM,
-            text: errorMessage,
-            icon: MSG_MODAL.ICON_WARN,
-            showLoaderOnConfirm: true,
-            preConfirm: () => new Promise((resolve) => setTimeout(() => resolve(null), 1000)),
-        });
-    }
-}
-function get422Message(response) {
-    // Remark: Custom 422 error(Unknown Handler case. Should we remove it???)
-    if (response.ModelState) {
-        return Object.keys(response.ModelState)
-            .map((key) => `<li>${response.ModelState?.[key]}</li>`)
-            .join('');
-    }
-    return '';
-}
-function getError(response) {
-    const err = {
-        status: response.status,
-        statusText: response.statusText,
-        ModelState: {},
-        message: '',
-    };
-    switch (response.status) {
-        case 0:
-            err.message = 'Network Error!!!';
-            break;
-        case 422:
-            err.ModelState = response.error.ModelState;
-            err.message = get422Message(response.error);
-            break;
-        default:
-            err.message =
-                response.error?.message ||
-                    response.error?.Message ||
-                    response.error?.error_description ||
-                    response.message ||
-                    response;
-    }
-    return new HttpErrorResponse({
-        status: err.status,
-        statusText: err.statusText,
-        error: err,
-    });
-}
-/** ==============================
- *  Error Handling (DI-Safe Version)
- *  ============================== */
-function handleErrorByStatusCode(event, req, next, deps, clientId, urlConfig, currentAppStorageKey) {
-    const { login } = deps;
-    alert('testValue1.1 ' + JSON.stringify(event));
-    // const { spinner, plaToast, state, login } = deps;
-    if (shouldSkipAuthHandling(event)) {
-        //    isTokenExpire: boolean,
-        // urlLogin: string,
-        // currentAppStorageKey: string,
-        // errorMessage?: string
-        showModalError(false, event.message, urlConfig.uamLoginURL, currentAppStorageKey);
-        return throwError(() => getError(event));
-    }
-    return handleAuthError(event, req, next, clientId, login, urlConfig, currentAppStorageKey);
-}
-function shouldSkipAuthHandling(event) {
-    return isNetworkError(event) || isStaticResourceError(event.url);
-}
-function isNetworkError(event) {
-    return event?.status === 0 || event.statusText === 'Unknown Error';
-}
-function isStaticResourceError(url) {
-    if (url) {
-        return url.includes('.json') || url.includes('.svg');
-    }
-    return false;
-}
-function handleAuthError(event, req, next, clientId, loginService, urlConfig, currentAppStorageKey) {
-    const errorCode = event?.error?.errorCode;
-    if (errorCode === AUTH_ERROR_CODE.TOKEN_EXPIRED) {
-        // Remark: Try to refresh token once
-        return attemptTokenRefresh(req, next, clientId, loginService, urlConfig, currentAppStorageKey);
-    }
-    else {
-        // Remark: Check Auth Error or other error
-        return handleAuthenticationFailure(event, errorCode, urlConfig.uamLoginURL, currentAppStorageKey);
-    }
-}
-function handleAuthenticationFailure(event, errorCode, urlLogin, currentAppStorageKey) {
-    const needsReauth = requiresReauthentication(errorCode);
-    if (needsReauth) {
-        // Remark: Check to show Expired Modal that redirect to UAM login or other error modal.
-        showModalError(true, undefined, urlLogin, currentAppStorageKey);
-    }
-    else {
-        showModalError(false, event.message, urlLogin, currentAppStorageKey);
-    }
-    return throwError(() => getError(event));
-}
-function requiresReauthentication(errorCode) {
-    const reauthErrorCodes = new Set([
+/**
+ * Processes HTTP errors and determines appropriate handling
+ */
+class HttpErrorHandler {
+    // private spinner = inject(NgxSpinnerService);
+    errorModal = inject(ErrorModalService);
+    authState = inject(AuthStateService);
+    REAUTH_ERROR_CODES = new Set([
         AUTH_ERROR_CODE.INTERNAL_ERROR,
         AUTH_ERROR_CODE.TOKEN_INVALID,
         AUTH_ERROR_CODE.AUDIENCE_MISSING,
@@ -1300,78 +1353,181 @@ function requiresReauthentication(errorCode) {
         AUTH_ERROR_CODE.SSO_SESSION_EXPIRED,
         AUTH_ERROR_CODE.REFRESH_TOKEN_INVALID,
         AUTH_ERROR_CODE.REFRESH_TOKEN_EXPIRED,
+        AUTH_ERROR_CODE.APPLICATION_TIMEOUT,
     ]);
-    return reauthErrorCodes.has(errorCode);
+    processError(error) {
+        // this.spinner.hide();
+        const errorCode = error?.error?.errorCode;
+        const isTokenExpired = errorCode === AUTH_ERROR_CODE.TOKEN_EXPIRED;
+        const requiresReauth = this.requiresReauthentication(errorCode);
+        const processed = {
+            status: error.status,
+            statusText: error.statusText,
+            message: this.extractErrorMessage(error),
+            shouldRetry: isTokenExpired,
+            requiresReauth,
+        };
+        // Add ModelState for 422 errors
+        if (error.status === 422 && error.error?.ModelState) {
+            processed.ModelState = error.error.ModelState;
+            processed.message = this.format422Message(error.error.ModelState);
+        }
+        return processed;
+    }
+    shouldSkipAuthHandling(error) {
+        const isStaticResourceError = error.url
+            ? this.isStaticResourceError(error.url)
+            : false;
+        return this.isNetworkError(error) || isStaticResourceError;
+    }
+    handleProcessedError(processedError, uamLoginURL) {
+        if (processedError.requiresReauth) {
+            this.errorModal.showSessionExpired(uamLoginURL);
+        }
+        else if (processedError.message) {
+            this.errorModal.showError(processedError.message);
+        }
+    }
+    extractErrorMessage(error) {
+        if (error.status === 0) {
+            return 'Network Error: Unable to connect to the server.';
+        }
+        return (error.error?.message ||
+            error.error?.Message ||
+            error.error?.error_description ||
+            error.message ||
+            'An unexpected error occurred.');
+    }
+    format422Message(modelState) {
+        return Object.keys(modelState)
+            .map((key) => `<li>${modelState[key]}</li>`)
+            .join('');
+    }
+    requiresReauthentication(errorCode) {
+        return this.REAUTH_ERROR_CODES.has(errorCode);
+    }
+    isNetworkError(error) {
+        return error?.status === 0 || error.statusText === 'Unknown Error';
+    }
+    isStaticResourceError(url) {
+        return url?.includes('.json') || url?.includes('.svg');
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: HttpErrorHandler, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: HttpErrorHandler, providedIn: 'root' });
 }
-/** ==============================
- *  Refresh Token
- *  ============================== */
-function attemptTokenRefresh(req, next, clientId, loginService, urlConfig, currentAppStorageKey) {
-    return handleTokenRefresh(req, next, clientId, () => loginService.refreshToken(urlConfig.uamBaseApiUrl, clientId).pipe(catchError((err) => {
-        showModalError(true, undefined, urlConfig.uamLoginURL, currentAppStorageKey);
-        return throwError(() => getError(err));
-    })), urlConfig.uamLoginURL, currentAppStorageKey);
-}
-function handleTokenRefresh(req, next, clientId, refreshAccessToken, urlLogin, currentAppStorageKey) {
-    if (refreshTokenInProgress) {
-        // Remark: For the second attempt
-        // if Refresh Token are expired too, Expired modal must be displayed to redirect user to the UAM login page.
-        return refreshTokenSubject.pipe(filter((result) => result !== null), take(1), switchMap(() => next(addAuthenticationToken(req, clientId))), catchError((err) => {
-            showModalError(true, undefined, urlLogin, currentAppStorageKey);
-            return throwError(() => getError(err));
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: HttpErrorHandler, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: 'root',
+                }]
+        }] });
+
+/**
+ * Handles token refresh logic with queueing for concurrent requests
+ */
+class TokenRefreshService {
+    loginService = inject(LoginService);
+    authState = inject(AuthStateService);
+    errorModal = inject(ErrorModalService);
+    refreshAndRetry(req, next, urlConfig, clientId) {
+        if (this.authState.isRefreshing) {
+            // Wait for ongoing refresh to complete, then retry request
+            return this.authState.waitForRefresh().pipe(switchMap(() => next(req)), catchError((err) => {
+                this.errorModal.showSessionExpired(urlConfig.uamLoginURL);
+                return throwError(() => err);
+            }));
+        }
+        // Start new refresh process
+        return this.performRefresh(req, next, urlConfig, clientId);
+    }
+    performRefresh(req, next, urlConfig, clientId) {
+        this.authState.startRefresh();
+        return this.loginService
+            .refreshToken(urlConfig.uamBaseApiUrl, clientId)
+            .pipe(switchMap((response) => {
+            this.authState.completeRefresh(response);
+            return next(req);
+        }), catchError((err) => {
+            this.authState.failRefresh();
+            this.errorModal.showSessionExpired(urlConfig.uamLoginURL);
+            return throwError(() => err);
         }));
     }
-    else {
-        // Remark: For the first attempt(refreshTokenInProgress = false at initialize)
-        // Call Refresh Token API to extend Access Token's time.
-        refreshTokenInProgress = true;
-        refreshTokenSubject.next(null);
-        return refreshAccessToken().pipe(switchMap((response) => {
-            // refreshTokenSubject will be use at authGuard.
-            refreshTokenSubject.next(response);
-            return next(addAuthenticationToken(req, clientId));
-        }), catchError((err) => {
-            // return Empty then try second attempt before display the Expired Modal.
-            console.error(err);
-            return throwError(() => getError(err));
-        }), finalize(() => (refreshTokenInProgress = false)));
-    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: TokenRefreshService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: TokenRefreshService, providedIn: 'root' });
 }
-function addAuthenticationToken(request, clientId) {
-    // Remark: addtional Headers including Authorization-Type, JWT, and X-UserType for now.
-    let headers = request.headers
-        .set('Authorization-Type', 'JWT')
-        .set('X-ClientId', clientId);
-    const userType = localStorage.getItem('userType');
-    if (userType)
-        headers = headers.set('X-UserType', userType);
-    const sessionId = localStorage.getItem('session_id');
-    if (sessionId)
-        headers = headers.set('X-Sso-Session', sessionId);
-    // Remark: Don't forget to make withCredentials: true to let browser attach crediential to a request.
-    return request.clone({ headers, withCredentials: true });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: TokenRefreshService, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: 'root',
+                }]
+        }] });
+
+/**
+ * HTTP Interceptor for authentication and error handling
+ *
+ * Responsibilities:
+ * - Add authentication headers to all requests
+ * - Handle HTTP errors
+ * - Trigger token refresh when needed
+ * - Display appropriate error messages
+ * - Cancel pending requests when session is invalidated (except whitelisted endpoints)
+ */
+/**
+ * Check if the endpoint should be allowed even when session is invalidated
+ */
+function isWhitelistedEndpoint(url) {
+    // TO DO: Retrieve whitelist from argument.
+    const whitelistedEndpoints = [
+        '/login',
+        '/api/auth/logout',
+        '/api/logout',
+        // Add other endpoints that should always be allowed
+    ];
+    return whitelistedEndpoints.some((endpoint) => url.includes(endpoint));
 }
-/** ==============================
- *  Final Interceptor
- *  ============================== */
-function addHeaderInterceptor(config) {
+function authInterceptor(config) {
     return (req, next) => {
-        // ✅ inject once at root, then pass down (keeps DI context valid)
-        const deps = {
-            // spinner: inject(NgxSpinnerService),
-            // plaToast: inject(PlaToastService),
-            // state: inject(StateManagementService),
-            login: inject(LoginService),
-        };
-        // Remark: Every request must be attach additional Headers.
-        const authReq = addAuthenticationToken(req, config.clientId);
-        return next(authReq).pipe(catchError((event) => handleErrorByStatusCode(event, req, next, deps, config.clientId, config.urlConfig, config.currentAppStorageKey)));
+        const authHeaderService = inject(AuthHeaderService);
+        const httpErrorHandler = inject(HttpErrorHandler);
+        const tokenRefreshService = inject(TokenRefreshService);
+        const authState = inject(AuthStateService);
+        // Whitelist: Allow these endpoints even when session is invalidated
+        const isWhitelisted = isWhitelistedEndpoint(req.url);
+        // Stop request if session has been invalidated (unless whitelisted)
+        if (authState.isSessionInvalidated && !isWhitelisted) {
+            return throwError(() => new Error('Session invalidated'));
+        }
+        // Add authentication headers to request
+        const authReq = authHeaderService.addAuthHeaders(req, config.environment);
+        return next(authReq).pipe(catchError((error) => {
+            // Skip auth handling for network errors and static resources
+            if (httpErrorHandler.shouldSkipAuthHandling(error)) {
+                httpErrorHandler.handleProcessedError({
+                    status: error.status,
+                    statusText: error.statusText,
+                    message: error.message,
+                    shouldRetry: false,
+                    requiresReauth: false,
+                }, config.urlConfig.uamLoginURL);
+                return throwError(() => error);
+            }
+            // Process the error
+            const processedError = httpErrorHandler.processError(error);
+            // If token expired, attempt refresh and retry
+            if (processedError.shouldRetry) {
+                return tokenRefreshService.refreshAndRetry(authReq, next, config.urlConfig, config.environment.clientId);
+            }
+            // Handle other errors (show modal if needed, invalidate session if reauth required)
+            httpErrorHandler.handleProcessedError(processedError, config.urlConfig.uamLoginURL);
+            return throwError(() => error);
+        }));
     };
 }
 
 const AUTH_INTERCEPTOR_PROVIDER = {
     provide: HTTP_INTERCEPTORS,
-    useValue: addHeaderInterceptor,
+    useValue: authInterceptor,
     multi: true,
 };
 
@@ -1383,5 +1539,5 @@ const AUTH_INTERCEPTOR_PROVIDER = {
  * Generated bundle index. Do not edit.
  */
 
-export { AUTH_INTERCEPTOR_PROVIDER, CharCountDirective, LoginService, OverlayTextDirective, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, addHeaderInterceptor, messageModels };
+export { AUTH_INTERCEPTOR_PROVIDER, CharCountDirective, LoginService, OverlayTextDirective, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, authInterceptor, messageModels };
 //# sourceMappingURL=pla-shared-lib.mjs.map
