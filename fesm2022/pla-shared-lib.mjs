@@ -47,8 +47,8 @@ import { StepperModule } from 'primeng/stepper';
 import { StepsModule } from 'primeng/steps';
 import * as i1$2 from '@angular/common/http';
 import { HttpHeaders, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { filter, take, switchMap, catchError as catchError$1 } from 'rxjs/operators';
 import Swal from 'sweetalert2';
+import { filter, take, switchMap, catchError as catchError$1 } from 'rxjs/operators';
 
 class PlaSharedLibService {
     constructor() { }
@@ -1143,43 +1143,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 }]
         }], ctorParameters: () => [{ type: i1$2.HttpClient }] });
 
-/**
- * Manages authentication headers for HTTP requests
- */
-class AuthHeaderService {
-    addAuthHeaders(request, envName, clientId, authorizationType) {
-        let headers = new HttpHeaders()
-            .set('Authorization-Type', authorizationType)
-            .set('X-ClientId', clientId);
-        const userType = this.getUserType();
-        if (userType) {
-            headers = headers.set('X-UserType', userType);
-        }
-        const sessionId = this.getSessionId(envName);
-        if (sessionId) {
-            headers = headers.set('X-Sso-Session', sessionId);
-        }
-        return request.clone({
-            headers,
-            withCredentials: true,
-        });
-    }
-    getUserType() {
-        return localStorage.getItem('userType');
-    }
-    getSessionId(envName) {
-        return localStorage.getItem(`${envName}_session_id`);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthHeaderService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthHeaderService, providedIn: 'root' });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthHeaderService, decorators: [{
-            type: Injectable,
-            args: [{
-                    providedIn: 'root',
-                }]
-        }] });
-
 class MSG_MODAL {
     static TITLE_INFORMATION = 'Information';
     static TITLE_SUCCESS = 'Success';
@@ -1353,6 +1316,43 @@ class ErrorModalService {
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: ErrorModalService, providedIn: 'root' });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: ErrorModalService, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: 'root',
+                }]
+        }] });
+
+/**
+ * Manages authentication headers for HTTP requests
+ */
+class AuthHeaderService {
+    addAuthHeaders(request, envName, clientId, authorizationType) {
+        let headers = new HttpHeaders()
+            .set('Authorization-Type', authorizationType)
+            .set('X-ClientId', clientId);
+        const userType = this.getUserType();
+        if (userType) {
+            headers = headers.set('X-UserType', userType);
+        }
+        const sessionId = this.getSessionId(envName);
+        if (sessionId) {
+            headers = headers.set('X-Sso-Session', sessionId);
+        }
+        return request.clone({
+            headers,
+            withCredentials: true,
+        });
+    }
+    getUserType() {
+        return localStorage.getItem('userType');
+    }
+    getSessionId(envName) {
+        return localStorage.getItem(`${envName}_session_id`);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthHeaderService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthHeaderService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthHeaderService, decorators: [{
             type: Injectable,
             args: [{
                     providedIn: 'root',
@@ -1572,5 +1572,5 @@ const AUTH_INTERCEPTOR_PROVIDER = {
  * Generated bundle index. Do not edit.
  */
 
-export { AUTH_INTERCEPTOR_PROVIDER, CharCountDirective, LoginService, OverlayTextDirective, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, UserProfileService, authInterceptor, messageModels };
+export { AUTH_INTERCEPTOR_PROVIDER, CharCountDirective, ErrorModalService, LoginService, OverlayTextDirective, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, UserProfileService, authInterceptor, messageModels };
 //# sourceMappingURL=pla-shared-lib.mjs.map

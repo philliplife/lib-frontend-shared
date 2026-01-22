@@ -29,5 +29,6 @@ export * from './models/authorization.interface';
 export * from './models/user-profile.interface';
 export * from './services/login.service';
 export * from './services/user-profile.service';
+export * from './services/interceptor2/interceptor-services/error-modal.service';
 export * from './services/interceptor2/auth.interceptor';
 export * from './services/interceptor2/webapi.interceptor.provider';
