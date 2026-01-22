@@ -17,7 +17,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import * as i4 from 'primeng/iconfield';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
-import { fromEvent, interval, merge, startWith, map, distinctUntilChanged, BehaviorSubject, tap, throwError } from 'rxjs';
+import { fromEvent, interval, merge, startWith, map, distinctUntilChanged, BehaviorSubject, tap, catchError, throwError } from 'rxjs';
 import * as i4$1 from 'primeng/textarea';
 import { TextareaModule } from 'primeng/textarea';
 import * as i5$1 from 'primeng/inputnumber';
@@ -47,7 +47,7 @@ import { StepperModule } from 'primeng/stepper';
 import { StepsModule } from 'primeng/steps';
 import * as i1$2 from '@angular/common/http';
 import { HttpHeaders, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { filter, take, switchMap, catchError } from 'rxjs/operators';
+import { filter, take, switchMap, catchError as catchError$1 } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 
 class PlaSharedLibService {
@@ -1090,10 +1090,17 @@ class LoginService {
         };
         return this.http.post(url, payload, _httpOptions);
     }
-    verifyToken(uamBaseApiUrl) {
+    verifyToken(uamBaseApiUrl, clientId) {
         return this.http
-            .get(uamBaseApiUrl + `v1/appauth/app-token`)
-            .pipe(tap((res) => this.isLoggedInSubject.next(res.data.result.isValid)));
+            .post(uamBaseApiUrl + `v1/appauth/app-token`, {
+            appId: clientId,
+        })
+            .pipe(tap((res) => {
+            return this.isLoggedInSubject.next(res.data.result.isValid);
+        }), catchError((err) => {
+            console.log(err);
+            return throwError(() => err);
+        }));
     }
     checkAuth() {
         return this.isLoggedInSubject.getValue();
@@ -1458,7 +1465,7 @@ class TokenRefreshService {
     refreshAndRetry(req, next, urlConfig, clientId) {
         if (this.authState.isRefreshing) {
             // Wait for ongoing refresh to complete, then retry request
-            return this.authState.waitForRefresh().pipe(switchMap(() => next(req)), catchError((err) => {
+            return this.authState.waitForRefresh().pipe(switchMap(() => next(req)), catchError$1((err) => {
                 this.errorModal.showSessionExpired(urlConfig.uamLoginURL);
                 return throwError(() => err);
             }));
@@ -1473,7 +1480,7 @@ class TokenRefreshService {
             .pipe(switchMap((response) => {
             this.authState.completeRefresh(response);
             return next(req);
-        }), catchError((err) => {
+        }), catchError$1((err) => {
             this.authState.failRefresh();
             this.errorModal.showSessionExpired(urlConfig.uamLoginURL);
             return throwError(() => err);
@@ -1526,7 +1533,7 @@ function authInterceptor(config) {
         }
         // Add authentication headers to request
         const authReq = authHeaderService.addAuthHeaders(req, config.envName, config.clientId, config.authorizationType);
-        return next(authReq).pipe(catchError((error) => {
+        return next(authReq).pipe(catchError$1((error) => {
             // Skip auth handling for network errors and static resources
             if (httpErrorHandler.shouldSkipAuthHandling(error)) {
                 httpErrorHandler.handleProcessedError({
