@@ -1,0 +1,167 @@
+$modal-border-radius: 1.25rem;
+
+.p-dialog {
+  border-radius: $modal-border-radius !important;
+  margin: 1rem !important;
+}
+
+.p-dialog-content {
+  display: flex;
+  justify-content: center;
+
+  @media screen and (max-width: 575px) {
+    padding: 0 1rem 2rem 1rem !important;
+  }
+
+  @media screen and (min-width: 576px) {
+    padding: 0 1rem 2.5rem 1rem !important;
+  }
+}
+
+.oic-dialog-add,
+.oic-dialog-list {
+  .action-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .p-dialog-header {
+    @media screen and (max-width: 575px) {
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+
+    @media screen and (min-width: 576px) {
+      padding-left: 2.5rem !important;
+      padding-right: 2.5rem !important;
+    }
+  }
+
+  .p-dialog-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+
+    @media screen and (max-width: 575px) {
+      row-gap: 1rem;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+
+    @media screen and (min-width: 576px) {
+      row-gap: 2.5rem;
+      padding-left: 2.5rem !important;
+      padding-right: 2.5rem !important;
+    }
+  }
+}
+
+.p-dialog-header {
+  .header-container {
+    display: flex;
+    min-height: 2.5rem;
+    max-width: 100%;
+    word-wrap: break-word;
+    padding: 0.5625rem 1.25rem;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.625rem;
+    flex-shrink: 0;
+    border-radius: 10px;
+    border: 1px solid #e6e6e6;
+    background: var(--color-white);
+
+    .label {
+      color: var(--color-text-1);
+      font-weight: 400;
+    }
+
+    .value {
+      color: var(--color-primary-9);
+      font-weight: 700;
+    }
+  }
+}
+
+.table-display-dialog {
+  .p-dialog-header {
+    align-items: start !important;
+    justify-content: space-between;
+
+    @media screen and (max-width: 575px) {
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+      padding-top: 1rem !important;
+    }
+
+    @media screen and (min-width: 576px) {
+      padding-left: 2.5rem !important;
+      padding-right: 2.5rem !important;
+      padding-top: 1.875rem !important;
+    }
+  }
+
+  .p-dialog-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+
+    @media screen and (max-width: 575px) {
+      row-gap: 1rem;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+
+    @media screen and (min-width: 576px) {
+      row-gap: 2.5rem;
+      padding-left: 2.5rem !important;
+      padding-right: 2.5rem !important;
+    }
+  }
+}
+
+.confirm-modal {
+  .p-dialog-header {
+    padding-bottom: 0 !important;
+  }
+}
+
+.custom-swal-popup {
+  width: 26.75rem;
+  // height: 24.725rem;
+  border-radius: 1.5625rem;
+}
+
+.custom-actions-container {
+  padding-bottom: 15px;
+
+  .btn-action-2 {
+    font-family: var(--font-family);
+    font-size: var(--font-size-5);
+    cursor: pointer;
+    width: 107px;
+    height: 50px;
+    flex-shrink: 0;
+    color: var(--color-primary-1);
+    border-radius: 0.625rem;
+    border: 2px solid rgba(0, 27, 74, 1);
+    background: #fff;
+    font-weight: 600;
+  }
+}
+
+.custom-swal-icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 6.25rem;
+  height: 6.25rem;
+  border-radius: 1.5625rem;
+  background-color: #eee;
+
+  .custom-swal-icon {
+    width: 3.75rem;
+    height: 3.75rem;
+  }
+}
