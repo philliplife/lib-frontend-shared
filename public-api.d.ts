@@ -24,6 +24,7 @@ export * from './directives/overlay-text.directive';
 export * from './lib/pla-topbar/pla-topbar.component';
 export * from './lib/pla-dialog/pla-dialog.component';
 export * from './lib/pla-stepper/pla-stepper.component';
+export * from './models/response.interface';
 export * from './models/authorization.interface';
 export * from './services/login.service';
 export * from './services/interceptor2/auth.interceptor';
