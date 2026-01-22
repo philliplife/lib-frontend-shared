@@ -9,6 +9,7 @@ export interface IUserProfile {
     manager: Manager[];
     role: string;
     groupMenus: GroupMenu[];
+    email?: string;
 }
 export interface Manager {
     userName: string;
