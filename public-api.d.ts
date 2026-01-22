@@ -26,6 +26,8 @@ export * from './lib/pla-dialog/pla-dialog.component';
 export * from './lib/pla-stepper/pla-stepper.component';
 export * from './models/response.interface';
 export * from './models/authorization.interface';
+export * from './models/user-profile.interface';
 export * from './services/login.service';
+export * from './services/user-profile.service';
 export * from './services/interceptor2/auth.interceptor';
 export * from './services/interceptor2/webapi.interceptor.provider';

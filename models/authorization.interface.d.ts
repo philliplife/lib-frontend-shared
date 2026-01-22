@@ -22,3 +22,6 @@ export interface IUrlConfig {
     uamLoginURL: string;
     uamBaseApiUrl: string;
 }
+export interface IFormLogout {
+    systemId: string;
+}

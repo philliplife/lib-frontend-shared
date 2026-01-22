@@ -1098,10 +1098,38 @@ class LoginService {
     checkAuth() {
         return this.isLoggedInSubject.getValue();
     }
+    logout(body, uamBaseApiUrl) {
+        localStorage.setItem('logout-event', Date.now().toString());
+        return this.http.post(uamBaseApiUrl + `v1/appauth/logout`, body);
+    }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, deps: [{ token: i1$2.HttpClient }], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, providedIn: 'root' });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: 'root',
+                }]
+        }], ctorParameters: () => [{ type: i1$2.HttpClient }] });
+
+class UserProfileService {
+    http;
+    isLoggedInSubject = new BehaviorSubject(false);
+    isLoggedIn$ = this.isLoggedInSubject.asObservable();
+    constructor(http) {
+        this.http = http;
+    }
+    getProfileUam(userName, clientId, uamBaseApiUrl) {
+        const data = {
+            userName: userName,
+            systemId: clientId,
+        };
+        return this.http.get(uamBaseApiUrl + 'v2/users/get-user-byUsername', { params: data });
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: UserProfileService, deps: [{ token: i1$2.HttpClient }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: UserProfileService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: UserProfileService, decorators: [{
             type: Injectable,
             args: [{
                     providedIn: 'root',
@@ -1537,5 +1565,5 @@ const AUTH_INTERCEPTOR_PROVIDER = {
  * Generated bundle index. Do not edit.
  */
 
-export { AUTH_INTERCEPTOR_PROVIDER, CharCountDirective, LoginService, OverlayTextDirective, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, authInterceptor, messageModels };
+export { AUTH_INTERCEPTOR_PROVIDER, CharCountDirective, LoginService, OverlayTextDirective, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, UserProfileService, authInterceptor, messageModels };
 //# sourceMappingURL=pla-shared-lib.mjs.map
