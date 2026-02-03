@@ -9,7 +9,7 @@ export declare class TokenRefreshService {
     private readonly loginService;
     private readonly authState;
     private readonly errorModal;
-    refreshAndRetry(req: HttpRequest<unknown>, next: HttpHandlerFn, urlConfig: IUrlConfig, clientId: string): Observable<HttpEvent<unknown>>;
+    refreshAndRetry(req: HttpRequest<unknown>, next: HttpHandlerFn, urlConfig: IUrlConfig, clientId: string, applilcationStorageKey: string): Observable<HttpEvent<unknown>>;
     private performRefresh;
     static ɵfac: i0.ɵɵFactoryDeclaration<TokenRefreshService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<TokenRefreshService>;

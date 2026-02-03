@@ -16,7 +16,7 @@ export declare class HttpErrorHandler {
     private readonly REAUTH_ERROR_CODES;
     processError(error: HttpErrorResponse): ProcessedError;
     shouldSkipAuthHandling(error: HttpErrorResponse): boolean;
-    handleProcessedError(processedError: ProcessedError, uamLoginURL: string): void;
+    handleProcessedError(processedError: ProcessedError, uamLoginURL: string, applilcationStorageKey: string): void;
     private extractErrorMessage;
     private format422Message;
     private requiresReauthentication;

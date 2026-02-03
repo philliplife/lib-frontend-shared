@@ -5,7 +5,7 @@ import * as i0 from "@angular/core";
 export declare class ErrorModalService {
     private sessionExpiredShown;
     private readonly authState;
-    showSessionExpired(uamLoginURL: string): void;
+    showSessionExpired(uamLoginURL: string, applilcationStorageKey: string): void;
     showError(message: string): void;
     private buildModalHtml;
     private createDelay;
