@@ -1,3 +1,4 @@
+import { Observable } from "rxjs";
 export declare class TYPE {
     static readonly TEXT = "text";
     static readonly NUMBER = "number";
@@ -24,7 +25,7 @@ export interface ICommonData {
     disabled?: boolean;
 }
 export interface IFormControlDynamic {
-    type?: 'text' | 'number' | 'decimal' | 'textarea' | 'dropdown' | 'empty' | 'select' | 'datepicker' | 'toggleswitch' | 'radio' | 'multiselect' | 'checkbox' | 'input-group' | 'select-button';
+    type?: 'text' | 'number' | 'decimal' | 'textarea' | 'dropdown' | 'empty' | 'select' | 'select-obs' | 'datepicker' | 'toggleswitch' | 'radio' | 'multiselect' | 'checkbox' | 'input-group' | 'select-button';
     value?: any;
     formControlName?: string;
     subFormControlName?: string;
@@ -42,6 +43,7 @@ export interface IFormControlDynamic {
     loading?: boolean;
     dataLabel?: string;
     data?: ICommonData[];
+    data$?: Observable<ICommonData[]>;
     optionLabel?: any;
     optionValue?: any;
     filter?: boolean;

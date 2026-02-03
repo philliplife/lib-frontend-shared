@@ -13,6 +13,7 @@ export * from './lib/pla-dynamic-form/pla-dynamic-form.component';
 export * from './lib/pla-form-input-text/pla-form-input-text.component';
 export * from './lib/pla-form-input-number/pla-form-input-number.component';
 export * from './lib/pla-form-select/pla-form-select.component';
+export * from './lib/pla-form-select-obs/pla-form-select-obs.component';
 export * from './lib/pla-form-text-area/pla-form-text-area.component';
 export * from './lib/pla-form-date-picker/pla-form-date-picker.component';
 export * from './lib/pla-form-toggle-switch/pla-form-toggle-switch.component';
