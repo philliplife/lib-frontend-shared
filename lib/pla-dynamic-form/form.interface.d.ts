@@ -8,6 +8,7 @@ export declare class TYPE {
     static readonly TEXTAREA = "textarea";
     static readonly DROPDOWN = "dropdown";
     static readonly SELECT = "select";
+    static readonly SELECT_OBS = "select-obs";
     static readonly RADIO = "radio";
     static readonly MULTISELECT = "multiselect";
     static readonly CHECKBOX = "checkbox";

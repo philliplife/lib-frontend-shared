@@ -328,6 +328,7 @@ class TYPE {
     static TEXTAREA = 'textarea';
     static DROPDOWN = 'dropdown';
     static SELECT = 'select';
+    static SELECT_OBS = 'select-obs';
     static RADIO = 'radio';
     static MULTISELECT = 'multiselect';
     static CHECKBOX = 'checkbox';
