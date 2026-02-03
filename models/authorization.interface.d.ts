@@ -58,7 +58,5 @@ export interface IUrlConfig {
     uamBaseApiUrl: string;
 }
 export interface IFormLogout {
-    Username: string;
-    ClientId: string;
-    RefreshToken?: string;
+    systemId: string;
 }
