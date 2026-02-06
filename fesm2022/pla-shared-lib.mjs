@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Injectable, Component, Input, EventEmitter, Output, forwardRef, Directive, Pipe, inject } from '@angular/core';
+import { Injectable, Component, Input, EventEmitter, Output, forwardRef, Directive, Pipe, inject, TemplateRef, ViewContainerRef } from '@angular/core';
 import * as i1$1 from '@angular/common';
 import { CommonModule } from '@angular/common';
 import * as i1 from 'primeng/button';
@@ -38,6 +38,7 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import * as i4$5 from 'primeng/api';
 import * as i3$5 from 'primeng/divider';
 import { DividerModule } from 'primeng/divider';
+import { Router } from '@angular/router';
 import * as i2$1 from 'primeng/dialog';
 import { DialogModule } from 'primeng/dialog';
 import * as i3$6 from 'angular-svg-icon';
@@ -992,6 +993,149 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Input
             }] } });
 
+class MenuService {
+    async getGroupMenu(targetPath, storage) {
+        const prefixPath = targetPath.split('gio');
+        const currentPath = prefixPath[0].split('/');
+        const currentUrl = currentPath[1].toLowerCase();
+        const dataState = await this.fetchData(storage);
+        const groupMenus = dataState.user?.groupMenus;
+        if (!groupMenus)
+            return null;
+        const findMenuPath = (menus, url, path = []) => {
+            for (const menu of menus) {
+                const parsedUrl = (menu.menuURL || '')
+                    .replace(/^\/+/, '')
+                    .replace(/\s+/g, '-')
+                    .toLowerCase();
+                const newPath = [...path, menu];
+                if (parsedUrl === url) {
+                    return newPath;
+                }
+                if (menu.groupMenus?.length) {
+                    const found = findMenuPath(menu.groupMenus, url, newPath);
+                    if (found)
+                        return found;
+                }
+            }
+            return null;
+        };
+        const fullPath = findMenuPath(groupMenus, currentUrl);
+        if (!fullPath)
+            return null;
+        const targetMenu = fullPath[fullPath.length - 1];
+        return { targetMenu, path: fullPath };
+    }
+    fetchData(storage) {
+        try {
+            const sessionData = localStorage.getItem(storage);
+            const data = JSON.parse(sessionData || '{}');
+            return data;
+        }
+        catch (error) {
+            return {};
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: MenuService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: MenuService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: MenuService, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: 'root',
+                }]
+        }] });
+
+class PermissionService {
+    menuService = inject(MenuService);
+    router = inject(Router);
+    async hasPermission(permission, storage) {
+        const currentUrl = this.router.url;
+        const targetMenu = await this.menuService.getGroupMenu(currentUrl, storage);
+        const grantedPermission = new Set((targetMenu?.targetMenu?.permission || '[]')
+            .replace(/^\[|\]$/g, '')
+            .split(',')
+            .map((item) => item.trim()));
+        return grantedPermission.has(permission);
+    }
+    async hasMenuUAM(url, storage) {
+        const targetMenu = await this.menuService.getGroupMenu(url, storage);
+        return targetMenu;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PermissionService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PermissionService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PermissionService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: 'root' }]
+        }] });
+
+// has-permission.directive.ts
+class HasPermissionDirective {
+    requiredPermission;
+    storage;
+    templateRef = inject((TemplateRef));
+    viewContainer = inject(ViewContainerRef);
+    permissionService = inject(PermissionService);
+    async ngOnInit() {
+        if (await this.permissionService.hasPermission(this.requiredPermission, this.storage)) {
+            this.viewContainer.createEmbeddedView(this.templateRef);
+        }
+        else {
+            this.viewContainer.clear();
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: HasPermissionDirective, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.2.14", type: HasPermissionDirective, isStandalone: true, selector: "[appHasPermission]", inputs: { requiredPermission: ["appHasPermission", "requiredPermission"], storage: ["appHasPermissionStorage", "storage"] }, ngImport: i0 });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: HasPermissionDirective, decorators: [{
+            type: Directive,
+            args: [{
+                    selector: '[appHasPermission]',
+                }]
+        }], propDecorators: { requiredPermission: [{
+                type: Input,
+                args: ['appHasPermission']
+            }], storage: [{
+                type: Input,
+                args: ['appHasPermissionStorage']
+            }] } });
+
+class HasMenuUAMDirective {
+    menuUrl;
+    storage;
+    templateRef = inject((TemplateRef));
+    viewContainer = inject(ViewContainerRef);
+    permissionService = inject(PermissionService);
+    async ngOnInit() {
+        if (this.menuUrl) {
+            if (await this.permissionService.hasMenuUAM(this.menuUrl, this.storage)) {
+                this.viewContainer.createEmbeddedView(this.templateRef);
+            }
+            else {
+                this.viewContainer.clear();
+            }
+        }
+        else {
+            this.viewContainer.createEmbeddedView(this.templateRef);
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: HasMenuUAMDirective, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "19.2.14", type: HasMenuUAMDirective, isStandalone: true, selector: "[appHasMenuUAM]", inputs: { menuUrl: ["appHasMenuUAM", "menuUrl"], storage: ["appHasMenuUAMStorage", "storage"] }, ngImport: i0 });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: HasMenuUAMDirective, decorators: [{
+            type: Directive,
+            args: [{
+                    selector: '[appHasMenuUAM]',
+                }]
+        }], propDecorators: { menuUrl: [{
+                type: Input,
+                args: ['appHasMenuUAM']
+            }], storage: [{
+                type: Input,
+                args: ['appHasMenuUAMStorage']
+            }] } });
+
 class PlaTopbar {
     appName = '';
     firstName = '';
@@ -1173,6 +1317,79 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                     providedIn: 'root',
                 }]
         }], ctorParameters: () => [{ type: i1$2.HttpClient }] });
+
+class AccessMenuGuard {
+    menuService = inject(MenuService);
+    router = inject(Router);
+    async canActivate(route, state) {
+        const currentUrl = state.url;
+        const storage = route.data['storage'];
+        const fallbackUrl = route.data['fallbackUrl'];
+        try {
+            const groupMenu = await this.menuService.getGroupMenu(currentUrl, storage);
+            if (!groupMenu || !groupMenu.targetMenu) {
+                return await this.handleAccessDenied(fallbackUrl, currentUrl, storage, route);
+            }
+            const targetMenuUrl = groupMenu.targetMenu.menuURL;
+            // Check if targetMenuUrl exists in the current URL
+            // This handles cases with parameters e.g. /product-general/123 contains /product-general
+            if (targetMenuUrl && currentUrl.includes(targetMenuUrl.toLowerCase())) {
+                return true;
+            }
+            return await this.handleAccessDenied(fallbackUrl, currentUrl, storage, route);
+        }
+        catch {
+            // console.error('AccessMenuGuard Error:', error);
+            return await this.handleAccessDenied(fallbackUrl, currentUrl, storage, route);
+        }
+    }
+    async handleAccessDenied(fallbackUrl, currentUrl, storage, route) {
+        if (fallbackUrl) {
+            // 1. Prevent infinite redirect loop to the same URL
+            if (fallbackUrl === currentUrl || currentUrl.includes(fallbackUrl)) {
+                console.warn('AccessMenuGuard: Prevented redirect loop to same URL', fallbackUrl);
+                return false;
+            }
+            // 2. Prevent Circular Redirects (A -> B -> A)
+            // Check if we have already been redirected by this guard
+            const isRedirected = route?.queryParams['authRedirect'];
+            if (isRedirected) {
+                console.warn('AccessMenuGuard: Prevented circular redirect loop', fallbackUrl);
+                return false;
+            }
+            // 3. Smart Redirect
+            try {
+                // Check if user has explicit permission for fallbackUrl
+                const fallbackMenu = await this.menuService.getGroupMenu(fallbackUrl, storage);
+                if (fallbackMenu && fallbackMenu.targetMenu) {
+                    // User definitely has permission. Redirect cleanly.
+                    return this.router.createUrlTree([fallbackUrl]);
+                }
+            }
+            catch {
+                // Ignore error, proceed to fallback attempt
+            }
+            // If we don't find it in menu, it might be:
+            // a) A public page (Safe to redirect)
+            // b) A forbidden page (Target guard will block it)
+            // We redirect with a flag so if the target guard blocks it and tries to bounce back,
+            // we catch it in step #2.
+            return this.router.createUrlTree([fallbackUrl], {
+                queryParams: { authRedirect: true },
+                queryParamsHandling: 'merge',
+            });
+        }
+        return false;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AccessMenuGuard, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AccessMenuGuard, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AccessMenuGuard, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: 'root',
+                }]
+        }] });
 
 class MSG_MODAL {
     static TITLE_INFORMATION = 'Information';
@@ -1605,5 +1822,5 @@ const AUTH_INTERCEPTOR_PROVIDER = {
  * Generated bundle index. Do not edit.
  */
 
-export { AUTH_INTERCEPTOR_PROVIDER, CharCountDirective, ErrorModalService, LoginService, OverlayTextDirective, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormSelectObsComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, UserProfileService, authInterceptor, messageModels };
+export { AUTH_INTERCEPTOR_PROVIDER, AccessMenuGuard, CharCountDirective, ErrorModalService, HasMenuUAMDirective, HasPermissionDirective, LoginService, MenuService, OverlayTextDirective, PermissionService, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormSelectObsComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, UserProfileService, authInterceptor, messageModels };
 //# sourceMappingURL=pla-shared-lib.mjs.map

@@ -30,3 +30,7 @@ export interface GroupMenu {
     menuURL: string | null;
     groupMenus: GroupMenu[];
 }
+export interface IMenu {
+    targetMenu: GroupMenu;
+    path: GroupMenu[];
+}
