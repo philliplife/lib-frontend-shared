@@ -48,8 +48,8 @@ import { StepperModule } from 'primeng/stepper';
 import { StepsModule } from 'primeng/steps';
 import * as i1$2 from '@angular/common/http';
 import { HttpHeaders, HTTP_INTERCEPTORS } from '@angular/common/http';
-import Swal from 'sweetalert2';
 import { filter, take, switchMap, catchError as catchError$1 } from 'rxjs/operators';
+import Swal from 'sweetalert2';
 
 class PlaSharedLibService {
     constructor() { }
@@ -1256,12 +1256,64 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Output
             }] } });
 
+/**
+ * Manages token refresh state and session invalidation to prevent concurrent refresh requests
+ * and stop requests when session becomes invalid
+ */
+class AuthStateService {
+    refreshInProgress$ = new BehaviorSubject(false);
+    refreshResult$ = new BehaviorSubject(null);
+    sessionInvalidated$ = new BehaviorSubject(false);
+    get isRefreshing() {
+        return this.refreshInProgress$.value;
+    }
+    get isSessionInvalidated() {
+        return this.sessionInvalidated$.value;
+    }
+    startRefresh() {
+        this.refreshInProgress$.next(true);
+        this.refreshResult$.next(null);
+    }
+    completeRefresh(result) {
+        this.refreshResult$.next(result);
+        this.refreshInProgress$.next(false);
+    }
+    failRefresh() {
+        this.refreshResult$.next(null);
+        this.refreshInProgress$.next(false);
+    }
+    waitForRefresh() {
+        return this.refreshResult$.pipe(filter((result) => result !== null), take(1));
+    }
+    validateSession() {
+        this.sessionInvalidated$.next(false);
+    }
+    invalidateSession() {
+        this.sessionInvalidated$.next(true);
+    }
+    reset() {
+        this.refreshInProgress$.next(false);
+        this.refreshResult$.next(null);
+        this.sessionInvalidated$.next(false);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthStateService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthStateService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthStateService, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: 'root',
+                }]
+        }] });
+
 class LoginService {
     http;
+    authState;
     isLoggedInSubject = new BehaviorSubject(false);
     isLoggedIn$ = this.isLoggedInSubject.asObservable();
-    constructor(http) {
+    constructor(http, authState) {
         this.http = http;
+        this.authState = authState;
     }
     refreshToken(uamBaseApiUrl, clientId) {
         const url = uamBaseApiUrl + 'v1/appauth/refresh-token';
@@ -1282,6 +1334,7 @@ class LoginService {
             appId: clientId,
         })
             .pipe(tap((res) => {
+            this.authState.validateSession();
             return this.isLoggedInSubject.next(res.data.result.isValid);
         }), catchError((err) => {
             console.log(err);
@@ -1295,7 +1348,7 @@ class LoginService {
         localStorage.setItem('logout-event', Date.now().toString());
         return this.http.post(uamBaseApiUrl + `v1/appauth/logout`, body);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, deps: [{ token: i1$2.HttpClient }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, deps: [{ token: i1$2.HttpClient }, { token: AuthStateService }], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, providedIn: 'root' });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, decorators: [{
@@ -1303,7 +1356,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
             args: [{
                     providedIn: 'root',
                 }]
-        }], ctorParameters: () => [{ type: i1$2.HttpClient }] });
+        }], ctorParameters: () => [{ type: i1$2.HttpClient }, { type: AuthStateService }] });
 
 class UserProfileService {
     http;
@@ -1435,53 +1488,6 @@ class MSG_MODAL {
     static MSG_INVALID_DUPLICATED_SYSTEM = 'Duplicate system detected. Please check and select a different system.';
     static MSG_INVALID_USER_AD = 'The user information retrieved from Active Directory is incomplete. Please update the required details in Active Directory before processing with user registration.';
 }
-
-/**
- * Manages token refresh state and session invalidation to prevent concurrent refresh requests
- * and stop requests when session becomes invalid
- */
-class AuthStateService {
-    refreshInProgress$ = new BehaviorSubject(false);
-    refreshResult$ = new BehaviorSubject(null);
-    sessionInvalidated$ = new BehaviorSubject(false);
-    get isRefreshing() {
-        return this.refreshInProgress$.value;
-    }
-    get isSessionInvalidated() {
-        return this.sessionInvalidated$.value;
-    }
-    startRefresh() {
-        this.refreshInProgress$.next(true);
-        this.refreshResult$.next(null);
-    }
-    completeRefresh(result) {
-        this.refreshResult$.next(result);
-        this.refreshInProgress$.next(false);
-    }
-    failRefresh() {
-        this.refreshResult$.next(null);
-        this.refreshInProgress$.next(false);
-    }
-    waitForRefresh() {
-        return this.refreshResult$.pipe(filter((result) => result !== null), take(1));
-    }
-    invalidateSession() {
-        this.sessionInvalidated$.next(true);
-    }
-    reset() {
-        this.refreshInProgress$.next(false);
-        this.refreshResult$.next(null);
-        this.sessionInvalidated$.next(false);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthStateService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthStateService, providedIn: 'root' });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthStateService, decorators: [{
-            type: Injectable,
-            args: [{
-                    providedIn: 'root',
-                }]
-        }] });
 
 /**
  * Handles error modal display and session management

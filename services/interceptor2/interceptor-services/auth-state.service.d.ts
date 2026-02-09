@@ -15,6 +15,7 @@ export declare class AuthStateService {
     completeRefresh(result: IResRefreshToken): void;
     failRefresh(): void;
     waitForRefresh(): Observable<IResRefreshToken>;
+    validateSession(): void;
     invalidateSession(): void;
     reset(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<AuthStateService, never>;
