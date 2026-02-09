@@ -37,4 +37,5 @@ export * from './services/menu.service';
 export * from './guards/access-menu.guard';
 export * from './services/interceptor2/interceptor-services/error-modal.service';
 export * from './services/interceptor2/auth.interceptor';
+export * from './services/interceptor2/interceptor-services/auth-state.service';
 export * from './services/interceptor2/webapi.interceptor.provider';
