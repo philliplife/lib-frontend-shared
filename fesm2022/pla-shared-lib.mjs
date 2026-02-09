@@ -1026,6 +1026,17 @@ class MenuService {
         const targetMenu = fullPath[fullPath.length - 1];
         return { targetMenu, path: fullPath };
     }
+    async getMenus(storage) {
+        const dataState = await this.fetchData(storage);
+        const flatten = (menus = []) => menus.reduce((acc, item) => {
+            if (item.menuURL)
+                acc.push(item);
+            if (item.groupMenus)
+                acc.push(...flatten(item.groupMenus));
+            return acc;
+        }, []);
+        return flatten(dataState.user?.groupMenus);
+    }
     fetchData(storage) {
         try {
             const sessionData = localStorage.getItem(storage);
@@ -1379,7 +1390,15 @@ class AccessMenuGuard {
                 queryParamsHandling: 'merge',
             });
         }
-        return false;
+        else {
+            const menus = await this.menuService.getMenus(storage);
+            const firstMenu = menus?.[0];
+            const firstMenuUrl = firstMenu?.menuURL?.toLowerCase();
+            if (firstMenuUrl) {
+                return this.router.createUrlTree([firstMenuUrl]);
+            }
+            return false;
+        }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AccessMenuGuard, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AccessMenuGuard, providedIn: 'root' });
