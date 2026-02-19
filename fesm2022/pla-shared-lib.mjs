@@ -1661,12 +1661,12 @@ class HttpErrorHandler {
         AUTH_ERROR_CODE.REFRESH_TOKEN_INVALID,
         AUTH_ERROR_CODE.REFRESH_TOKEN_EXPIRED,
         AUTH_ERROR_CODE.APPLICATION_TIMEOUT,
-        AUTH_ERROR_CODE.SSO_TOKEN_EXPIRED,
     ]);
     processError(error) {
         // this.spinner.hide();
         const errorCode = error?.error?.errorCode;
-        const isTokenExpired = errorCode === AUTH_ERROR_CODE.TOKEN_EXPIRED;
+        const isTokenExpired = errorCode === AUTH_ERROR_CODE.TOKEN_EXPIRED ||
+            errorCode === AUTH_ERROR_CODE.SSO_TOKEN_EXPIRED;
         const requiresReauth = this.requiresReauthentication(errorCode);
         const processed = {
             status: error.status,
