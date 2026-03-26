@@ -19,6 +19,7 @@ export * from './lib/pla-form-date-picker/pla-form-date-picker.component';
 export * from './lib/pla-form-toggle-switch/pla-form-toggle-switch.component';
 export * from './lib/pla-form-input-group/pla-form-input-group.component';
 export * from './lib/pla-form-input-array/pla-form-input-array.component';
+export * from './lib/pla-content-container/pla-content-container.component';
 export * from './lib/pla-table/pla-table.component';
 export * from './pipes/pla-message-mapping.pipe';
 export * from './directives/char-count.directive';
