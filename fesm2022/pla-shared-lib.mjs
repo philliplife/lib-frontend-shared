@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Injectable, Component, Input, EventEmitter, Output, forwardRef, Directive, Pipe, inject, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Injectable, Component, Input, EventEmitter, Output, forwardRef, Directive, Pipe, ViewChild, inject, TemplateRef, ViewContainerRef } from '@angular/core';
 import * as i1$1 from '@angular/common';
 import { CommonModule } from '@angular/common';
 import * as i1 from 'primeng/button';
@@ -16,8 +16,9 @@ import * as i3$4 from 'primeng/skeleton';
 import { SkeletonModule } from 'primeng/skeleton';
 import * as i4$1 from 'primeng/iconfield';
 import { IconFieldModule } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
-import { fromEvent, interval, merge, startWith, map, distinctUntilChanged, BehaviorSubject, tap, catchError, throwError } from 'rxjs';
+import * as i5$3 from 'primeng/inputicon';
+import { InputIcon, InputIconModule } from 'primeng/inputicon';
+import { fromEvent, interval, merge, startWith, map, distinctUntilChanged, Subject, debounceTime, BehaviorSubject, tap, catchError, throwError } from 'rxjs';
 import * as i4$2 from 'primeng/textarea';
 import { TextareaModule } from 'primeng/textarea';
 import * as i5$1 from 'primeng/inputnumber';
@@ -35,18 +36,25 @@ import * as i3$3 from 'primeng/toggleswitch';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { SelectButton } from 'primeng/selectbutton';
 import { ToggleButtonModule } from 'primeng/togglebutton';
-import * as i4$5 from 'primeng/api';
+import * as i2$1 from 'primeng/api';
+import { FilterMatchMode } from 'primeng/api';
 import * as i3$5 from 'primeng/divider';
 import { DividerModule } from 'primeng/divider';
+import * as i1$2 from 'primeng/table';
+import { TableModule } from 'primeng/table';
+import * as i4$5 from 'primeng/tieredmenu';
+import { TieredMenuModule } from 'primeng/tieredmenu';
+import * as i5$2 from 'primeng/tag';
+import { TagModule } from 'primeng/tag';
 import { Router } from '@angular/router';
-import * as i2$1 from 'primeng/dialog';
+import * as i2$2 from 'primeng/dialog';
 import { DialogModule } from 'primeng/dialog';
 import * as i3$6 from 'angular-svg-icon';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import * as i2$2 from 'primeng/stepper';
+import * as i2$3 from 'primeng/stepper';
 import { StepperModule } from 'primeng/stepper';
 import { StepsModule } from 'primeng/steps';
-import * as i1$2 from '@angular/common/http';
+import * as i1$3 from '@angular/common/http';
 import { HttpHeaders, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { filter, take, switchMap, catchError as catchError$1 } from 'rxjs/operators';
 import Swal from 'sweetalert2';
@@ -813,7 +821,7 @@ class PlaFormInputGroupComponent {
     isRequired = isRequired;
     classValidate = classValidate;
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaFormInputGroupComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: PlaFormInputGroupComponent, isStandalone: true, selector: "pla-form-input-group", inputs: { listFormGroup: "listFormGroup", control: "control", submitted: "submitted", index: "index" }, ngImport: i0, template: "<ng-container [formGroup]=\"listFormGroup\">\n  @if (control.formControlName) {\n  <p-floatlabel variant=\"in\">\n    <p-iconfield>\n      <div class=\"relative w-full\">\n        <p-inputNumber\n          class=\"w-full pr-24\"\n          [inputId]=\"control.formControlName\"\n          [name]=\"control.formControlName\"\n          [formControlName]=\"control.formControlName\"\n          [min]=\"control?.min || 0\"\n          [ngClass]=\"\n            classValidate(\n              listFormGroup.controls[control.formControlName],\n              submitted\n            )\n          \"\n        />\n\n        <p-selectbutton\n          [id]=\"control.subFormControlName\"\n          class=\"select-button\"\n          [ngClass]=\"{\n            'cursor-not-allowed':\n              listFormGroup.controls[control.subFormControlName].disabled\n          }\"\n          *ngIf=\"control.subFormControlName && !control.isViewMode\"\n          [formControlName]=\"control.subFormControlName\"\n          [options]=\"control.data\"\n          [optionLabel]=\"control.optionLabel || 'name'\"\n          [optionValue]=\"control.optionValue || 'code'\"\n          aria-labelledby=\"basic\"\n          (onOptionClick)=\"\n            control.onClick\n              ? control.onClick(\n                  listFormGroup.controls[control.subFormControlName].value,\n                  index\n                )\n              : ''\n          \"\n        >\n          <ng-template pTemplate=\"item\" let-option let-i=\"index\">\n            <div\n              class=\"p-button-label\"\n              [attr.data-id]=\"control.subFormControlName + '-' + i\"\n            >\n              {{ option[control.optionLabel || \"name\"] }}\n            </div>\n          </ng-template>\n        </p-selectbutton>\n      </div>\n    </p-iconfield>\n\n    <label [for]=\"control.formControlName\"\n      >{{ control.label\n      }}<span *ngIf=\"isRequired(control.formControlName, listFormGroup)\">*</span></label\n    >\n  </p-floatlabel>\n  }\n</ng-container>\n", styles: [".select-button{position:absolute;top:50%;right:.5rem;transform:translateY(-50%);z-index:1;padding:.0125rem 0rem;border-radius:.4625rem;box-shadow:0 5.8px 11.6px #e5e5e533}.select-text{position:absolute;top:50%;right:1.25rem;transform:translateY(-50%);z-index:1;color:var(--p-inputtext-disabled-color)}.cursor-not-allowed{cursor:not-allowed!important}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: i1$1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.NgControlStatusGroup, selector: "[formGroupName],[formArrayName],[ngModelGroup],[formGroup],form:not([ngNoForm]),[ngForm]" }, { kind: "directive", type: i2.FormGroupDirective, selector: "[formGroup]", inputs: ["formGroup"], outputs: ["ngSubmit"], exportAs: ["ngForm"] }, { kind: "directive", type: i2.FormControlName, selector: "[formControlName]", inputs: ["formControlName", "disabled", "ngModel"], outputs: ["ngModelChange"] }, { kind: "ngmodule", type: FloatLabelModule }, { kind: "component", type: i3.FloatLabel, selector: "p-floatlabel, p-floatLabel, p-float-label", inputs: ["variant"] }, { kind: "directive", type: i4$5.PrimeTemplate, selector: "[pTemplate]", inputs: ["type", "pTemplate"] }, { kind: "ngmodule", type: IconFieldModule }, { kind: "component", type: i4$1.IconField, selector: "p-iconfield, p-iconField, p-icon-field", inputs: ["iconPosition", "styleClass"] }, { kind: "ngmodule", type: InputNumberModule }, { kind: "component", type: i5$1.InputNumber, selector: "p-inputNumber, p-inputnumber, p-input-number", inputs: ["showButtons", "format", "buttonLayout", "inputId", "styleClass", "style", "placeholder", "size", "maxlength", "tabindex", "title", "ariaLabelledBy", "ariaLabel", "ariaRequired", "name", "required", "autocomplete", "min", "max", "incrementButtonClass", "decrementButtonClass", "incrementButtonIcon", "decrementButtonIcon", "readonly", "step", "allowEmpty", "locale", "localeMatcher", "mode", "currency", "currencyDisplay", "useGrouping", "variant", "minFractionDigits", "maxFractionDigits", "prefix", "suffix", "inputStyle", "inputStyleClass", "showClear", "autofocus", "disabled", "fluid"], outputs: ["onInput", "onFocus", "onBlur", "onKeyDown", "onClear"] }, { kind: "component", type: SelectButton, selector: "p-selectButton, p-selectbutton, p-select-button", inputs: ["options", "optionLabel", "optionValue", "optionDisabled", "unselectable", "tabindex", "multiple", "allowEmpty", "style", "styleClass", "ariaLabelledBy", "size", "disabled", "dataKey", "autofocus"], outputs: ["onOptionClick", "onChange"] }, { kind: "ngmodule", type: ButtonModule }, { kind: "ngmodule", type: ToggleButtonModule }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: PlaFormInputGroupComponent, isStandalone: true, selector: "pla-form-input-group", inputs: { listFormGroup: "listFormGroup", control: "control", submitted: "submitted", index: "index" }, ngImport: i0, template: "<ng-container [formGroup]=\"listFormGroup\">\n  @if (control.formControlName) {\n  <p-floatlabel variant=\"in\">\n    <p-iconfield>\n      <div class=\"relative w-full\">\n        <p-inputNumber\n          class=\"w-full pr-24\"\n          [inputId]=\"control.formControlName\"\n          [name]=\"control.formControlName\"\n          [formControlName]=\"control.formControlName\"\n          [min]=\"control?.min || 0\"\n          [ngClass]=\"\n            classValidate(\n              listFormGroup.controls[control.formControlName],\n              submitted\n            )\n          \"\n        />\n\n        <p-selectbutton\n          [id]=\"control.subFormControlName\"\n          class=\"select-button\"\n          [ngClass]=\"{\n            'cursor-not-allowed':\n              listFormGroup.controls[control.subFormControlName].disabled\n          }\"\n          *ngIf=\"control.subFormControlName && !control.isViewMode\"\n          [formControlName]=\"control.subFormControlName\"\n          [options]=\"control.data\"\n          [optionLabel]=\"control.optionLabel || 'name'\"\n          [optionValue]=\"control.optionValue || 'code'\"\n          aria-labelledby=\"basic\"\n          (onOptionClick)=\"\n            control.onClick\n              ? control.onClick(\n                  listFormGroup.controls[control.subFormControlName].value,\n                  index\n                )\n              : ''\n          \"\n        >\n          <ng-template pTemplate=\"item\" let-option let-i=\"index\">\n            <div\n              class=\"p-button-label\"\n              [attr.data-id]=\"control.subFormControlName + '-' + i\"\n            >\n              {{ option[control.optionLabel || \"name\"] }}\n            </div>\n          </ng-template>\n        </p-selectbutton>\n      </div>\n    </p-iconfield>\n\n    <label [for]=\"control.formControlName\"\n      >{{ control.label\n      }}<span *ngIf=\"isRequired(control.formControlName, listFormGroup)\">*</span></label\n    >\n  </p-floatlabel>\n  }\n</ng-container>\n", styles: [".select-button{position:absolute;top:50%;right:.5rem;transform:translateY(-50%);z-index:1;padding:.0125rem 0rem;border-radius:.4625rem;box-shadow:0 5.8px 11.6px #e5e5e533}.select-text{position:absolute;top:50%;right:1.25rem;transform:translateY(-50%);z-index:1;color:var(--p-inputtext-disabled-color)}.cursor-not-allowed{cursor:not-allowed!important}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: i1$1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.NgControlStatusGroup, selector: "[formGroupName],[formArrayName],[ngModelGroup],[formGroup],form:not([ngNoForm]),[ngForm]" }, { kind: "directive", type: i2.FormGroupDirective, selector: "[formGroup]", inputs: ["formGroup"], outputs: ["ngSubmit"], exportAs: ["ngForm"] }, { kind: "directive", type: i2.FormControlName, selector: "[formControlName]", inputs: ["formControlName", "disabled", "ngModel"], outputs: ["ngModelChange"] }, { kind: "ngmodule", type: FloatLabelModule }, { kind: "component", type: i3.FloatLabel, selector: "p-floatlabel, p-floatLabel, p-float-label", inputs: ["variant"] }, { kind: "directive", type: i2$1.PrimeTemplate, selector: "[pTemplate]", inputs: ["type", "pTemplate"] }, { kind: "ngmodule", type: IconFieldModule }, { kind: "component", type: i4$1.IconField, selector: "p-iconfield, p-iconField, p-icon-field", inputs: ["iconPosition", "styleClass"] }, { kind: "ngmodule", type: InputNumberModule }, { kind: "component", type: i5$1.InputNumber, selector: "p-inputNumber, p-inputnumber, p-input-number", inputs: ["showButtons", "format", "buttonLayout", "inputId", "styleClass", "style", "placeholder", "size", "maxlength", "tabindex", "title", "ariaLabelledBy", "ariaLabel", "ariaRequired", "name", "required", "autocomplete", "min", "max", "incrementButtonClass", "decrementButtonClass", "incrementButtonIcon", "decrementButtonIcon", "readonly", "step", "allowEmpty", "locale", "localeMatcher", "mode", "currency", "currencyDisplay", "useGrouping", "variant", "minFractionDigits", "maxFractionDigits", "prefix", "suffix", "inputStyle", "inputStyleClass", "showClear", "autofocus", "disabled", "fluid"], outputs: ["onInput", "onFocus", "onBlur", "onKeyDown", "onClear"] }, { kind: "component", type: SelectButton, selector: "p-selectButton, p-selectbutton, p-select-button", inputs: ["options", "optionLabel", "optionValue", "optionDisabled", "unselectable", "tabindex", "multiple", "allowEmpty", "style", "styleClass", "ariaLabelledBy", "size", "disabled", "dataKey", "autofocus"], outputs: ["onOptionClick", "onChange"] }, { kind: "ngmodule", type: ButtonModule }, { kind: "ngmodule", type: ToggleButtonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaFormInputGroupComponent, decorators: [{
             type: Component,
@@ -991,6 +999,461 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Input
             }], isLoadingPackage: [{
                 type: Input
+            }] } });
+
+class PlaTableHeaderComponent {
+    tableColumns = [];
+    ngOnInit() {
+        console.log('pla-table-header', this.tableColumns);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableHeaderComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: PlaTableHeaderComponent, isStandalone: true, selector: "tr[pla-table-header]", inputs: { tableColumns: "tableColumns" }, ngImport: i0, template: "@for (column of tableColumns; track $index) {\n  <th\n    [pSortableColumn]=\"column.field ? column.field : 'false'\"\n    [pSortableColumnDisabled]=\"column.isDisableSort\"\n    [id]=\"column.field\"\n    [ngStyle]=\"{\n      'text-align': column.headerAlign,\n      'min-width': column.minWidth,\n      'max-width': column.maxWidth,\n      'border-left': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n      'border-right': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n    }\"\n    [alignFrozen]=\"column.alignFrozen ? column.alignFrozen : 'right'\"\n    pFrozenColumn\n    [frozen]=\"column.frozenColumn ? true : false\"\n  >\n    {{ column.title }}\n    @if (column.field && !column.isDisableSort) {\n      <p-sortIcon [field]=\"column.field\" class=\"ml-2\" />\n    }\n  </th>\n}\n\n<!-- @for (item of frozenColumns; track $index) {\n  @if (frozenColumns.length > 0) {\n    <th\n      [id]=\"item.title\"\n      [ngStyle]=\"{\n        'text-align': 'center',\n        'border-left': '1px solid #e2e8f0',\n      }\"\n      [alignFrozen]=\"item.alignFrozen ? item.alignFrozen : 'right'\"\n      pFrozenColumn\n      [frozen]=\"true\"\n    >\n      @switch (item.columnType) {\n        @case (\"action\") {\n          <span> {{ \"Actions\" }}</span>\n        }\n        @default {\n          <span> {{ item.title }}</span>\n        }\n      }\n    </th>\n  }\n} -->\n", styles: [""], dependencies: [{ kind: "ngmodule", type: TableModule }, { kind: "directive", type: i1$2.SortableColumn, selector: "[pSortableColumn]", inputs: ["pSortableColumn", "pSortableColumnDisabled"] }, { kind: "directive", type: i1$2.FrozenColumn, selector: "[pFrozenColumn]", inputs: ["frozen", "alignFrozen"] }, { kind: "component", type: i1$2.SortIcon, selector: "p-sortIcon", inputs: ["field"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableHeaderComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'tr[pla-table-header]', imports: [TableModule, CommonModule], template: "@for (column of tableColumns; track $index) {\n  <th\n    [pSortableColumn]=\"column.field ? column.field : 'false'\"\n    [pSortableColumnDisabled]=\"column.isDisableSort\"\n    [id]=\"column.field\"\n    [ngStyle]=\"{\n      'text-align': column.headerAlign,\n      'min-width': column.minWidth,\n      'max-width': column.maxWidth,\n      'border-left': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n      'border-right': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n    }\"\n    [alignFrozen]=\"column.alignFrozen ? column.alignFrozen : 'right'\"\n    pFrozenColumn\n    [frozen]=\"column.frozenColumn ? true : false\"\n  >\n    {{ column.title }}\n    @if (column.field && !column.isDisableSort) {\n      <p-sortIcon [field]=\"column.field\" class=\"ml-2\" />\n    }\n  </th>\n}\n\n<!-- @for (item of frozenColumns; track $index) {\n  @if (frozenColumns.length > 0) {\n    <th\n      [id]=\"item.title\"\n      [ngStyle]=\"{\n        'text-align': 'center',\n        'border-left': '1px solid #e2e8f0',\n      }\"\n      [alignFrozen]=\"item.alignFrozen ? item.alignFrozen : 'right'\"\n      pFrozenColumn\n      [frozen]=\"true\"\n    >\n      @switch (item.columnType) {\n        @case (\"action\") {\n          <span> {{ \"Actions\" }}</span>\n        }\n        @default {\n          <span> {{ item.title }}</span>\n        }\n      }\n    </th>\n  }\n} -->\n" }]
+        }], propDecorators: { tableColumns: [{
+                type: Input,
+                args: [{ required: true }]
+            }] } });
+
+class PlaTableBodyComponent {
+    tableColumns = [];
+    rowData;
+    rowIndex = 0;
+    ngOnInit() {
+        console.log('pla-table-body', this.tableColumns);
+    }
+    getSeverity(status) {
+        switch (status) {
+            case 'secondary':
+                return 'secondary';
+            case 'warn':
+                return 'warn';
+            case 'success':
+                return 'success';
+            case 'danger':
+                return 'danger';
+            case 'info':
+                return 'info';
+            case 'contrast':
+                return 'contrast';
+            default:
+                return 'secondary';
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableBodyComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: PlaTableBodyComponent, isStandalone: true, selector: "tr[pla-table-body]", inputs: { tableColumns: "tableColumns", rowData: "rowData", rowIndex: "rowIndex" }, ngImport: i0, template: "@for (column of tableColumns; track $index) {\n  <td\n    [ngStyle]=\"{\n      'text-align': column.textAlign,\n      'min-width': column.minWidth,\n      'max-width': column.maxWidth,\n      'border-left': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n      'border-right': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n    }\"\n    [alignFrozen]=\"column.alignFrozen ? column.alignFrozen : 'right'\"\n    pFrozenColumn\n    [frozen]=\"column.frozenColumn ? true : false\"\n  >\n    @switch (column.columnType) {\n      @case (\"text\") {\n        {{ column.field ? rowData[column.field] : \"\" }}\n      }\n      @case (\"date\") {\n        <!-- {{ rowData[column.field] | date: column.dateFormat || \"dd/MM/YYYY\" }} -->\n        {{ rowData[column.field] | date: \"dd/MM/YYYY\" }}\n      }\n      @case (\"decimal\") {\n        {{ column.field ? rowData[column.field] : \"\" }}\n      }\n      @case (\"tag\") {\n        <p-tag\n          icon=\"pi pi-circle-fill\"\n          [value]=\"rowData[column.field].value\"\n          [severity]=\"getSeverity(rowData[column.field].severity)\"\n        ></p-tag>\n      }\n      @case (\"action\") {\n        <div class=\"flex justify-content-center align-items-center\">\n          <p-button\n            [id]=\"'auction-button-' + rowIndex\"\n            (click)=\"menu.toggle($event)\"\n            icon=\"pi pi-ellipsis-v\"\n            variant=\"text\"\n          />\n          <p-tieredmenu\n            #menu\n            [model]=\"column.action_Buttons\"\n            [popup]=\"true\"\n            appendTo=\"body\"\n            styleClass=\"table-action-button\"\n          >\n            <ng-template #item let-item let-hasSubmenu=\"hasSubmenu\">\n              <!-- *appHasPermission=\"item.permission\" -->\n              <ng-container>\n                @if (\n                  !(\n                    (`button-${item.label}_${rowData.id}`\n                      | i18nSelect: column?.action_Disable || {}) === \"disabled\"\n                  )\n                ) {\n                  <a\n                    pRipple\n                    class=\"flex items-center w-full p-tieredmenu-item-link\"\n                    [id]=\"`button-${item.label}_${rowData.id}`\"\n                    (click)=\"item.onActionClick(rowData)\"\n                    (keyup.enter)=\"item.onActionClick(rowData)\"\n                    (keyup.space)=\"item.onActionClick(rowData)\"\n                    tabindex=\"0\"\n                    role=\"button\"\n                  >\n                    <span\n                      class=\"flex align-items-center p-tieredmenu-item-icon\"\n                      [class]=\"item.icon\"\n                    ></span>\n                    <span class=\"ml-2\">{{ item.label }}</span>\n                    @if (hasSubmenu) {\n                      <i class=\"pi pi-angle-right ml-auto\"></i>\n                    }\n                  </a>\n                }\n              </ng-container>\n            </ng-template>\n          </p-tieredmenu>\n        </div>\n      }\n\n      @default {\n        {{ column.field ? rowData[column.field] : \"\" }}\n      }\n    }\n  </td>\n}\n\n<!-- @for (column of frozenColumns; track $index) {\n  <td\n    [ngStyle]=\"{\n      'text-align': 'center',\n      'border-left': '1px solid #e2e8f0',\n    }\"\n    [id]=\"`${column.field}_${rowIndex}`\"\n    [alignFrozen]=\"column.alignFrozen ? column.alignFrozen : 'right'\"\n    pFrozenColumn\n    [frozen]=\"true\"\n  >\n    @switch (column.columnType) {\n      @case (\"action\") {\n        <div class=\"flex justify-content-center align-items-center\">\n          <p-button\n            [id]=\"'auction-button-' + rowIndex\"\n            (click)=\"menu.toggle($event)\"\n            icon=\"pi pi-ellipsis-v\"\n            variant=\"text\"\n          />\n          <p-tieredmenu\n            #menu\n            [model]=\"column.action_Buttons\"\n            [popup]=\"true\"\n            appendTo=\"body\"\n            styleClass=\"table-action-button\"\n          >\n            <ng-template #item let-item let-hasSubmenu=\"hasSubmenu\">\n              <ng-container *appHasPermission=\"item.permission\">\n                <ng-container *appHasPermission=\"item.permission\">\n                  @if (\n                    !(\n                      (`button-${item.label}_${rowData.id}`\n                        | i18nSelect: column?.action_Disable || {}) ===\n                      \"disabled\"\n                    )\n                  ) {\n                    <a\n                      pRipple\n                      class=\"flex items-center w-full p-tieredmenu-item-link\"\n                      [id]=\"`button-${item.label}_${rowData.id}`\"\n                      (click)=\"item.onActionClick(rowData)\"\n                      (keyup.enter)=\"item.onActionClick(rowData)\"\n                      (keyup.space)=\"item.onActionClick(rowData)\"\n                      tabindex=\"0\"\n                      role=\"button\"\n                    >\n                      <span\n                        class=\"flex align-items-center p-tieredmenu-item-icon\"\n                        [class]=\"item.icon\"\n                      ></span>\n                      <span class=\"ml-2\">{{ item.label }}</span>\n                      @if (hasSubmenu) {\n                        <i class=\"pi pi-angle-right ml-auto\"></i>\n                      }\n                    </a>\n                  }\n                </ng-container>\n              </ng-container>\n            </ng-template>\n          </p-tieredmenu>\n        </div>\n      }\n      @default {\n        {{ column.field ? rowData[column.field] : \"\" }}\n      }\n    }\n  </td>\n} -->\n", styles: [""], dependencies: [{ kind: "ngmodule", type: TableModule }, { kind: "directive", type: i1$2.FrozenColumn, selector: "[pFrozenColumn]", inputs: ["frozen", "alignFrozen"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "pipe", type: i1$1.DatePipe, name: "date" }, { kind: "pipe", type: i1$1.I18nSelectPipe, name: "i18nSelect" }, { kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: TieredMenuModule }, { kind: "component", type: i4$5.TieredMenu, selector: "p-tieredMenu, p-tieredmenu, p-tiered-menu", inputs: ["model", "popup", "style", "styleClass", "appendTo", "breakpoint", "autoZIndex", "baseZIndex", "autoDisplay", "showTransitionOptions", "hideTransitionOptions", "id", "ariaLabel", "ariaLabelledBy", "disabled", "tabindex"], outputs: ["onShow", "onHide"] }, { kind: "ngmodule", type: TagModule }, { kind: "component", type: i5$2.Tag, selector: "p-tag", inputs: ["style", "styleClass", "severity", "value", "icon", "rounded"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableBodyComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'tr[pla-table-body]', imports: [
+                        TableModule,
+                        CommonModule,
+                        ButtonModule,
+                        TieredMenuModule,
+                        TagModule,
+                    ], template: "@for (column of tableColumns; track $index) {\n  <td\n    [ngStyle]=\"{\n      'text-align': column.textAlign,\n      'min-width': column.minWidth,\n      'max-width': column.maxWidth,\n      'border-left': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n      'border-right': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n    }\"\n    [alignFrozen]=\"column.alignFrozen ? column.alignFrozen : 'right'\"\n    pFrozenColumn\n    [frozen]=\"column.frozenColumn ? true : false\"\n  >\n    @switch (column.columnType) {\n      @case (\"text\") {\n        {{ column.field ? rowData[column.field] : \"\" }}\n      }\n      @case (\"date\") {\n        <!-- {{ rowData[column.field] | date: column.dateFormat || \"dd/MM/YYYY\" }} -->\n        {{ rowData[column.field] | date: \"dd/MM/YYYY\" }}\n      }\n      @case (\"decimal\") {\n        {{ column.field ? rowData[column.field] : \"\" }}\n      }\n      @case (\"tag\") {\n        <p-tag\n          icon=\"pi pi-circle-fill\"\n          [value]=\"rowData[column.field].value\"\n          [severity]=\"getSeverity(rowData[column.field].severity)\"\n        ></p-tag>\n      }\n      @case (\"action\") {\n        <div class=\"flex justify-content-center align-items-center\">\n          <p-button\n            [id]=\"'auction-button-' + rowIndex\"\n            (click)=\"menu.toggle($event)\"\n            icon=\"pi pi-ellipsis-v\"\n            variant=\"text\"\n          />\n          <p-tieredmenu\n            #menu\n            [model]=\"column.action_Buttons\"\n            [popup]=\"true\"\n            appendTo=\"body\"\n            styleClass=\"table-action-button\"\n          >\n            <ng-template #item let-item let-hasSubmenu=\"hasSubmenu\">\n              <!-- *appHasPermission=\"item.permission\" -->\n              <ng-container>\n                @if (\n                  !(\n                    (`button-${item.label}_${rowData.id}`\n                      | i18nSelect: column?.action_Disable || {}) === \"disabled\"\n                  )\n                ) {\n                  <a\n                    pRipple\n                    class=\"flex items-center w-full p-tieredmenu-item-link\"\n                    [id]=\"`button-${item.label}_${rowData.id}`\"\n                    (click)=\"item.onActionClick(rowData)\"\n                    (keyup.enter)=\"item.onActionClick(rowData)\"\n                    (keyup.space)=\"item.onActionClick(rowData)\"\n                    tabindex=\"0\"\n                    role=\"button\"\n                  >\n                    <span\n                      class=\"flex align-items-center p-tieredmenu-item-icon\"\n                      [class]=\"item.icon\"\n                    ></span>\n                    <span class=\"ml-2\">{{ item.label }}</span>\n                    @if (hasSubmenu) {\n                      <i class=\"pi pi-angle-right ml-auto\"></i>\n                    }\n                  </a>\n                }\n              </ng-container>\n            </ng-template>\n          </p-tieredmenu>\n        </div>\n      }\n\n      @default {\n        {{ column.field ? rowData[column.field] : \"\" }}\n      }\n    }\n  </td>\n}\n\n<!-- @for (column of frozenColumns; track $index) {\n  <td\n    [ngStyle]=\"{\n      'text-align': 'center',\n      'border-left': '1px solid #e2e8f0',\n    }\"\n    [id]=\"`${column.field}_${rowIndex}`\"\n    [alignFrozen]=\"column.alignFrozen ? column.alignFrozen : 'right'\"\n    pFrozenColumn\n    [frozen]=\"true\"\n  >\n    @switch (column.columnType) {\n      @case (\"action\") {\n        <div class=\"flex justify-content-center align-items-center\">\n          <p-button\n            [id]=\"'auction-button-' + rowIndex\"\n            (click)=\"menu.toggle($event)\"\n            icon=\"pi pi-ellipsis-v\"\n            variant=\"text\"\n          />\n          <p-tieredmenu\n            #menu\n            [model]=\"column.action_Buttons\"\n            [popup]=\"true\"\n            appendTo=\"body\"\n            styleClass=\"table-action-button\"\n          >\n            <ng-template #item let-item let-hasSubmenu=\"hasSubmenu\">\n              <ng-container *appHasPermission=\"item.permission\">\n                <ng-container *appHasPermission=\"item.permission\">\n                  @if (\n                    !(\n                      (`button-${item.label}_${rowData.id}`\n                        | i18nSelect: column?.action_Disable || {}) ===\n                      \"disabled\"\n                    )\n                  ) {\n                    <a\n                      pRipple\n                      class=\"flex items-center w-full p-tieredmenu-item-link\"\n                      [id]=\"`button-${item.label}_${rowData.id}`\"\n                      (click)=\"item.onActionClick(rowData)\"\n                      (keyup.enter)=\"item.onActionClick(rowData)\"\n                      (keyup.space)=\"item.onActionClick(rowData)\"\n                      tabindex=\"0\"\n                      role=\"button\"\n                    >\n                      <span\n                        class=\"flex align-items-center p-tieredmenu-item-icon\"\n                        [class]=\"item.icon\"\n                      ></span>\n                      <span class=\"ml-2\">{{ item.label }}</span>\n                      @if (hasSubmenu) {\n                        <i class=\"pi pi-angle-right ml-auto\"></i>\n                      }\n                    </a>\n                  }\n                </ng-container>\n              </ng-container>\n            </ng-template>\n          </p-tieredmenu>\n        </div>\n      }\n      @default {\n        {{ column.field ? rowData[column.field] : \"\" }}\n      }\n    }\n  </td>\n} -->\n" }]
+        }], propDecorators: { tableColumns: [{
+                type: Input,
+                args: [{ required: true }]
+            }], rowData: [{
+                type: Input,
+                args: [{ required: true }]
+            }], rowIndex: [{
+                type: Input,
+                args: [{ required: true }]
+            }] } });
+
+class PlaTableFilterInputTextComponent {
+    column = {
+        field: '',
+        title: '',
+        columnType: 'text',
+    };
+    appliedFilters = {};
+    operatorOptions = [];
+    filterTextSubject = new Subject();
+    skipNextInput = false;
+    ngOnInit() {
+        this.initTextSearch();
+    }
+    ngOnChanges() {
+        console.log('pla-table-filter-input-text', this.appliedFilters);
+    }
+    initTextSearch() {
+        this.filterTextSubject
+            .pipe(debounceTime(1500))
+            .subscribe(({ value, callback }) => {
+            if (!this.skipNextInput) {
+                callback(value);
+            }
+        });
+    }
+    clearFilter(input, field, callback) {
+        input.value = '';
+        callback(null);
+    }
+    onTextFilterChange(event, field, callback) {
+        const input = event.target;
+        const value = input.value;
+        this.skipNextInput = false;
+        this.filterTextSubject.next({ field, value, callback });
+    }
+    onTextFilterEnter(event, callback) {
+        const input = event.target;
+        this.skipNextInput = true;
+        callback(input.value);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableFilterInputTextComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: PlaTableFilterInputTextComponent, isStandalone: true, selector: "pla-table-filter-input-text", inputs: { column: "column", appliedFilters: "appliedFilters", operatorOptions: "operatorOptions" }, usesOnChanges: true, ngImport: i0, template: "<p-columnFilter\n  type=\"custom\"\n  [field]=\"column.field\"\n  [showClearButton]=\"false\"\n  [matchModeOptions]=\"operatorOptions\"\n>\n  <ng-template pTemplate=\"filter\" let-value let-filterCallback=\"filterCallback\">\n    <p-iconfield>\n      <input\n        [value]=\"appliedFilters[column.field]?.value ?? ''\"\n        #inputRef\n        type=\"text\"\n        pInputText\n        [ngStyle]=\"{ 'min-width': column.minWidth }\"\n        (keydown.enter)=\"onTextFilterEnter($event, filterCallback)\"\n        (input)=\"onTextFilterChange($event, column.field, filterCallback)\"\n        [placeholder]=\"\n          column.isHidePlaceholder ? 'Search' : 'Search by ' + column.title\n        \"\n      />\n      @if (inputRef.value) {\n        <p-inputicon\n          class=\"pi pi-times\"\n          (click)=\"clearFilter(inputRef, column.field, filterCallback)\"\n          style=\"cursor: pointer\"\n        />\n      }</p-iconfield\n  ></ng-template>\n</p-columnFilter>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: TableModule }, { kind: "directive", type: i2$1.PrimeTemplate, selector: "[pTemplate]", inputs: ["type", "pTemplate"] }, { kind: "component", type: i1$2.ColumnFilter, selector: "p-columnFilter", inputs: ["field", "type", "display", "showMenu", "matchMode", "operator", "showOperator", "showClearButton", "showApplyButton", "showMatchModes", "showAddButton", "hideOnClear", "placeholder", "matchModeOptions", "maxConstraints", "minFractionDigits", "maxFractionDigits", "prefix", "suffix", "locale", "localeMatcher", "currency", "currencyDisplay", "useGrouping", "showButtons", "ariaLabel", "filterButtonProps"], outputs: ["onShow", "onHide"] }, { kind: "ngmodule", type: IconFieldModule }, { kind: "component", type: i4$1.IconField, selector: "p-iconfield, p-iconField, p-icon-field", inputs: ["iconPosition", "styleClass"] }, { kind: "ngmodule", type: InputIconModule }, { kind: "component", type: i5$3.InputIcon, selector: "p-inputicon, p-inputIcon", inputs: ["styleClass"] }, { kind: "ngmodule", type: InputTextModule }, { kind: "directive", type: i5.InputText, selector: "[pInputText]", inputs: ["variant", "fluid", "pSize"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableFilterInputTextComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'pla-table-filter-input-text', imports: [
+                        CommonModule,
+                        TableModule,
+                        IconFieldModule,
+                        InputIconModule,
+                        IconFieldModule,
+                        InputTextModule,
+                    ], template: "<p-columnFilter\n  type=\"custom\"\n  [field]=\"column.field\"\n  [showClearButton]=\"false\"\n  [matchModeOptions]=\"operatorOptions\"\n>\n  <ng-template pTemplate=\"filter\" let-value let-filterCallback=\"filterCallback\">\n    <p-iconfield>\n      <input\n        [value]=\"appliedFilters[column.field]?.value ?? ''\"\n        #inputRef\n        type=\"text\"\n        pInputText\n        [ngStyle]=\"{ 'min-width': column.minWidth }\"\n        (keydown.enter)=\"onTextFilterEnter($event, filterCallback)\"\n        (input)=\"onTextFilterChange($event, column.field, filterCallback)\"\n        [placeholder]=\"\n          column.isHidePlaceholder ? 'Search' : 'Search by ' + column.title\n        \"\n      />\n      @if (inputRef.value) {\n        <p-inputicon\n          class=\"pi pi-times\"\n          (click)=\"clearFilter(inputRef, column.field, filterCallback)\"\n          style=\"cursor: pointer\"\n        />\n      }</p-iconfield\n  ></ng-template>\n</p-columnFilter>\n" }]
+        }], propDecorators: { column: [{
+                type: Input,
+                args: [{ required: true }]
+            }], appliedFilters: [{
+                type: Input,
+                args: [{ required: true }]
+            }], operatorOptions: [{
+                type: Input,
+                args: [{ required: true }]
+            }] } });
+
+class PlaTableFilterMultiSelectComponent {
+    column = {
+        field: '',
+        title: '',
+        columnType: 'tag',
+    };
+    appliedFilters = {};
+    operatorOptions = [];
+    ngOnInit() {
+        console.log('pla-table-filter-multi-select', this.column);
+    }
+    onSelectFilter(value, field, callback, searchField, isMultiSelect) {
+        const fieldKey = searchField || field;
+        const newFilters = { ...this.appliedFilters };
+        newFilters[fieldKey] = {
+            value,
+            matchMode: isMultiSelect ? 'in' : 'startWith',
+        };
+        const filter = {
+            filters: newFilters,
+        };
+        // callback(value);
+        // TODO:
+        console.log('testValue1.1', filter);
+        // this.pageChange(filter);
+        // const dataState = this.dataState;
+        // Object.assign(dataState, {
+        //   filter: {
+        //     ...dataState.filter,
+        //     [this.name]: newFilters,
+        //   },
+        // });
+        // this.stateManagement.setData(dataState);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableFilterMultiSelectComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaTableFilterMultiSelectComponent, isStandalone: true, selector: "pla-table-filter-multi-select", inputs: { column: "column", appliedFilters: "appliedFilters", operatorOptions: "operatorOptions" }, ngImport: i0, template: "<p-columnFilter\n  type=\"custom\"\n  [field]=\"column.field\"\n  matchMode=\"equals\"\n  [showMenu]=\"false\"\n  [showClearButton]=\"false\"\n  [matchModeOptions]=\"operatorOptions\"\n>\n  <ng-template pTemplate=\"filter\" let-value let-filterCallback=\"filterCallback\">\n    <!-- {{appliedFilters?.[header.searchField]?.value}} -->\n\n    <p-multiselect\n      (ngModelChange)=\"\n        onSelectFilter(\n          $event,\n          column.field,\n          filterCallback,\n          column.searchField,\n          true\n        )\n      \"\n      [ngModel]=\"appliedFilters[column.searchField || '']?.value\"\n      [options]=\"column.options\"\n      optionLabel=\"name\"\n      optionValue=\"code\"\n      [placeholder]=\"`Select ${column.title}`\"\n      filter=\"true\"\n      (onFilter)=\"column?.searchFunction($event)\"\n      [loading]=\"column.loading\"\n      [appendTo]=\"'body'\"\n      styleClass=\"w-full\"\n      class=\"status-filter\"\n      panelStyleClass=\"filter-select custom-filter-input\"\n      [ngStyle]=\"{ 'min-width': column.filterWidth }\"\n    />\n  </ng-template>\n</p-columnFilter>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: TableModule }, { kind: "directive", type: i2$1.PrimeTemplate, selector: "[pTemplate]", inputs: ["type", "pTemplate"] }, { kind: "component", type: i1$2.ColumnFilter, selector: "p-columnFilter", inputs: ["field", "type", "display", "showMenu", "matchMode", "operator", "showOperator", "showClearButton", "showApplyButton", "showMatchModes", "showAddButton", "hideOnClear", "placeholder", "matchModeOptions", "maxConstraints", "minFractionDigits", "maxFractionDigits", "prefix", "suffix", "locale", "localeMatcher", "currency", "currencyDisplay", "useGrouping", "showButtons", "ariaLabel", "filterButtonProps"], outputs: ["onShow", "onHide"] }, { kind: "ngmodule", type: IconFieldModule }, { kind: "ngmodule", type: InputIconModule }, { kind: "ngmodule", type: InputTextModule }, { kind: "ngmodule", type: MultiSelectModule }, { kind: "component", type: i4$3.MultiSelect, selector: "p-multiSelect, p-multiselect, p-multi-select", inputs: ["id", "ariaLabel", "style", "styleClass", "panelStyle", "panelStyleClass", "inputId", "disabled", "fluid", "readonly", "group", "filter", "filterPlaceHolder", "filterLocale", "overlayVisible", "tabindex", "variant", "appendTo", "dataKey", "name", "ariaLabelledBy", "displaySelectedLabel", "maxSelectedLabels", "selectionLimit", "selectedItemsLabel", "showToggleAll", "emptyFilterMessage", "emptyMessage", "resetFilterOnHide", "dropdownIcon", "chipIcon", "optionLabel", "optionValue", "optionDisabled", "optionGroupLabel", "optionGroupChildren", "showHeader", "filterBy", "scrollHeight", "lazy", "virtualScroll", "loading", "virtualScrollItemSize", "loadingIcon", "virtualScrollOptions", "overlayOptions", "ariaFilterLabel", "filterMatchMode", "tooltip", "tooltipPosition", "tooltipPositionStyle", "tooltipStyleClass", "autofocusFilter", "display", "autocomplete", "size", "showClear", "autofocus", "autoZIndex", "baseZIndex", "showTransitionOptions", "hideTransitionOptions", "defaultLabel", "placeholder", "options", "filterValue", "itemSize", "selectAll", "focusOnHover", "filterFields", "selectOnFocus", "autoOptionFocus"], outputs: ["onChange", "onFilter", "onFocus", "onBlur", "onClick", "onClear", "onPanelShow", "onPanelHide", "onLazyLoad", "onRemove", "onSelectAllChange"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableFilterMultiSelectComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'pla-table-filter-multi-select', imports: [
+                        CommonModule,
+                        TableModule,
+                        IconFieldModule,
+                        InputIconModule,
+                        IconFieldModule,
+                        InputTextModule,
+                        MultiSelectModule,
+                        FormsModule,
+                    ], template: "<p-columnFilter\n  type=\"custom\"\n  [field]=\"column.field\"\n  matchMode=\"equals\"\n  [showMenu]=\"false\"\n  [showClearButton]=\"false\"\n  [matchModeOptions]=\"operatorOptions\"\n>\n  <ng-template pTemplate=\"filter\" let-value let-filterCallback=\"filterCallback\">\n    <!-- {{appliedFilters?.[header.searchField]?.value}} -->\n\n    <p-multiselect\n      (ngModelChange)=\"\n        onSelectFilter(\n          $event,\n          column.field,\n          filterCallback,\n          column.searchField,\n          true\n        )\n      \"\n      [ngModel]=\"appliedFilters[column.searchField || '']?.value\"\n      [options]=\"column.options\"\n      optionLabel=\"name\"\n      optionValue=\"code\"\n      [placeholder]=\"`Select ${column.title}`\"\n      filter=\"true\"\n      (onFilter)=\"column?.searchFunction($event)\"\n      [loading]=\"column.loading\"\n      [appendTo]=\"'body'\"\n      styleClass=\"w-full\"\n      class=\"status-filter\"\n      panelStyleClass=\"filter-select custom-filter-input\"\n      [ngStyle]=\"{ 'min-width': column.filterWidth }\"\n    />\n  </ng-template>\n</p-columnFilter>\n" }]
+        }], propDecorators: { column: [{
+                type: Input
+            }], appliedFilters: [{
+                type: Input,
+                args: [{ required: true }]
+            }], operatorOptions: [{
+                type: Input,
+                args: [{ required: true }]
+            }] } });
+
+class PlaTableFilterDateComponent {
+    appliedFilters = {};
+    column = {
+        field: '',
+        title: '',
+        columnType: 'date',
+    };
+    ngOnInit() {
+        console.log('pla-table-filter-date', this.column);
+    }
+    onDateChange(event, filterCallback) {
+        if (Array.isArray(event) && event[0] && event[1]) {
+            const startDate = new Date(event[0]);
+            const endDate = new Date(event[1]);
+            // Remark: Need to set Time of actual data start date to midnight. Set Start to 00:00:00.000
+            startDate.setHours(0, 0, 0, 0);
+            // Remark: Need to set Time of actual data end date before midnight. Set End to 23:59:59.999
+            // so it includes the whole last day
+            endDate.setHours(23, 59, 59, 999);
+            filterCallback([startDate, endDate]);
+        }
+        else {
+            filterCallback(event);
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableFilterDateComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaTableFilterDateComponent, isStandalone: true, selector: "pla-table-filter-date", inputs: { appliedFilters: "appliedFilters", column: "column" }, ngImport: i0, template: "<!-- {{ appliedFilters?.[column.field]?.value }} -->\n<p-columnFilter\n  [field]=\"column.field\"\n  type=\"date\"\n  [showMenu]=\"false\"\n  [showOperator]=\"false\"\n  [showClearButton]=\"false\"\n  placeholder=\"Select Date\"\n  [matchMode]=\"'between'\"\n>\n  <ng-template\n    pTemplate=\"filter\"\n    let-dateValue\n    let-filterCallback=\"filterCallback\"\n  >\n    <div class=\"flex align-items-center gap-2\">\n      <p-datepicker\n        [ngModel]=\"appliedFilters?.[column.field]?.value\"\n        (ngModelChange)=\"onDateChange($event, filterCallback)\"\n        [selectionMode]=\"'range'\"\n        dateFormat=\"dd/mm/yy\"\n        placeholder=\"Select start date - end date\"\n        appendTo=\"body\"\n        showClear=\"true\"\n      ></p-datepicker>\n    </div>\n  </ng-template>\n</p-columnFilter>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }, { kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: TableModule }, { kind: "directive", type: i2$1.PrimeTemplate, selector: "[pTemplate]", inputs: ["type", "pTemplate"] }, { kind: "component", type: i1$2.ColumnFilter, selector: "p-columnFilter", inputs: ["field", "type", "display", "showMenu", "matchMode", "operator", "showOperator", "showClearButton", "showApplyButton", "showMatchModes", "showAddButton", "hideOnClear", "placeholder", "matchModeOptions", "maxConstraints", "minFractionDigits", "maxFractionDigits", "prefix", "suffix", "locale", "localeMatcher", "currency", "currencyDisplay", "useGrouping", "showButtons", "ariaLabel", "filterButtonProps"], outputs: ["onShow", "onHide"] }, { kind: "ngmodule", type: IconFieldModule }, { kind: "ngmodule", type: InputIconModule }, { kind: "ngmodule", type: DatePickerModule }, { kind: "component", type: i4$4.DatePicker, selector: "p-datePicker, p-datepicker, p-date-picker", inputs: ["iconDisplay", "style", "styleClass", "inputStyle", "inputId", "name", "inputStyleClass", "placeholder", "ariaLabelledBy", "ariaLabel", "iconAriaLabel", "disabled", "dateFormat", "multipleSeparator", "rangeSeparator", "inline", "showOtherMonths", "selectOtherMonths", "showIcon", "fluid", "icon", "appendTo", "readonlyInput", "shortYearCutoff", "monthNavigator", "yearNavigator", "hourFormat", "timeOnly", "stepHour", "stepMinute", "stepSecond", "showSeconds", "required", "showOnFocus", "showWeek", "startWeekFromFirstDayOfYear", "showClear", "dataType", "selectionMode", "maxDateCount", "showButtonBar", "todayButtonStyleClass", "clearButtonStyleClass", "autofocus", "autoZIndex", "baseZIndex", "panelStyleClass", "panelStyle", "keepInvalid", "hideOnDateTimeSelect", "touchUI", "timeSeparator", "focusTrap", "showTransitionOptions", "hideTransitionOptions", "tabindex", "variant", "size", "minDate", "maxDate", "disabledDates", "disabledDays", "yearRange", "showTime", "responsiveOptions", "numberOfMonths", "firstDayOfWeek", "locale", "view", "defaultDate"], outputs: ["onFocus", "onBlur", "onClose", "onSelect", "onClear", "onInput", "onTodayClick", "onClearClick", "onMonthChange", "onYearChange", "onClickOutside", "onShow"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableFilterDateComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'pla-table-filter-date', imports: [
+                        FormsModule,
+                        CommonModule,
+                        TableModule,
+                        IconFieldModule,
+                        InputIconModule,
+                        IconFieldModule,
+                        DatePickerModule,
+                    ], template: "<!-- {{ appliedFilters?.[column.field]?.value }} -->\n<p-columnFilter\n  [field]=\"column.field\"\n  type=\"date\"\n  [showMenu]=\"false\"\n  [showOperator]=\"false\"\n  [showClearButton]=\"false\"\n  placeholder=\"Select Date\"\n  [matchMode]=\"'between'\"\n>\n  <ng-template\n    pTemplate=\"filter\"\n    let-dateValue\n    let-filterCallback=\"filterCallback\"\n  >\n    <div class=\"flex align-items-center gap-2\">\n      <p-datepicker\n        [ngModel]=\"appliedFilters?.[column.field]?.value\"\n        (ngModelChange)=\"onDateChange($event, filterCallback)\"\n        [selectionMode]=\"'range'\"\n        dateFormat=\"dd/mm/yy\"\n        placeholder=\"Select start date - end date\"\n        appendTo=\"body\"\n        showClear=\"true\"\n      ></p-datepicker>\n    </div>\n  </ng-template>\n</p-columnFilter>\n" }]
+        }], propDecorators: { appliedFilters: [{
+                type: Input,
+                args: [{ required: true }]
+            }], column: [{
+                type: Input
+            }] } });
+
+class PlaTableFilterComponent {
+    tableColumns = [];
+    appliedFilters = {};
+    operatorOptions = [
+        { label: 'Starts With', value: FilterMatchMode.STARTS_WITH },
+        { label: 'Contains', value: FilterMatchMode.CONTAINS },
+        { label: 'Ends With', value: FilterMatchMode.ENDS_WITH },
+        { label: 'Equals', value: FilterMatchMode.EQUALS },
+        { label: 'Not Equals', value: FilterMatchMode.NOT_EQUALS },
+    ];
+    ngOnInit() {
+        console.log('pla-table-filter', this.tableColumns);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableFilterComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: PlaTableFilterComponent, isStandalone: true, selector: "tr[pla-table-filter]", inputs: { tableColumns: "tableColumns", appliedFilters: "appliedFilters" }, ngImport: i0, template: "@for (column of tableColumns; track $index) {\n  <th\n    [id]=\"column.field\"\n    [ngStyle]=\"{\n      'text-align': column.headerAlign,\n      'min-width': column.minWidth,\n      'max-width': column.maxWidth,\n      'border-left': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n      'border-right': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n    }\"\n    [alignFrozen]=\"column.alignFrozen ? column.alignFrozen : 'right'\"\n    pFrozenColumn\n    [frozen]=\"column.frozenColumn ? true : false\"\n  >\n    @if (column.isDisplayFilter) {\n      <!-- TODO: Filter Here -->\n      @switch (column.filterType) {\n        @case (\"input-text\") {\n          <pla-table-filter-input-text\n            [column]=\"column\"\n            [appliedFilters]=\"appliedFilters\"\n            [operatorOptions]=\"operatorOptions\"\n          />\n        }\n        @case (\"multi-select\") {\n          <pla-table-filter-multi-select\n            [column]=\"column\"\n            [appliedFilters]=\"appliedFilters\"\n            [operatorOptions]=\"operatorOptions\"\n          />\n        }\n        @case (\"date\") {\n          <pla-table-filter-date\n            [column]=\"column\"\n            [appliedFilters]=\"appliedFilters\"\n          />\n        }\n        @default {\n          <pla-table-filter-input-text\n            [column]=\"column\"\n            [appliedFilters]=\"appliedFilters\"\n            [operatorOptions]=\"operatorOptions\"\n          />\n        }\n      }\n    }\n  </th>\n}\n\n<!-- @for (item of frozenColumns; track $index) {\n  @if (frozenColumns.length > 0) {\n    <th\n      id=\"action\"\n      [ngStyle]=\"{\n        'text-align': 'center',\n        'border-left': '1px solid #e2e8f0',\n      }\"\n      [alignFrozen]=\"item.alignFrozen ? item.alignFrozen : 'right'\"\n      pFrozenColumn\n      [frozen]=\"true\"\n    >\n      @switch (item.columnType) {\n        @case (\"action\") {\n          <span></span>\n        }\n        @default {\n          <span> {{ item.title }}</span>\n        }\n      }\n    </th>\n  }\n} -->\n", styles: [""], dependencies: [{ kind: "ngmodule", type: TableModule }, { kind: "directive", type: i1$2.FrozenColumn, selector: "[pFrozenColumn]", inputs: ["frozen", "alignFrozen"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "component", type: PlaTableFilterInputTextComponent, selector: "pla-table-filter-input-text", inputs: ["column", "appliedFilters", "operatorOptions"] }, { kind: "component", type: PlaTableFilterMultiSelectComponent, selector: "pla-table-filter-multi-select", inputs: ["column", "appliedFilters", "operatorOptions"] }, { kind: "component", type: PlaTableFilterDateComponent, selector: "pla-table-filter-date", inputs: ["appliedFilters", "column"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableFilterComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'tr[pla-table-filter]', imports: [
+                        TableModule,
+                        CommonModule,
+                        PlaTableFilterInputTextComponent,
+                        PlaTableFilterMultiSelectComponent,
+                        PlaTableFilterDateComponent,
+                    ], template: "@for (column of tableColumns; track $index) {\n  <th\n    [id]=\"column.field\"\n    [ngStyle]=\"{\n      'text-align': column.headerAlign,\n      'min-width': column.minWidth,\n      'max-width': column.maxWidth,\n      'border-left': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n      'border-right': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n    }\"\n    [alignFrozen]=\"column.alignFrozen ? column.alignFrozen : 'right'\"\n    pFrozenColumn\n    [frozen]=\"column.frozenColumn ? true : false\"\n  >\n    @if (column.isDisplayFilter) {\n      <!-- TODO: Filter Here -->\n      @switch (column.filterType) {\n        @case (\"input-text\") {\n          <pla-table-filter-input-text\n            [column]=\"column\"\n            [appliedFilters]=\"appliedFilters\"\n            [operatorOptions]=\"operatorOptions\"\n          />\n        }\n        @case (\"multi-select\") {\n          <pla-table-filter-multi-select\n            [column]=\"column\"\n            [appliedFilters]=\"appliedFilters\"\n            [operatorOptions]=\"operatorOptions\"\n          />\n        }\n        @case (\"date\") {\n          <pla-table-filter-date\n            [column]=\"column\"\n            [appliedFilters]=\"appliedFilters\"\n          />\n        }\n        @default {\n          <pla-table-filter-input-text\n            [column]=\"column\"\n            [appliedFilters]=\"appliedFilters\"\n            [operatorOptions]=\"operatorOptions\"\n          />\n        }\n      }\n    }\n  </th>\n}\n\n<!-- @for (item of frozenColumns; track $index) {\n  @if (frozenColumns.length > 0) {\n    <th\n      id=\"action\"\n      [ngStyle]=\"{\n        'text-align': 'center',\n        'border-left': '1px solid #e2e8f0',\n      }\"\n      [alignFrozen]=\"item.alignFrozen ? item.alignFrozen : 'right'\"\n      pFrozenColumn\n      [frozen]=\"true\"\n    >\n      @switch (item.columnType) {\n        @case (\"action\") {\n          <span></span>\n        }\n        @default {\n          <span> {{ item.title }}</span>\n        }\n      }\n    </th>\n  }\n} -->\n" }]
+        }], propDecorators: { tableColumns: [{
+                type: Input,
+                args: [{ required: true }]
+            }], appliedFilters: [{
+                type: Input,
+                args: [{ required: true }]
+            }] } });
+
+const DEFAULT_TABLE_LAZY_LOAD_CONFIG = {
+    islazyLoad: false,
+    totalRecord: 0,
+};
+const DEFAULT_ROW_PER_PAGE = 10;
+const DEFAULT_TABLE_PAGINATOR_CONFIG = {
+    isShowPagination: true,
+    paginatorProperties: {
+        rowsPerPageOptions: [10, 25, 50],
+        showCurrentPageReport: true,
+        currentPageReportTemplate: 'Showing {first} to {last} of {totalRecords} entries',
+        paginatorDropdownAppendTo: 'body',
+    },
+};
+class PlaTableComponent {
+    table;
+    tableLoading = false;
+    tableData = [];
+    tableColumns = [];
+    tableConfig = {
+        rows: DEFAULT_ROW_PER_PAGE,
+        tableLazyLoadConfig: DEFAULT_TABLE_LAZY_LOAD_CONFIG,
+        tablePaginatorConfig: DEFAULT_TABLE_PAGINATOR_CONFIG,
+    };
+    // Remark: Get event that emit by p-table of primeNG type of the event is FilterMetadata.
+    appliedFilters = {};
+    applicationStorageName = '';
+    tableName = '';
+    skeletonTable = Array.from({
+        length: DEFAULT_ROW_PER_PAGE,
+    }).map((_, i) => i);
+    ngOnInit() {
+        this.onGetFilterFromLocalStorage();
+    }
+    ngOnChanges() {
+        // this.onGetFilterFromLocalStorage();
+    }
+    get paginatorConfig() {
+        return this.tableConfig.tablePaginatorConfig.isShowPagination
+            ? this.tableConfig.tablePaginatorConfig.paginatorProperties
+            : {
+                rowsPerPageOptions: [],
+                showCurrentPageReport: false,
+                paginatorDropdownAppendTo: 'body',
+                currentPageReportTemplate: '',
+            };
+    }
+    customSort(event) {
+        event.data?.sort((data1, data2) => {
+            const field = event.field;
+            let value1 = data1[field];
+            let value2 = data2[field];
+            // Handle tag columns (objects with 'value' property)
+            if (typeof value1 === 'object' && value1?.value) {
+                value1 = value1.value;
+            }
+            if (typeof value2 === 'object' && value2?.value) {
+                value2 = value2.value;
+            }
+            let result = 0;
+            if (value1 == null && value2 != null) {
+                result = -1;
+            }
+            else if (value1 != null && value2 == null) {
+                result = 1;
+            }
+            else if (value1 == null && value2 == null) {
+                result = 0;
+            }
+            else if (typeof value1 === 'string' && typeof value2 === 'string') {
+                result = value1.localeCompare(value2);
+            }
+            else {
+                result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
+            }
+            return event.order * result;
+        });
+    }
+    onChangeFilter(event) {
+        // 1. Deep clone the filters so we don't mutate the live UI state
+        const filtersToSave = JSON.parse(JSON.stringify(event.filters, (key, value) => {
+            // Check if the value is a date string or object
+            if (this.isDate(value)) {
+                const date = new Date(value);
+                // Offset the date so that toISOString() returns your local time as "Z"
+                const offset = date.getTimezoneOffset() * 60000;
+                return (new Date(date.getTime() - offset).toISOString().split('T')[0] +
+                    'T00:00:00.000Z');
+            }
+            return value;
+        }));
+        const currentAppStorageData = localStorage.getItem(this.applicationStorageName) || '{}';
+        const dataState = JSON.parse(currentAppStorageData);
+        this.appliedFilters = (event.filters ?? {});
+        Object.assign(dataState, {
+            filter: {
+                ...dataState.filter,
+                [this.tableName]: filtersToSave, // Save the adjusted filters
+            },
+        });
+        localStorage.setItem(this.applicationStorageName, JSON.stringify(dataState));
+    }
+    // Helper to detect dates
+    isDate(value) {
+        return (value instanceof Date ||
+            (typeof value === 'string' &&
+                !isNaN(Date.parse(value)) &&
+                value.length > 15));
+    }
+    onGetFilterFromLocalStorage() {
+        const currentAppStorageData = localStorage.getItem(this.applicationStorageName) || '{}';
+        const currentFilter = JSON.parse(currentAppStorageData).filter?.[this.tableName];
+        if (currentFilter) {
+            this.normalizeDateFilters(currentFilter);
+            this.appliedFilters = currentFilter;
+            // this.onSetFilterToLocalStorage(currentFilter);
+        }
+        else {
+            const defaultFilters = this.buildDefaultFilters();
+            this.appliedFilters = defaultFilters;
+            // this.table?._filter();
+        }
+    }
+    normalizeDateFilters(filters) {
+        // Get all keys from the filters object
+        Object.keys(filters).forEach((key) => {
+            // Remark: Use match mode as between for date column.
+            if (key.toLowerCase().includes('date')) {
+                const field = filters[key];
+                // Ensure the field exists and has a truthy value before converting
+                if (field?.value) {
+                    field.value = Array.isArray(field.value)
+                        ? field.value.map((date) => (date ? new Date(date) : null))
+                        : new Date(field.value);
+                }
+            }
+        });
+    }
+    buildDefaultFilters() {
+        // Remark: Use match mode as between for date column.
+        return this.tableColumns
+            .filter((col) => col.field)
+            .reduce((acc, col) => {
+            acc[col.field] = {
+                value: null,
+                matchMode: col.field.toLowerCase().includes('date')
+                    ? FilterMatchMode.BETWEEN
+                    : FilterMatchMode.STARTS_WITH,
+            };
+            return acc;
+        }, {});
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: PlaTableComponent, isStandalone: true, selector: "pla-table", inputs: { tableLoading: "tableLoading", tableData: "tableData", tableColumns: "tableColumns", tableConfig: "tableConfig", appliedFilters: "appliedFilters", applicationStorageName: "applicationStorageName", tableName: "tableName" }, viewQueries: [{ propertyName: "table", first: true, predicate: ["dt"], descendants: true }], usesOnChanges: true, ngImport: i0, template: "<p-table\n  #dt\n  [rows]=\"tableConfig.rows\"\n  [value]=\"tableLoading ? skeletonTable : tableData\"\n  [totalRecords]=\"\n    tableConfig.tableLazyLoadConfig.islazyLoad\n      ? tableConfig.tableLazyLoadConfig.totalRecord\n      : 0\n  \"\n  [customSort]=\"true\"\n  [filters]=\"appliedFilters\"\n  (onFilter)=\"onChangeFilter($event)\"\n  (sortFunction)=\"customSort($event)\"\n  [paginator]=\"tableConfig.tablePaginatorConfig.isShowPagination\"\n  [rowsPerPageOptions]=\"paginatorConfig.rowsPerPageOptions\"\n  [showCurrentPageReport]=\"paginatorConfig.showCurrentPageReport\"\n  [paginatorDropdownAppendTo]=\"paginatorConfig.paginatorDropdownAppendTo\"\n  [currentPageReportTemplate]=\"paginatorConfig.currentPageReportTemplate\"\n  columnResizeMode=\"fit\"\n  [scrollable]=\"true\"\n  [resizableColumns]=\"true\"\n>\n  <ng-template pTemplate=\"header\">\n    <tr pla-table-header [tableColumns]=\"tableColumns\"></tr>\n    <tr\n      pla-table-filter\n      [tableColumns]=\"tableColumns\"\n      [appliedFilters]=\"appliedFilters\"\n    ></tr>\n  </ng-template>\n\n  <ng-template pTemplate=\"body\" let-rowData let-rowIndex=\"rowIndex\">\n    @if (!tableLoading) {\n      <tr\n        pla-table-body\n        [tableColumns]=\"tableColumns\"\n        [rowData]=\"rowData\"\n        [rowIndex]=\"rowIndex\"\n      ></tr>\n    }\n  </ng-template>\n</p-table>\n", styles: [".p-datatable-filter-constraint-selected{color:var(--color-white)!important}.p-datatable-filter>p-columnfilterformelement{width:100%!important}.p-datatable-filter>p-columnfilterformelement p-datepicker,.p-datatable-filter>p-columnfilterformelement .p-datepicker,.p-datatable-filter>p-columnfilterformelement .p-inputtext{width:100%!important;max-width:none!important}.p-datatable{border:1px solid #eaeaea;border-radius:1.25rem;overflow:hidden}.p-datatable .p-datatable-thead>tr th{background-color:var(--table-header);font-weight:500}.p-datatable .p-datatable-thead>tr:first-child th:first-child{border-top-left-radius:var(--border-radius-table)}.p-datatable .p-datatable-thead>tr:first-child th:last-child{border-top-right-radius:var(--border-radius-table)}.p-datatable .p-datatable-thead>tr>th.p-datatable-column-sorted{background-color:transparent!important;color:inherit!important}.p-datatable .p-datatable-thead>tr>th{height:3.4375rem!important;padding:0rem .625rem!important}.p-datatable .p-datatable-thead>tr>th .p-datepicker-input{width:14.6875rem}.p-datatable .p-datatable-thead>tr>th .p-button-secondary{border:0rem}.p-datatable .p-datatable-thead>tr>th .p-button-secondary:hover{background-color:var(--color-white)!important;box-shadow:none}.p-datatable .p-datatable-header{padding:0rem!important}.p-datatable .p-datatable-thead{z-index:5!important}.p-datatable .p-datatable-thead .p-inputtext{height:2.125rem}.p-datatable .p-datatable-thead .p-select{height:2.125rem!important}.p-datatable .p-datatable-tbody>tr>td[pfrozencolumn]{padding:0}.p-datatable .p-datatable-tbody>tr.p-datatable-row-selected{color:var(--color-white)}.p-datatable table .p-multiselect{min-height:unset!important;height:2.125rem!important}.p-datatable table .p-multiselect .p-multiselect-label-container{align-items:center!important}.p-datatable table .p-multiselect .p-multiselect-label{padding-top:0!important;padding-bottom:0!important}.p-datatable table .p-multiselect .p-multiselect-label.p-placeholder{color:gray!important}.p-datatable table .p-multiselect .p-multiselect-dropdown{padding:0!important;align-items:center!important}.p-datatable .p-button-text:not(:disabled):not(:hover){color:#757575!important}.p-datatable .p-datatable-column-filter-button{display:flex;align-items:center;border:none!important;background-color:transparent!important;padding:.75rem!important;width:1rem!important;max-height:1rem!important}.p-datatable .p-datatable-column-filter-button:hover{box-shadow:none!important;background-color:transparent!important}.p-datatable .p-datatable-filter-add-rule-button,.p-datatable .p-datatable-filter-operator{display:none!important}.p-datatable .p-datepicker{position:relative!important}.p-datatable .p-datepicker .p-icon{cursor:pointer;margin-left:-3.125rem}.p-datatable .p-datepicker .p-inputwrapper{position:relative!important}.p-datatable .p-datatable-sortable-column:not(.p-datatable-column-sorted):hover{background-color:transparent!important;color:inherit!important}.p-datatable .pi{cursor:pointer;padding:0}.p-datatable .pi .pi-filter-fill{color:var(--color-primary-2)!important}.p-datatable .p-paginator{padding:.9375rem 1.25rem .9375rem 1.5rem;border-bottom:1px solid #eaeaea!important;border-bottom-left-radius:1.25rem!important;border-bottom-right-radius:1.25rem!important}.p-datatable .p-paginator .p-paginator-page,.p-datatable .p-paginator .p-paginator-next,.p-datatable .p-paginator .p-paginator-last,.p-datatable .p-paginator .p-paginator-first,.p-datatable .p-paginator .p-paginator-prev{color:#333!important;font-size:1rem;height:1.875rem!important;min-width:1.875rem!important;display:flex;align-items:center;justify-content:center;font-family:var(--font-family);font-weight:400}.p-datatable .p-paginator .p-paginator-page.p-paginator-page-selected{background-color:transparent!important;color:var(--color-primary-1)!important;border-color:var(--color-primary-1)!important;border-width:.0625rem!important;border-style:solid!important;font-family:var(--font-family);font-weight:400}.p-datatable .p-paginator .p-paginator-current{order:-1;margin-right:auto}.p-datatable .p-paginator-rpp-dropdown{height:2.5rem!important}.filter-select.p-select-overlay{max-width:15.625rem!important}.filter-select.p-select-overlay li{text-wrap:auto}.filter-select.p-multiselect-overlay{max-width:15.625rem!important}.filter-select.p-multiselect-overlay li{text-wrap:auto}.p-datatable-tbody>tr>td.p-cell-editing{padding:.25rem}.p-datatable-tbody>tr>td.p-cell-editing .p-inputtext,.p-datatable-tbody>tr>td.p-cell-editing .p-select{height:2.25rem!important;padding:0 .25rem;width:auto;max-width:100%}.p-datatable-tbody>tr>td.p-cell-editing .p-inputtext input,.p-datatable-tbody>tr>td.p-cell-editing .p-select input{max-width:100%}.p-datatable-tbody>tr>td.p-cell-editing .p-select>span{padding-top:0!important;padding-bottom:0!important}.p-datatable-tbody>tr>td.p-cell-editing .p-floatlabel-in>label{display:none!important}.p-datatable-tbody>tr.editable-column-submitted-invalid td:first-child{background-color:#fceaea!important}.p-datatable-tbody>tr.editable-column-submitted-invalid td.p-datatable-frozen-column{background-color:#fceaea!important}.p-datatable-tbody>tr.editable-column-submitted-invalid td:has(.ng-invalid.ng-dirty){background-color:#fceaea!important}.p-datatable-tbody>tr td.invalid-input-cell{background-color:#fceaea!important}.p-datatable-tbody td.disabled-editable-cell{background-color:#f5f5f5!important}.p-datatable-tbody>tr>td>p-cellEditor{word-break:break-all;text-wrap:auto}\n"], dependencies: [{ kind: "ngmodule", type: TableModule }, { kind: "component", type: i1$2.Table, selector: "p-table", inputs: ["frozenColumns", "frozenValue", "style", "styleClass", "tableStyle", "tableStyleClass", "paginator", "pageLinks", "rowsPerPageOptions", "alwaysShowPaginator", "paginatorPosition", "paginatorStyleClass", "paginatorDropdownAppendTo", "paginatorDropdownScrollHeight", "currentPageReportTemplate", "showCurrentPageReport", "showJumpToPageDropdown", "showJumpToPageInput", "showFirstLastIcon", "showPageLinks", "defaultSortOrder", "sortMode", "resetPageOnSort", "selectionMode", "selectionPageOnly", "contextMenuSelection", "contextMenuSelectionMode", "dataKey", "metaKeySelection", "rowSelectable", "rowTrackBy", "lazy", "lazyLoadOnInit", "compareSelectionBy", "csvSeparator", "exportFilename", "filters", "globalFilterFields", "filterDelay", "filterLocale", "expandedRowKeys", "editingRowKeys", "rowExpandMode", "scrollable", "scrollDirection", "rowGroupMode", "scrollHeight", "virtualScroll", "virtualScrollItemSize", "virtualScrollOptions", "virtualScrollDelay", "frozenWidth", "responsive", "contextMenu", "resizableColumns", "columnResizeMode", "reorderableColumns", "loading", "loadingIcon", "showLoader", "rowHover", "customSort", "showInitialSortBadge", "autoLayout", "exportFunction", "exportHeader", "stateKey", "stateStorage", "editMode", "groupRowsBy", "size", "showGridlines", "stripedRows", "groupRowsByOrder", "responsiveLayout", "breakpoint", "paginatorLocale", "value", "columns", "first", "rows", "totalRecords", "sortField", "sortOrder", "multiSortMeta", "selection", "virtualRowHeight", "selectAll"], outputs: ["contextMenuSelectionChange", "selectAllChange", "selectionChange", "onRowSelect", "onRowUnselect", "onPage", "onSort", "onFilter", "onLazyLoad", "onRowExpand", "onRowCollapse", "onContextMenuSelect", "onColResize", "onColReorder", "onRowReorder", "onEditInit", "onEditComplete", "onEditCancel", "onHeaderCheckboxToggle", "sortFunction", "firstChange", "rowsChange", "onStateSave", "onStateRestore"] }, { kind: "directive", type: i2$1.PrimeTemplate, selector: "[pTemplate]", inputs: ["type", "pTemplate"] }, { kind: "ngmodule", type: CommonModule }, { kind: "component", type: PlaTableHeaderComponent, selector: "tr[pla-table-header]", inputs: ["tableColumns"] }, { kind: "component", type: PlaTableFilterComponent, selector: "tr[pla-table-filter]", inputs: ["tableColumns", "appliedFilters"] }, { kind: "component", type: PlaTableBodyComponent, selector: "tr[pla-table-body]", inputs: ["tableColumns", "rowData", "rowIndex"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'pla-table', standalone: true, imports: [
+                        TableModule,
+                        CommonModule,
+                        PlaTableHeaderComponent,
+                        PlaTableFilterComponent,
+                        PlaTableBodyComponent,
+                    ], template: "<p-table\n  #dt\n  [rows]=\"tableConfig.rows\"\n  [value]=\"tableLoading ? skeletonTable : tableData\"\n  [totalRecords]=\"\n    tableConfig.tableLazyLoadConfig.islazyLoad\n      ? tableConfig.tableLazyLoadConfig.totalRecord\n      : 0\n  \"\n  [customSort]=\"true\"\n  [filters]=\"appliedFilters\"\n  (onFilter)=\"onChangeFilter($event)\"\n  (sortFunction)=\"customSort($event)\"\n  [paginator]=\"tableConfig.tablePaginatorConfig.isShowPagination\"\n  [rowsPerPageOptions]=\"paginatorConfig.rowsPerPageOptions\"\n  [showCurrentPageReport]=\"paginatorConfig.showCurrentPageReport\"\n  [paginatorDropdownAppendTo]=\"paginatorConfig.paginatorDropdownAppendTo\"\n  [currentPageReportTemplate]=\"paginatorConfig.currentPageReportTemplate\"\n  columnResizeMode=\"fit\"\n  [scrollable]=\"true\"\n  [resizableColumns]=\"true\"\n>\n  <ng-template pTemplate=\"header\">\n    <tr pla-table-header [tableColumns]=\"tableColumns\"></tr>\n    <tr\n      pla-table-filter\n      [tableColumns]=\"tableColumns\"\n      [appliedFilters]=\"appliedFilters\"\n    ></tr>\n  </ng-template>\n\n  <ng-template pTemplate=\"body\" let-rowData let-rowIndex=\"rowIndex\">\n    @if (!tableLoading) {\n      <tr\n        pla-table-body\n        [tableColumns]=\"tableColumns\"\n        [rowData]=\"rowData\"\n        [rowIndex]=\"rowIndex\"\n      ></tr>\n    }\n  </ng-template>\n</p-table>\n", styles: [".p-datatable-filter-constraint-selected{color:var(--color-white)!important}.p-datatable-filter>p-columnfilterformelement{width:100%!important}.p-datatable-filter>p-columnfilterformelement p-datepicker,.p-datatable-filter>p-columnfilterformelement .p-datepicker,.p-datatable-filter>p-columnfilterformelement .p-inputtext{width:100%!important;max-width:none!important}.p-datatable{border:1px solid #eaeaea;border-radius:1.25rem;overflow:hidden}.p-datatable .p-datatable-thead>tr th{background-color:var(--table-header);font-weight:500}.p-datatable .p-datatable-thead>tr:first-child th:first-child{border-top-left-radius:var(--border-radius-table)}.p-datatable .p-datatable-thead>tr:first-child th:last-child{border-top-right-radius:var(--border-radius-table)}.p-datatable .p-datatable-thead>tr>th.p-datatable-column-sorted{background-color:transparent!important;color:inherit!important}.p-datatable .p-datatable-thead>tr>th{height:3.4375rem!important;padding:0rem .625rem!important}.p-datatable .p-datatable-thead>tr>th .p-datepicker-input{width:14.6875rem}.p-datatable .p-datatable-thead>tr>th .p-button-secondary{border:0rem}.p-datatable .p-datatable-thead>tr>th .p-button-secondary:hover{background-color:var(--color-white)!important;box-shadow:none}.p-datatable .p-datatable-header{padding:0rem!important}.p-datatable .p-datatable-thead{z-index:5!important}.p-datatable .p-datatable-thead .p-inputtext{height:2.125rem}.p-datatable .p-datatable-thead .p-select{height:2.125rem!important}.p-datatable .p-datatable-tbody>tr>td[pfrozencolumn]{padding:0}.p-datatable .p-datatable-tbody>tr.p-datatable-row-selected{color:var(--color-white)}.p-datatable table .p-multiselect{min-height:unset!important;height:2.125rem!important}.p-datatable table .p-multiselect .p-multiselect-label-container{align-items:center!important}.p-datatable table .p-multiselect .p-multiselect-label{padding-top:0!important;padding-bottom:0!important}.p-datatable table .p-multiselect .p-multiselect-label.p-placeholder{color:gray!important}.p-datatable table .p-multiselect .p-multiselect-dropdown{padding:0!important;align-items:center!important}.p-datatable .p-button-text:not(:disabled):not(:hover){color:#757575!important}.p-datatable .p-datatable-column-filter-button{display:flex;align-items:center;border:none!important;background-color:transparent!important;padding:.75rem!important;width:1rem!important;max-height:1rem!important}.p-datatable .p-datatable-column-filter-button:hover{box-shadow:none!important;background-color:transparent!important}.p-datatable .p-datatable-filter-add-rule-button,.p-datatable .p-datatable-filter-operator{display:none!important}.p-datatable .p-datepicker{position:relative!important}.p-datatable .p-datepicker .p-icon{cursor:pointer;margin-left:-3.125rem}.p-datatable .p-datepicker .p-inputwrapper{position:relative!important}.p-datatable .p-datatable-sortable-column:not(.p-datatable-column-sorted):hover{background-color:transparent!important;color:inherit!important}.p-datatable .pi{cursor:pointer;padding:0}.p-datatable .pi .pi-filter-fill{color:var(--color-primary-2)!important}.p-datatable .p-paginator{padding:.9375rem 1.25rem .9375rem 1.5rem;border-bottom:1px solid #eaeaea!important;border-bottom-left-radius:1.25rem!important;border-bottom-right-radius:1.25rem!important}.p-datatable .p-paginator .p-paginator-page,.p-datatable .p-paginator .p-paginator-next,.p-datatable .p-paginator .p-paginator-last,.p-datatable .p-paginator .p-paginator-first,.p-datatable .p-paginator .p-paginator-prev{color:#333!important;font-size:1rem;height:1.875rem!important;min-width:1.875rem!important;display:flex;align-items:center;justify-content:center;font-family:var(--font-family);font-weight:400}.p-datatable .p-paginator .p-paginator-page.p-paginator-page-selected{background-color:transparent!important;color:var(--color-primary-1)!important;border-color:var(--color-primary-1)!important;border-width:.0625rem!important;border-style:solid!important;font-family:var(--font-family);font-weight:400}.p-datatable .p-paginator .p-paginator-current{order:-1;margin-right:auto}.p-datatable .p-paginator-rpp-dropdown{height:2.5rem!important}.filter-select.p-select-overlay{max-width:15.625rem!important}.filter-select.p-select-overlay li{text-wrap:auto}.filter-select.p-multiselect-overlay{max-width:15.625rem!important}.filter-select.p-multiselect-overlay li{text-wrap:auto}.p-datatable-tbody>tr>td.p-cell-editing{padding:.25rem}.p-datatable-tbody>tr>td.p-cell-editing .p-inputtext,.p-datatable-tbody>tr>td.p-cell-editing .p-select{height:2.25rem!important;padding:0 .25rem;width:auto;max-width:100%}.p-datatable-tbody>tr>td.p-cell-editing .p-inputtext input,.p-datatable-tbody>tr>td.p-cell-editing .p-select input{max-width:100%}.p-datatable-tbody>tr>td.p-cell-editing .p-select>span{padding-top:0!important;padding-bottom:0!important}.p-datatable-tbody>tr>td.p-cell-editing .p-floatlabel-in>label{display:none!important}.p-datatable-tbody>tr.editable-column-submitted-invalid td:first-child{background-color:#fceaea!important}.p-datatable-tbody>tr.editable-column-submitted-invalid td.p-datatable-frozen-column{background-color:#fceaea!important}.p-datatable-tbody>tr.editable-column-submitted-invalid td:has(.ng-invalid.ng-dirty){background-color:#fceaea!important}.p-datatable-tbody>tr td.invalid-input-cell{background-color:#fceaea!important}.p-datatable-tbody td.disabled-editable-cell{background-color:#f5f5f5!important}.p-datatable-tbody>tr>td>p-cellEditor{word-break:break-all;text-wrap:auto}\n"] }]
+        }], propDecorators: { table: [{
+                type: ViewChild,
+                args: ['dt']
+            }], tableLoading: [{
+                type: Input,
+                args: [{ required: true }]
+            }], tableData: [{
+                type: Input,
+                args: [{ required: true }]
+            }], tableColumns: [{
+                type: Input,
+                args: [{ required: true }]
+            }], tableConfig: [{
+                type: Input,
+                args: [{ required: true }]
+            }], appliedFilters: [{
+                type: Input
+            }], applicationStorageName: [{
+                type: Input,
+                args: [{ required: true }]
+            }], tableName: [{
+                type: Input,
+                args: [{ required: true }]
             }] } });
 
 class MenuService {
@@ -1191,7 +1654,7 @@ class PlaDialogComponent {
         this.visibleChange.emit(false);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaDialogComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaDialogComponent, isStandalone: true, selector: "pla-dialog", inputs: { visible: "visible", title: "title", message: "message", icon: "icon", actionLabel: "actionLabel", width: "width", height: "height" }, outputs: { visibleChange: "visibleChange", confirm: "confirm", cancel: "cancel" }, ngImport: i0, template: "<p-dialog [modal]=\"true\" [(visible)]=\"visible\" [style]=\"{ width: width, height: height }\">\n\n  <div class=\"flex flex-column items-center gap-4 mb-4\">\n    <img *ngIf=\"icon\" [src]=\"icon\" alt=\"dialog-icon\" style=\"width: 100px; height: 100px;\" />\n    <h2 *ngIf=\"title\">{{ title }}</h2>\n    <p *ngIf=\"message\">{{ message }}</p>\n  </div>\n\n  <ng-content></ng-content>\n\n  <div class=\"flex flex-row justify-content-center gap-2\">\n    <pla-button-outlined [style]=\"{ width: '150px', height: '50px' }\" label=\"Cancel\"\n      (click)=\"onCancel()\"></pla-button-outlined>\n\n    <pla-button-primary-icon [style]=\"{ width: '150px', height: '50px' }\" [label]=\"actionLabel\"\n      (click)=\"onConfirm()\"></pla-button-primary-icon>\n  </div>\n</p-dialog>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: DialogModule }, { kind: "component", type: i2$1.Dialog, selector: "p-dialog", inputs: ["header", "draggable", "resizable", "positionLeft", "positionTop", "contentStyle", "contentStyleClass", "modal", "closeOnEscape", "dismissableMask", "rtl", "closable", "responsive", "appendTo", "breakpoints", "styleClass", "maskStyleClass", "maskStyle", "showHeader", "breakpoint", "blockScroll", "autoZIndex", "baseZIndex", "minX", "minY", "focusOnShow", "maximizable", "keepInViewport", "focusTrap", "transitionOptions", "closeIcon", "closeAriaLabel", "closeTabindex", "minimizeIcon", "maximizeIcon", "closeButtonProps", "maximizeButtonProps", "visible", "style", "position", "role", "content", "contentTemplate", "footerTemplate", "closeIconTemplate", "maximizeIconTemplate", "minimizeIconTemplate", "headlessTemplate"], outputs: ["onShow", "onHide", "visibleChange", "onResizeInit", "onResizeEnd", "onDragEnd", "onMaximize"] }, { kind: "component", type: PlaButtonOutlinedComponent, selector: "pla-button-outlined", inputs: ["disabled", "label", "icon", "styleClass", "style", "iconPos"], outputs: ["onClick"] }, { kind: "component", type: PlaButtonPrimaryIconComponent, selector: "pla-button-primary-icon", inputs: ["styleClass", "style", "disabled", "label", "icon", "iconPos"], outputs: ["onClick"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaDialogComponent, isStandalone: true, selector: "pla-dialog", inputs: { visible: "visible", title: "title", message: "message", icon: "icon", actionLabel: "actionLabel", width: "width", height: "height" }, outputs: { visibleChange: "visibleChange", confirm: "confirm", cancel: "cancel" }, ngImport: i0, template: "<p-dialog [modal]=\"true\" [(visible)]=\"visible\" [style]=\"{ width: width, height: height }\">\n\n  <div class=\"flex flex-column items-center gap-4 mb-4\">\n    <img *ngIf=\"icon\" [src]=\"icon\" alt=\"dialog-icon\" style=\"width: 100px; height: 100px;\" />\n    <h2 *ngIf=\"title\">{{ title }}</h2>\n    <p *ngIf=\"message\">{{ message }}</p>\n  </div>\n\n  <ng-content></ng-content>\n\n  <div class=\"flex flex-row justify-content-center gap-2\">\n    <pla-button-outlined [style]=\"{ width: '150px', height: '50px' }\" label=\"Cancel\"\n      (click)=\"onCancel()\"></pla-button-outlined>\n\n    <pla-button-primary-icon [style]=\"{ width: '150px', height: '50px' }\" [label]=\"actionLabel\"\n      (click)=\"onConfirm()\"></pla-button-primary-icon>\n  </div>\n</p-dialog>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: DialogModule }, { kind: "component", type: i2$2.Dialog, selector: "p-dialog", inputs: ["header", "draggable", "resizable", "positionLeft", "positionTop", "contentStyle", "contentStyleClass", "modal", "closeOnEscape", "dismissableMask", "rtl", "closable", "responsive", "appendTo", "breakpoints", "styleClass", "maskStyleClass", "maskStyle", "showHeader", "breakpoint", "blockScroll", "autoZIndex", "baseZIndex", "minX", "minY", "focusOnShow", "maximizable", "keepInViewport", "focusTrap", "transitionOptions", "closeIcon", "closeAriaLabel", "closeTabindex", "minimizeIcon", "maximizeIcon", "closeButtonProps", "maximizeButtonProps", "visible", "style", "position", "role", "content", "contentTemplate", "footerTemplate", "closeIconTemplate", "maximizeIconTemplate", "minimizeIconTemplate", "headlessTemplate"], outputs: ["onShow", "onHide", "visibleChange", "onResizeInit", "onResizeEnd", "onDragEnd", "onMaximize"] }, { kind: "component", type: PlaButtonOutlinedComponent, selector: "pla-button-outlined", inputs: ["disabled", "label", "icon", "styleClass", "style", "iconPos"], outputs: ["onClick"] }, { kind: "component", type: PlaButtonPrimaryIconComponent, selector: "pla-button-primary-icon", inputs: ["styleClass", "style", "disabled", "label", "icon", "iconPos"], outputs: ["onClick"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaDialogComponent, decorators: [{
             type: Component,
@@ -1237,7 +1700,7 @@ class PlaStepperComponent {
         this.activeIndexChange.emit(index);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaStepperComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaStepperComponent, isStandalone: true, selector: "pla-stepper", inputs: { activeStep: "activeStep", activeIndex: "activeIndex", stepItems: "stepItems", formValid: "formValid", showValidationErrors: "showValidationErrors" }, outputs: { activeIndexChange: "activeIndexChange" }, ngImport: i0, template: "<p-stepper [(value)]=\"activeStep\" class=\"basis-[50rem]\">\n  <p-step-list>\n    <ng-container *ngFor=\"let item of stepItems; index as i\">\n      <p-step [value]=\"i + 1\" *ngIf=\"item['active']\">\n        <ng-template\n          #content\n          let-activateCallback=\"activateCallback\"\n          let-active=\"active\"\n        >\n          <div class=\"flex align-items-center flex-col items-center gap-2\">\n            <button\n              style=\"width: 3.125rem; height: 3.125rem; border-radius: 3.125rem\"\n              type=\"button\"\n              class=\"flex align-items-center justify-content-center border-none cursor-pointer\"\n              [ngClass]=\"{\n                'button-step-error': isStepInvalid(item.id || ''),\n                'button-step-selected': i === activeIndex,\n                'button-step-active': i <= activeIndex,\n                'button-step-default': i > activeIndex,\n              }\"\n              (click)=\"onStepClick(activateCallback, i)\"\n            >\n              <svg-icon\n                [src]=\"item.icon\"\n                [svgStyle]=\"{\n                        'height.rem': 1.75,\n                        'width.rem': 1.75,\n                      }\"\n              >\n              </svg-icon>\n            </button>\n            <span\n              class=\"p-stepper-title text-sm text-color-secondary text-center cursor-pointer\"\n              [ngClass]=\"{\n                'steps-title-error': isStepInvalid(item.id || ''),\n                'selected-step-title': !isStepInvalid(item.id || '') && i === activeIndex,\n                'steps-title-default': !isStepInvalid(item.id || '') && i !== activeIndex,\n              }\"\n              (click)=\"onStepClick(activateCallback, i)\"\n            >\n              {{ item.label }}\n            </span>\n          </div>\n        </ng-template>\n      </p-step>\n    </ng-container>\n  </p-step-list>\n</p-stepper>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: i1$1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "directive", type: i1$1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: StepperModule }, { kind: "component", type: i2$2.Stepper, selector: "p-stepper", inputs: ["value", "linear", "transitionOptions"], outputs: ["valueChange"] }, { kind: "component", type: i2$2.StepList, selector: "p-step-list" }, { kind: "component", type: i2$2.Step, selector: "p-step", inputs: ["value", "disabled"], outputs: ["valueChange"] }, { kind: "ngmodule", type: StepsModule }, { kind: "ngmodule", type: AngularSvgIconModule }, { kind: "component", type: i3$6.SvgIconComponent, selector: "svg-icon", inputs: ["src", "name", "stretch", "applyClass", "svgClass", "class", "viewBox", "svgAriaLabel", "onSVGLoaded", "svgStyle"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaStepperComponent, isStandalone: true, selector: "pla-stepper", inputs: { activeStep: "activeStep", activeIndex: "activeIndex", stepItems: "stepItems", formValid: "formValid", showValidationErrors: "showValidationErrors" }, outputs: { activeIndexChange: "activeIndexChange" }, ngImport: i0, template: "<p-stepper [(value)]=\"activeStep\" class=\"basis-[50rem]\">\n  <p-step-list>\n    <ng-container *ngFor=\"let item of stepItems; index as i\">\n      <p-step [value]=\"i + 1\" *ngIf=\"item['active']\">\n        <ng-template\n          #content\n          let-activateCallback=\"activateCallback\"\n          let-active=\"active\"\n        >\n          <div class=\"flex align-items-center flex-col items-center gap-2\">\n            <button\n              style=\"width: 3.125rem; height: 3.125rem; border-radius: 3.125rem\"\n              type=\"button\"\n              class=\"flex align-items-center justify-content-center border-none cursor-pointer\"\n              [ngClass]=\"{\n                'button-step-error': isStepInvalid(item.id || ''),\n                'button-step-selected': i === activeIndex,\n                'button-step-active': i <= activeIndex,\n                'button-step-default': i > activeIndex,\n              }\"\n              (click)=\"onStepClick(activateCallback, i)\"\n            >\n              <svg-icon\n                [src]=\"item.icon\"\n                [svgStyle]=\"{\n                        'height.rem': 1.75,\n                        'width.rem': 1.75,\n                      }\"\n              >\n              </svg-icon>\n            </button>\n            <span\n              class=\"p-stepper-title text-sm text-color-secondary text-center cursor-pointer\"\n              [ngClass]=\"{\n                'steps-title-error': isStepInvalid(item.id || ''),\n                'selected-step-title': !isStepInvalid(item.id || '') && i === activeIndex,\n                'steps-title-default': !isStepInvalid(item.id || '') && i !== activeIndex,\n              }\"\n              (click)=\"onStepClick(activateCallback, i)\"\n            >\n              {{ item.label }}\n            </span>\n          </div>\n        </ng-template>\n      </p-step>\n    </ng-container>\n  </p-step-list>\n</p-stepper>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: i1$1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "directive", type: i1$1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: StepperModule }, { kind: "component", type: i2$3.Stepper, selector: "p-stepper", inputs: ["value", "linear", "transitionOptions"], outputs: ["valueChange"] }, { kind: "component", type: i2$3.StepList, selector: "p-step-list" }, { kind: "component", type: i2$3.Step, selector: "p-step", inputs: ["value", "disabled"], outputs: ["valueChange"] }, { kind: "ngmodule", type: StepsModule }, { kind: "ngmodule", type: AngularSvgIconModule }, { kind: "component", type: i3$6.SvgIconComponent, selector: "svg-icon", inputs: ["src", "name", "stretch", "applyClass", "svgClass", "class", "viewBox", "svgAriaLabel", "onSVGLoaded", "svgStyle"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaStepperComponent, decorators: [{
             type: Component,
@@ -1255,6 +1718,15 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
             }], activeIndexChange: [{
                 type: Output
             }] } });
+
+var FILTER_TYPE;
+(function (FILTER_TYPE) {
+    FILTER_TYPE["INPUT_TEXT"] = "INPUT_TEXT";
+    FILTER_TYPE["DATE"] = "DATE";
+    FILTER_TYPE["SELECT"] = "SELECT";
+    FILTER_TYPE["MULTI_SELECT"] = "MULTI_SELECT";
+    FILTER_TYPE["CUSTOM_SELECT"] = "CUSTOM_SELECT";
+})(FILTER_TYPE || (FILTER_TYPE = {}));
 
 /**
  * Manages token refresh state and session invalidation to prevent concurrent refresh requests
@@ -1348,7 +1820,7 @@ class LoginService {
         localStorage.setItem('logout-event', Date.now().toString());
         return this.http.post(uamBaseApiUrl + `v1/appauth/logout`, body);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, deps: [{ token: i1$2.HttpClient }, { token: AuthStateService }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, deps: [{ token: i1$3.HttpClient }, { token: AuthStateService }], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, providedIn: 'root' });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LoginService, decorators: [{
@@ -1356,7 +1828,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
             args: [{
                     providedIn: 'root',
                 }]
-        }], ctorParameters: () => [{ type: i1$2.HttpClient }, { type: AuthStateService }] });
+        }], ctorParameters: () => [{ type: i1$3.HttpClient }, { type: AuthStateService }] });
 
 class UserProfileService {
     http;
@@ -1372,7 +1844,7 @@ class UserProfileService {
         };
         return this.http.get(uamBaseApiUrl + 'v2/users/get-user-byUsername', { params: data });
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: UserProfileService, deps: [{ token: i1$2.HttpClient }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: UserProfileService, deps: [{ token: i1$3.HttpClient }], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: UserProfileService, providedIn: 'root' });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: UserProfileService, decorators: [{
@@ -1380,7 +1852,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
             args: [{
                     providedIn: 'root',
                 }]
-        }], ctorParameters: () => [{ type: i1$2.HttpClient }] });
+        }], ctorParameters: () => [{ type: i1$3.HttpClient }] });
 
 class AccessMenuGuard {
     menuService = inject(MenuService);
@@ -1847,5 +2319,5 @@ const AUTH_INTERCEPTOR_PROVIDER = {
  * Generated bundle index. Do not edit.
  */
 
-export { AUTH_INTERCEPTOR_PROVIDER, AccessMenuGuard, AuthStateService, CharCountDirective, ErrorModalService, HasMenuUAMDirective, HasPermissionDirective, LoginService, MenuService, OverlayTextDirective, PermissionService, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormSelectObsComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTopbar, TYPE, UserProfileService, authInterceptor, messageModels };
+export { AUTH_INTERCEPTOR_PROVIDER, AccessMenuGuard, AuthStateService, CharCountDirective, ErrorModalService, FILTER_TYPE, HasMenuUAMDirective, HasPermissionDirective, LoginService, MenuService, OverlayTextDirective, PermissionService, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormSelectObsComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTableComponent, PlaTopbar, TYPE, UserProfileService, authInterceptor, messageModels };
 //# sourceMappingURL=pla-shared-lib.mjs.map

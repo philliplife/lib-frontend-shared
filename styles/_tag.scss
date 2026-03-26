@@ -1,0 +1,55 @@
+.p-tag {
+  &.p-tag-primary {
+    border: 1px solid
+      color-mix(in srgb, var(--p-tag-primary-color), 25%, transparent);
+    border-radius: 0.375rem;
+  }
+
+  &.p-tag-secondary {
+    border: 1px solid
+      color-mix(in srgb, var(--p-tag-secondary-color) 25%, transparent);
+    border-radius: 0.375rem;
+  }
+
+  &.p-tag-success {
+    border: 1px solid
+      color-mix(in srgb, var(--p-tag-success-color) 25%, transparent);
+    border-radius: 0.375rem;
+  }
+
+  &.p-tag-info {
+    border: 1px solid
+      color-mix(in srgb, var(--p-tag-info-color) 25%, transparent);
+    border-radius: 0.375rem;
+  }
+
+  &.p-tag-warn {
+    border: 1px solid
+      color-mix(in srgb, var(--p-tag-warn-color) 25%, transparent);
+    border-radius: 0.375rem;
+  }
+
+  &.p-tag-danger {
+    border: 1px solid
+      color-mix(in srgb, var(--p-tag-danger-color) 25%, transparent);
+    border-radius: 0.375rem;
+  }
+
+  &.p-tag-contrast {
+    border: 1px solid
+      color-mix(in srgb, var(--p-tag-contrast-color) 25%, transparent);
+    border-radius: 0.375rem;
+  }
+
+  > .pi-circle-fill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  > .pi-circle-fill:before {
+    font-size: 0.5rem;
+    -webkit-text-stroke: 0.125rem white;
+  }
+}

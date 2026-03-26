@@ -1,0 +1,40 @@
+.p-menu-list {
+  padding: 0.4rem !important;
+
+  .p-menu-item-content:hover {
+    background-color: var(--select-background-color) !important;
+  }
+}
+
+.p-tieredmenu > p-tieredmenusub {
+  .p-tieredmenu-item-content {
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.4rem;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--select-background-color) !important;
+      cursor: pointer;
+    }
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  .p-tieredmenu-submenu {
+    left: -100% !important;
+  }
+
+  &:not(:has(*)) {
+    display: none;
+  }
+}
+
+.p-tieredmenu-mobile.p-tieredmenu-overlay {
+  /* Reset position to the absolute behavior of the desktop version */
+  position: absolute !important;
+}

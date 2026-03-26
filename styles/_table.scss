@@ -1,0 +1,289 @@
+.p-datatable-filter-constraint-selected {
+  color: var(--color-white) !important;
+}
+
+.p-datatable-filter {
+  > p-columnfilterformelement {
+    width: 100% !important;
+
+    p-datepicker,
+    .p-datepicker,
+    .p-inputtext {
+      width: 100% !important;
+      max-width: none !important;
+    }
+  }
+}
+
+.p-datatable {
+  border: 1px solid #eaeaea;
+  border-radius: 1.25rem;
+  overflow: hidden;
+
+  .p-datatable-thead > tr th {
+    background-color: var(--table-header);
+    font-weight: 500;
+  }
+
+  .p-datatable-thead > tr:first-child th:first-child {
+    border-top-left-radius: var(--border-radius-table);
+  }
+
+  .p-datatable-thead > tr:first-child th:last-child {
+    border-top-right-radius: var(--border-radius-table);
+  }
+
+  .p-datatable-thead > tr > th.p-datatable-column-sorted {
+    background-color: transparent !important;
+    color: inherit !important;
+  }
+
+  .p-datatable-thead > tr > th {
+    height: 3.4375rem !important;
+    padding: 0rem 0.625rem !important;
+
+    .p-datepicker-input {
+      width: 14.6875rem;
+    }
+
+    .p-button-secondary {
+      border: 0rem;
+    }
+
+    .p-button-secondary:hover {
+      background-color: var(--color-white) !important;
+      box-shadow: none;
+    }
+  }
+
+  .p-datatable-header {
+    padding: 0rem !important;
+  }
+
+  .p-datatable-thead {
+    // Remark: z-index of table header should not be 0
+    // It will break the logic of p-table of primeNG for frozen column case.
+    z-index: 5 !important;
+
+    .p-inputtext {
+      height: 2.125rem;
+    }
+
+    .p-select {
+      height: 2.125rem !important;
+    }
+  }
+
+  .p-datatable-tbody > tr > td[pfrozencolumn] {
+    padding: var(--p-datatable-body-cell-padding);
+  }
+
+  .p-datatable-tbody > tr.p-datatable-row-selected {
+    color: var(--color-white);
+  }
+
+  // .p-datatable-column-filter-button.p-button
+  //   .p-button-text:not(:disabled):not(:hover) {
+  //   color: red !important;
+  // }
+  table .p-multiselect {
+    min-height: unset !important;
+    // max-width: 12rem !important;
+    height: 2.125rem !important;
+
+    .p-multiselect-label-container {
+      align-items: center !important;
+    }
+
+    .p-multiselect-label {
+      padding-top: 0px !important;
+      padding-bottom: 0px !important;
+    }
+
+    .p-multiselect-label.p-placeholder {
+      color: #808080 !important;
+    }
+
+    .p-multiselect-dropdown {
+      padding: 0px !important;
+      align-items: center !important;
+    }
+  }
+
+  .p-button-text:not(:disabled):not(:hover) {
+    color: #757575 !important;
+  }
+
+  .p-datatable-column-filter-button {
+    display: flex;
+    align-items: center;
+    border: none !important;
+    background-color: transparent !important;
+    padding: 0.75rem !important;
+    width: 1rem !important;
+    max-height: 1rem !important;
+
+    &:hover {
+      box-shadow: none !important;
+      background-color: transparent !important;
+    }
+  }
+
+  .p-datatable-filter-add-rule-button {
+    // Remove add rule button from filter
+    display: none !important;
+  }
+
+  .p-datatable-filter-operator {
+    display: none !important;
+  }
+
+  .p-datepicker {
+    position: relative !important;
+
+    /* Ensure it's positioned correctly */
+    .p-icon {
+      cursor: pointer;
+      margin-left: -3.125rem;
+    }
+  }
+
+  .p-datepicker .p-inputwrapper {
+    position: relative !important;
+  }
+
+  .p-datatable-sortable-column:not(.p-datatable-column-sorted):hover {
+    background-color: transparent !important;
+    color: inherit !important;
+  }
+
+  .pi {
+    cursor: pointer;
+    padding: 0px;
+
+    .pi-filter-fill {
+      color: var(--color-primary-2) !important;
+    }
+  }
+
+  .p-paginator {
+    padding: 0.9375rem 1.25rem 0.9375rem 1.5rem;
+
+    .p-paginator-page,
+    .p-paginator-next,
+    .p-paginator-last,
+    .p-paginator-first,
+    .p-paginator-prev {
+      color: #333 !important;
+      font-size: 1rem;
+      height: 1.875rem !important;
+      min-width: 1.875rem !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-family);
+      font-weight: 400;
+    }
+
+    .p-paginator-page.p-paginator-page-selected {
+      background-color: transparent !important;
+      color: var(--color-primary-1) !important;
+      border-color: var(--color-primary-1) !important;
+      border-width: 0.0625rem !important;
+      border-style: solid !important;
+      font-family: var(--font-family);
+      font-weight: 400;
+    }
+
+    border-bottom: 1px solid #eaeaea !important;
+    border-bottom-left-radius: 1.25rem !important;
+    border-bottom-right-radius: 1.25rem !important;
+
+    .p-paginator-current {
+      order: -1; // move to left side
+      margin-right: auto;
+    }
+  }
+
+  .p-paginator-rpp-dropdown {
+    height: 2.5rem !important;
+  }
+}
+
+.filter-select.p-select-overlay {
+  max-width: 15.625rem !important;
+
+  li {
+    text-wrap: auto;
+  }
+}
+
+.filter-select.p-multiselect-overlay {
+  max-width: 15.625rem !important;
+
+  li {
+    text-wrap: auto;
+  }
+}
+
+.p-datatable-tbody > tr > td.p-cell-editing {
+  padding: 0.25rem;
+
+  .p-inputtext,
+  .p-select {
+    height: 2.25rem !important;
+    padding: 0 0.25rem;
+    width: auto;
+    max-width: 100%;
+
+    input {
+      max-width: 100%;
+    }
+  }
+
+  .p-select > span {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .p-floatlabel-in > label {
+    display: none !important;
+  }
+}
+
+// .p-datatable-tbody>tr.ng-invalid.ng-dirty.editable-column-submitted-invalid {
+//   background-color: #fceaea !important;
+// }
+
+.p-datatable-tbody > tr.editable-column-submitted-invalid td {
+  &:first-child {
+    background-color: #fceaea !important;
+  }
+
+  &.p-datatable-frozen-column {
+    background-color: #fceaea !important;
+  }
+
+  &:has(.ng-invalid.ng-dirty) {
+    background-color: #fceaea !important;
+  }
+}
+
+.p-datatable-tbody > tr td.invalid-input-cell {
+  background-color: #fceaea !important;
+}
+
+.p-datatable-tbody td.disabled-editable-cell {
+  background-color: #f5f5f5 !important;
+}
+
+// .p-datatable-tbody
+//   > tr.ng-invalid.ng-dirty.editable-column-submitted-invalid
+//   td.disabled-editable-cell {
+//   background-color: #ebd9d9 !important;
+// }
+
+.p-datatable-tbody > tr > td > p-cellEditor {
+  word-break: break-all;
+  text-wrap: auto;
+}
