@@ -25,6 +25,7 @@ export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges
     onGetFilterFromLocalStorage(): void;
     private normalizeDateFilters;
     private buildDefaultFilters;
+    private initFilterMatchMode;
     onChangeTableFilters(event: TableLazyLoadEvent): void;
     getSortOrder(sortOrder: number | undefined | null, sortField: string | undefined): 'ASC' | 'DESC';
     transformFilterValue(input: Record<string, FilterMetadata | undefined>): IFilterColumn[];

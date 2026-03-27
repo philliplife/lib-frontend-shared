@@ -1208,31 +1208,11 @@ class PlaTableFilterMultiSelectComponent {
     appliedFilters = {};
     operatorOptions = [];
     ngOnInit() { }
-    onSelectFilter(value, field, callback, searchField, isMultiSelect) {
-        const fieldKey = searchField || field;
-        const newFilters = { ...this.appliedFilters };
-        newFilters[fieldKey] = {
-            value,
-            matchMode: isMultiSelect ? 'in' : 'startWith',
-        };
-        const filter = {
-            filters: newFilters,
-        };
-        // callback(value);
-        // TODO: Need to implement
-        console.log('testValue1.1', filter);
-        // this.pageChange(filter);
-        // const dataState = this.dataState;
-        // Object.assign(dataState, {
-        //   filter: {
-        //     ...dataState.filter,
-        //     [this.name]: newFilters,
-        //   },
-        // });
-        // this.stateManagement.setData(dataState);
+    onSelectFilter(value, callback) {
+        callback(value);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableFilterMultiSelectComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaTableFilterMultiSelectComponent, isStandalone: true, selector: "pla-table-filter-multi-select", inputs: { column: "column", appliedFilters: "appliedFilters", operatorOptions: "operatorOptions" }, ngImport: i0, template: "<p-columnFilter\n  type=\"custom\"\n  [field]=\"column.field\"\n  matchMode=\"equals\"\n  [showMenu]=\"false\"\n  [showClearButton]=\"false\"\n  [matchModeOptions]=\"operatorOptions\"\n>\n  <ng-template pTemplate=\"filter\" let-value let-filterCallback=\"filterCallback\">\n    <!-- {{appliedFilters?.[header.searchField]?.value}} -->\n\n    <p-multiselect\n      (ngModelChange)=\"\n        onSelectFilter(\n          $event,\n          column.field,\n          filterCallback,\n          column.searchField,\n          true\n        )\n      \"\n      [ngModel]=\"appliedFilters[column.searchField || '']?.value\"\n      [options]=\"column.options\"\n      optionLabel=\"name\"\n      optionValue=\"code\"\n      [placeholder]=\"`Select ${column.title}`\"\n      filter=\"true\"\n      (onFilter)=\"column?.searchFunction($event)\"\n      [loading]=\"column.loading\"\n      [appendTo]=\"'body'\"\n      styleClass=\"w-full\"\n      class=\"status-filter\"\n      panelStyleClass=\"filter-select custom-filter-input\"\n      [ngStyle]=\"{ 'min-width': column.filterWidth }\"\n    />\n  </ng-template>\n</p-columnFilter>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: TableModule }, { kind: "directive", type: i2$1.PrimeTemplate, selector: "[pTemplate]", inputs: ["type", "pTemplate"] }, { kind: "component", type: i1$2.ColumnFilter, selector: "p-columnFilter", inputs: ["field", "type", "display", "showMenu", "matchMode", "operator", "showOperator", "showClearButton", "showApplyButton", "showMatchModes", "showAddButton", "hideOnClear", "placeholder", "matchModeOptions", "maxConstraints", "minFractionDigits", "maxFractionDigits", "prefix", "suffix", "locale", "localeMatcher", "currency", "currencyDisplay", "useGrouping", "showButtons", "ariaLabel", "filterButtonProps"], outputs: ["onShow", "onHide"] }, { kind: "ngmodule", type: IconFieldModule }, { kind: "ngmodule", type: InputIconModule }, { kind: "ngmodule", type: InputTextModule }, { kind: "ngmodule", type: MultiSelectModule }, { kind: "component", type: i4$3.MultiSelect, selector: "p-multiSelect, p-multiselect, p-multi-select", inputs: ["id", "ariaLabel", "style", "styleClass", "panelStyle", "panelStyleClass", "inputId", "disabled", "fluid", "readonly", "group", "filter", "filterPlaceHolder", "filterLocale", "overlayVisible", "tabindex", "variant", "appendTo", "dataKey", "name", "ariaLabelledBy", "displaySelectedLabel", "maxSelectedLabels", "selectionLimit", "selectedItemsLabel", "showToggleAll", "emptyFilterMessage", "emptyMessage", "resetFilterOnHide", "dropdownIcon", "chipIcon", "optionLabel", "optionValue", "optionDisabled", "optionGroupLabel", "optionGroupChildren", "showHeader", "filterBy", "scrollHeight", "lazy", "virtualScroll", "loading", "virtualScrollItemSize", "loadingIcon", "virtualScrollOptions", "overlayOptions", "ariaFilterLabel", "filterMatchMode", "tooltip", "tooltipPosition", "tooltipPositionStyle", "tooltipStyleClass", "autofocusFilter", "display", "autocomplete", "size", "showClear", "autofocus", "autoZIndex", "baseZIndex", "showTransitionOptions", "hideTransitionOptions", "defaultLabel", "placeholder", "options", "filterValue", "itemSize", "selectAll", "focusOnHover", "filterFields", "selectOnFocus", "autoOptionFocus"], outputs: ["onChange", "onFilter", "onFocus", "onBlur", "onClick", "onClear", "onPanelShow", "onPanelHide", "onLazyLoad", "onRemove", "onSelectAllChange"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaTableFilterMultiSelectComponent, isStandalone: true, selector: "pla-table-filter-multi-select", inputs: { column: "column", appliedFilters: "appliedFilters", operatorOptions: "operatorOptions" }, ngImport: i0, template: "<p-columnFilter\n  type=\"custom\"\n  [field]=\"column.field\"\n  matchMode=\"equals\"\n  [showMenu]=\"false\"\n  [showClearButton]=\"false\"\n  [matchModeOptions]=\"operatorOptions\"\n>\n  <ng-template pTemplate=\"filter\" let-value let-filterCallback=\"filterCallback\">\n    <!-- {{appliedFilters?.[header.searchField]?.value}} -->\n\n    <p-multiselect\n      (ngModelChange)=\"onSelectFilter($event, filterCallback)\"\n      [ngModel]=\"appliedFilters[column.searchField || '']?.value\"\n      [options]=\"column.options\"\n      optionLabel=\"name\"\n      optionValue=\"code\"\n      [placeholder]=\"`Select ${column.title}`\"\n      filter=\"true\"\n      (onFilter)=\"column?.searchFunction($event)\"\n      [loading]=\"column.loading\"\n      [appendTo]=\"'body'\"\n      styleClass=\"w-full\"\n      class=\"status-filter\"\n      panelStyleClass=\"filter-select custom-filter-input\"\n      [ngStyle]=\"{ 'min-width': column.filterWidth }\"\n    />\n  </ng-template>\n</p-columnFilter>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: TableModule }, { kind: "directive", type: i2$1.PrimeTemplate, selector: "[pTemplate]", inputs: ["type", "pTemplate"] }, { kind: "component", type: i1$2.ColumnFilter, selector: "p-columnFilter", inputs: ["field", "type", "display", "showMenu", "matchMode", "operator", "showOperator", "showClearButton", "showApplyButton", "showMatchModes", "showAddButton", "hideOnClear", "placeholder", "matchModeOptions", "maxConstraints", "minFractionDigits", "maxFractionDigits", "prefix", "suffix", "locale", "localeMatcher", "currency", "currencyDisplay", "useGrouping", "showButtons", "ariaLabel", "filterButtonProps"], outputs: ["onShow", "onHide"] }, { kind: "ngmodule", type: IconFieldModule }, { kind: "ngmodule", type: InputIconModule }, { kind: "ngmodule", type: InputTextModule }, { kind: "ngmodule", type: MultiSelectModule }, { kind: "component", type: i4$3.MultiSelect, selector: "p-multiSelect, p-multiselect, p-multi-select", inputs: ["id", "ariaLabel", "style", "styleClass", "panelStyle", "panelStyleClass", "inputId", "disabled", "fluid", "readonly", "group", "filter", "filterPlaceHolder", "filterLocale", "overlayVisible", "tabindex", "variant", "appendTo", "dataKey", "name", "ariaLabelledBy", "displaySelectedLabel", "maxSelectedLabels", "selectionLimit", "selectedItemsLabel", "showToggleAll", "emptyFilterMessage", "emptyMessage", "resetFilterOnHide", "dropdownIcon", "chipIcon", "optionLabel", "optionValue", "optionDisabled", "optionGroupLabel", "optionGroupChildren", "showHeader", "filterBy", "scrollHeight", "lazy", "virtualScroll", "loading", "virtualScrollItemSize", "loadingIcon", "virtualScrollOptions", "overlayOptions", "ariaFilterLabel", "filterMatchMode", "tooltip", "tooltipPosition", "tooltipPositionStyle", "tooltipStyleClass", "autofocusFilter", "display", "autocomplete", "size", "showClear", "autofocus", "autoZIndex", "baseZIndex", "showTransitionOptions", "hideTransitionOptions", "defaultLabel", "placeholder", "options", "filterValue", "itemSize", "selectAll", "focusOnHover", "filterFields", "selectOnFocus", "autoOptionFocus"], outputs: ["onChange", "onFilter", "onFocus", "onBlur", "onClick", "onClear", "onPanelShow", "onPanelHide", "onLazyLoad", "onRemove", "onSelectAllChange"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableFilterMultiSelectComponent, decorators: [{
             type: Component,
@@ -1245,7 +1225,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                         InputTextModule,
                         MultiSelectModule,
                         FormsModule,
-                    ], template: "<p-columnFilter\n  type=\"custom\"\n  [field]=\"column.field\"\n  matchMode=\"equals\"\n  [showMenu]=\"false\"\n  [showClearButton]=\"false\"\n  [matchModeOptions]=\"operatorOptions\"\n>\n  <ng-template pTemplate=\"filter\" let-value let-filterCallback=\"filterCallback\">\n    <!-- {{appliedFilters?.[header.searchField]?.value}} -->\n\n    <p-multiselect\n      (ngModelChange)=\"\n        onSelectFilter(\n          $event,\n          column.field,\n          filterCallback,\n          column.searchField,\n          true\n        )\n      \"\n      [ngModel]=\"appliedFilters[column.searchField || '']?.value\"\n      [options]=\"column.options\"\n      optionLabel=\"name\"\n      optionValue=\"code\"\n      [placeholder]=\"`Select ${column.title}`\"\n      filter=\"true\"\n      (onFilter)=\"column?.searchFunction($event)\"\n      [loading]=\"column.loading\"\n      [appendTo]=\"'body'\"\n      styleClass=\"w-full\"\n      class=\"status-filter\"\n      panelStyleClass=\"filter-select custom-filter-input\"\n      [ngStyle]=\"{ 'min-width': column.filterWidth }\"\n    />\n  </ng-template>\n</p-columnFilter>\n" }]
+                    ], template: "<p-columnFilter\n  type=\"custom\"\n  [field]=\"column.field\"\n  matchMode=\"equals\"\n  [showMenu]=\"false\"\n  [showClearButton]=\"false\"\n  [matchModeOptions]=\"operatorOptions\"\n>\n  <ng-template pTemplate=\"filter\" let-value let-filterCallback=\"filterCallback\">\n    <!-- {{appliedFilters?.[header.searchField]?.value}} -->\n\n    <p-multiselect\n      (ngModelChange)=\"onSelectFilter($event, filterCallback)\"\n      [ngModel]=\"appliedFilters[column.searchField || '']?.value\"\n      [options]=\"column.options\"\n      optionLabel=\"name\"\n      optionValue=\"code\"\n      [placeholder]=\"`Select ${column.title}`\"\n      filter=\"true\"\n      (onFilter)=\"column?.searchFunction($event)\"\n      [loading]=\"column.loading\"\n      [appendTo]=\"'body'\"\n      styleClass=\"w-full\"\n      class=\"status-filter\"\n      panelStyleClass=\"filter-select custom-filter-input\"\n      [ngStyle]=\"{ 'min-width': column.filterWidth }\"\n    />\n  </ng-template>\n</p-columnFilter>\n" }]
         }], propDecorators: { column: [{
                 type: Input
             }], appliedFilters: [{
@@ -1479,12 +1459,21 @@ class PlaTableComponent {
             .reduce((acc, col) => {
             acc[col.field] = {
                 value: null,
-                matchMode: col.field.toLowerCase().includes('date')
-                    ? FilterMatchMode.BETWEEN
-                    : FilterMatchMode.STARTS_WITH,
+                matchMode: this.initFilterMatchMode(col?.filterType),
             };
             return acc;
         }, {});
+    }
+    initFilterMatchMode(filterType) {
+        if (filterType === 'date') {
+            return FilterMatchMode.BETWEEN;
+        }
+        else if (filterType === 'multi-select') {
+            return FilterMatchMode.IN;
+        }
+        else {
+            return FilterMatchMode.STARTS_WITH;
+        }
     }
     // Remark: Only For LazyLoad is true.
     onChangeTableFilters(event) {
