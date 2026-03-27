@@ -1079,9 +1079,7 @@ var OPERATOR;
 
 class PlaTableHeaderComponent {
     tableColumns = [];
-    ngOnInit() {
-        console.log('pla-table-header', this.tableColumns);
-    }
+    ngOnInit() { }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableHeaderComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: PlaTableHeaderComponent, isStandalone: true, selector: "tr[pla-table-header]", inputs: { tableColumns: "tableColumns" }, ngImport: i0, template: "@for (column of tableColumns; track $index) {\n  <th\n    [pSortableColumn]=\"column.field ? column.field : 'false'\"\n    [pSortableColumnDisabled]=\"column.isDisableSort\"\n    [id]=\"column.field\"\n    [ngStyle]=\"{\n      'text-align': column.headerAlign,\n      'min-width': column.minWidth,\n      'max-width': column.maxWidth,\n      'border-left': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n      'border-right': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n    }\"\n    [alignFrozen]=\"column.alignFrozen ? column.alignFrozen : 'right'\"\n    pFrozenColumn\n    [frozen]=\"column.frozenColumn ? true : false\"\n  >\n    {{ column.title }}\n    @if (column.field && !column.isDisableSort) {\n      <p-sortIcon [field]=\"column.field\" class=\"ml-2\" />\n    }\n  </th>\n}\n\n<!-- @for (item of frozenColumns; track $index) {\n  @if (frozenColumns.length > 0) {\n    <th\n      [id]=\"item.title\"\n      [ngStyle]=\"{\n        'text-align': 'center',\n        'border-left': '1px solid #e2e8f0',\n      }\"\n      [alignFrozen]=\"item.alignFrozen ? item.alignFrozen : 'right'\"\n      pFrozenColumn\n      [frozen]=\"true\"\n    >\n      @switch (item.columnType) {\n        @case (\"action\") {\n          <span> {{ \"Actions\" }}</span>\n        }\n        @default {\n          <span> {{ item.title }}</span>\n        }\n      }\n    </th>\n  }\n} -->\n", styles: [""], dependencies: [{ kind: "ngmodule", type: TableModule }, { kind: "directive", type: i1$2.SortableColumn, selector: "[pSortableColumn]", inputs: ["pSortableColumn", "pSortableColumnDisabled"] }, { kind: "directive", type: i1$2.FrozenColumn, selector: "[pFrozenColumn]", inputs: ["frozen", "alignFrozen"] }, { kind: "component", type: i1$2.SortIcon, selector: "p-sortIcon", inputs: ["field"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }] });
 }
@@ -1097,9 +1095,7 @@ class PlaTableBodyComponent {
     tableColumns = [];
     rowData;
     rowIndex = 0;
-    ngOnInit() {
-        console.log('pla-table-body', this.tableColumns);
-    }
+    ngOnInit() { }
     getSeverity(status) {
         switch (status) {
             case 'secondary':
@@ -1154,9 +1150,7 @@ class PlaTableFilterInputTextComponent {
     ngOnInit() {
         this.initTextSearch();
     }
-    ngOnChanges() {
-        console.log('pla-table-filter-input-text', this.appliedFilters);
-    }
+    ngOnChanges() { }
     initTextSearch() {
         this.filterTextSubject
             .pipe(debounceTime(1500))
@@ -1213,9 +1207,7 @@ class PlaTableFilterMultiSelectComponent {
     };
     appliedFilters = {};
     operatorOptions = [];
-    ngOnInit() {
-        console.log('pla-table-filter-multi-select', this.column);
-    }
+    ngOnInit() { }
     onSelectFilter(value, field, callback, searchField, isMultiSelect) {
         const fieldKey = searchField || field;
         const newFilters = { ...this.appliedFilters };
@@ -1227,7 +1219,7 @@ class PlaTableFilterMultiSelectComponent {
             filters: newFilters,
         };
         // callback(value);
-        // TODO:
+        // TODO: Need to implement
         console.log('testValue1.1', filter);
         // this.pageChange(filter);
         // const dataState = this.dataState;
@@ -1271,9 +1263,7 @@ class PlaTableFilterDateComponent {
         title: '',
         columnType: 'date',
     };
-    ngOnInit() {
-        console.log('pla-table-filter-date', this.column);
-    }
+    ngOnInit() { }
     onDateChange(event, filterCallback) {
         if (Array.isArray(event) && event[0] && event[1]) {
             const startDate = new Date(event[0]);
@@ -1320,9 +1310,7 @@ class PlaTableFilterComponent {
         { label: 'Equals', value: FilterMatchMode.EQUALS },
         { label: 'Not Equals', value: FilterMatchMode.NOT_EQUALS },
     ];
-    ngOnInit() {
-        console.log('pla-table-filter', this.tableColumns);
-    }
+    ngOnInit() { }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableFilterComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: PlaTableFilterComponent, isStandalone: true, selector: "tr[pla-table-filter]", inputs: { tableColumns: "tableColumns", appliedFilters: "appliedFilters" }, ngImport: i0, template: "@for (column of tableColumns; track $index) {\n  <th\n    [id]=\"column.field\"\n    [ngStyle]=\"{\n      'text-align': column.headerAlign,\n      'min-width': column.minWidth,\n      'max-width': column.maxWidth,\n      'border-left': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n      'border-right': column.frozenColumn ? '1px solid #e2e8f0' : 'none',\n    }\"\n    [alignFrozen]=\"column.alignFrozen ? column.alignFrozen : 'right'\"\n    pFrozenColumn\n    [frozen]=\"column.frozenColumn ? true : false\"\n  >\n    @if (column.isDisplayFilter) {\n      <!-- TODO: Filter Here -->\n      @switch (column.filterType) {\n        @case (\"input-text\") {\n          <pla-table-filter-input-text\n            [column]=\"column\"\n            [appliedFilters]=\"appliedFilters\"\n            [operatorOptions]=\"operatorOptions\"\n          />\n        }\n        @case (\"multi-select\") {\n          <pla-table-filter-multi-select\n            [column]=\"column\"\n            [appliedFilters]=\"appliedFilters\"\n            [operatorOptions]=\"operatorOptions\"\n          />\n        }\n        @case (\"date\") {\n          <pla-table-filter-date\n            [column]=\"column\"\n            [appliedFilters]=\"appliedFilters\"\n          />\n        }\n        @default {\n          <pla-table-filter-input-text\n            [column]=\"column\"\n            [appliedFilters]=\"appliedFilters\"\n            [operatorOptions]=\"operatorOptions\"\n          />\n        }\n      }\n    }\n  </th>\n}\n\n<!-- @for (item of frozenColumns; track $index) {\n  @if (frozenColumns.length > 0) {\n    <th\n      id=\"action\"\n      [ngStyle]=\"{\n        'text-align': 'center',\n        'border-left': '1px solid #e2e8f0',\n      }\"\n      [alignFrozen]=\"item.alignFrozen ? item.alignFrozen : 'right'\"\n      pFrozenColumn\n      [frozen]=\"true\"\n    >\n      @switch (item.columnType) {\n        @case (\"action\") {\n          <span></span>\n        }\n        @default {\n          <span> {{ item.title }}</span>\n        }\n      }\n    </th>\n  }\n} -->\n", styles: [""], dependencies: [{ kind: "ngmodule", type: TableModule }, { kind: "directive", type: i1$2.FrozenColumn, selector: "[pFrozenColumn]", inputs: ["frozen", "alignFrozen"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "component", type: PlaTableFilterInputTextComponent, selector: "pla-table-filter-input-text", inputs: ["column", "appliedFilters", "operatorOptions"] }, { kind: "component", type: PlaTableFilterMultiSelectComponent, selector: "pla-table-filter-multi-select", inputs: ["column", "appliedFilters", "operatorOptions"] }, { kind: "component", type: PlaTableFilterDateComponent, selector: "pla-table-filter-date", inputs: ["appliedFilters", "column"] }] });
 }
@@ -1513,8 +1501,7 @@ class PlaTableComponent {
             sortType: this.getSortOrder(event.sortOrder, event.sortField),
             searchParams: { columns: selectedColumnFilter },
         };
-        console.log('testValue1.1', newPayload);
-        // this.onChangeTableFiltersEmit.emit(event);
+        this.onChangeTableFiltersEmit.emit(newPayload);
     }
     getSortOrder(sortOrder, sortField) {
         if (sortField === undefined) {
