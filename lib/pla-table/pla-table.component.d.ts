@@ -1,7 +1,7 @@
-import { OnChanges, OnInit } from '@angular/core';
-import { Table, TableFilterEvent } from 'primeng/table';
-import { SortEvent } from 'primeng/api';
-import { IAppliedFilters, IPaginatorProperties, ITableColumn, ITableConfig } from '../../models/table.interface';
+import { EventEmitter, OnChanges, OnInit } from '@angular/core';
+import { Table, TableFilterEvent, TableLazyLoadEvent } from 'primeng/table';
+import { FilterMetadata, SortEvent } from 'primeng/api';
+import { IAppliedFilters, IFilterColumn, IPaginatorProperties, ITableColumn, ITableConfig } from '../../models/table.interface';
 import * as i0 from "@angular/core";
 export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges {
     table: Table;
@@ -12,6 +12,9 @@ export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges
     appliedFilters: IAppliedFilters;
     applicationStorageName: string;
     tableName: string;
+    onChangeTableFiltersEmit: EventEmitter<any>;
+    first: number;
+    rows: number;
     skeletonTable: number[];
     ngOnInit(): void;
     ngOnChanges(): void;
@@ -22,6 +25,11 @@ export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges
     onGetFilterFromLocalStorage(): void;
     private normalizeDateFilters;
     private buildDefaultFilters;
+    onChangeTableFilters(event: TableLazyLoadEvent): void;
+    getSortOrder(sortOrder: number | undefined | null, sortField: string | undefined): 'ASC' | 'DESC';
+    transformFilterValue(input: Record<string, FilterMetadata | undefined>): IFilterColumn[];
+    formatDate: (dateInput: string | string[]) => string | string[];
+    private getOperator;
     static ɵfac: i0.ɵɵFactoryDeclaration<PlaTableComponent<any>, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<PlaTableComponent<any>, "pla-table", never, { "tableLoading": { "alias": "tableLoading"; "required": true; }; "tableData": { "alias": "tableData"; "required": true; }; "tableColumns": { "alias": "tableColumns"; "required": true; }; "tableConfig": { "alias": "tableConfig"; "required": true; }; "appliedFilters": { "alias": "appliedFilters"; "required": false; }; "applicationStorageName": { "alias": "applicationStorageName"; "required": true; }; "tableName": { "alias": "tableName"; "required": true; }; }, {}, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<PlaTableComponent<any>, "pla-table", never, { "tableLoading": { "alias": "tableLoading"; "required": true; }; "tableData": { "alias": "tableData"; "required": true; }; "tableColumns": { "alias": "tableColumns"; "required": true; }; "tableConfig": { "alias": "tableConfig"; "required": true; }; "appliedFilters": { "alias": "appliedFilters"; "required": false; }; "applicationStorageName": { "alias": "applicationStorageName"; "required": true; }; "tableName": { "alias": "tableName"; "required": true; }; }, { "onChangeTableFiltersEmit": "onChangeTableFiltersEmit"; }, never, never, true, never>;
 }

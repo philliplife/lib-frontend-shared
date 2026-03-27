@@ -76,3 +76,22 @@ export declare enum FILTER_TYPE {
     MULTI_SELECT = "MULTI_SELECT",
     CUSTOM_SELECT = "CUSTOM_SELECT"
 }
+export interface IFilterColumn {
+    fieldName: string;
+    operator: string;
+    value: string | string[];
+}
+export declare enum OPERATOR {
+    EQUAL = "EQUAL",
+    NOT_EQUAL = "NOT_EQUAL",
+    GREATER_THAN = "GREATER_THAN",
+    GREATER_THAN_OR_EQUAL = "GREATER_THAN_OR_EQUAL",
+    LESS_THAN = "LESS_THAN",
+    LESS_THAN_OR_EQUAL = "LESS_THAN_OR_EQUAL",
+    LIKE = "LIKE",
+    STARTS_WITH = "STARTS_WITH",
+    ENDS_WITH = "ENDS_WITH",
+    IN = "IN",
+    IS_NULL = "IS_NULL",
+    IS_NOT_NULL = "IS_NOT_NULL"
+}
