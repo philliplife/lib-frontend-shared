@@ -1574,6 +1574,8 @@ class PlaTableComponent {
     getOperator(operatorString) {
         let operator;
         switch (operatorString?.toLowerCase()) {
+            // Remark: Can use FilterMatchMode from primeNG version 19 but this switch case base on OPERATOR that handle in client-gio.
+            // Can change or add more case later.
             case 'startswith':
                 operator = OPERATOR.STARTS_WITH;
                 break;
