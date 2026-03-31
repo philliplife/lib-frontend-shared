@@ -6,9 +6,10 @@ export declare class PlaFormSelectComponent implements OnInit {
     listFormGroup: FormGroup;
     control: IFormControlDynamic;
     submitted: boolean;
+    index: number | null;
     isRequired: Function;
     classValidate: Function;
     ngOnInit(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<PlaFormSelectComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<PlaFormSelectComponent, "pla-form-select", never, { "listFormGroup": { "alias": "listFormGroup"; "required": true; }; "control": { "alias": "control"; "required": true; }; "submitted": { "alias": "submitted"; "required": true; }; }, {}, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<PlaFormSelectComponent, "pla-form-select", never, { "listFormGroup": { "alias": "listFormGroup"; "required": true; }; "control": { "alias": "control"; "required": true; }; "submitted": { "alias": "submitted"; "required": true; }; "index": { "alias": "index"; "required": false; }; }, {}, never, never, true, never>;
 }
