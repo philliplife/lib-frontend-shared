@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { Observable } from 'rxjs';
 export declare class TYPE {
     static readonly TEXT = "text";
     static readonly NUMBER = "number";
@@ -73,6 +73,7 @@ export interface IFormControlDynamic {
     readonlyInput?: boolean;
     showButtonBar?: boolean;
     stateOptions?: any[];
+    onInput?: (event: unknown) => void;
     onBlur?: Function;
     onChange?: Function;
     onHide?: Function;
