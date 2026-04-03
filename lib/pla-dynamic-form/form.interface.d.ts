@@ -1,3 +1,4 @@
+import { AbstractControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 export declare class TYPE {
     static readonly TEXT = "text";
@@ -84,6 +85,7 @@ export interface IFormControlDynamic {
     disabled?: boolean;
     onFilter?: Function;
     input?: Function;
+    onFormChangeText?: (input: unknown, controlDesign: unknown, formcontrol: AbstractControl) => void;
     appCharCount?: boolean;
     inputTypeCount?: 'input' | 'textarea';
     floatingSuffix?: string;
