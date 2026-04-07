@@ -74,7 +74,7 @@ export interface IFormControlDynamic {
     readonlyInput?: boolean;
     showButtonBar?: boolean;
     stateOptions?: any[];
-    onInput?: (event: unknown) => void;
+    onInput?: (event: unknown, index: number | null) => void;
     onBlur?: Function;
     onChange?: Function;
     onHide?: Function;

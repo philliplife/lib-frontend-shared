@@ -7,11 +7,13 @@ export declare class PlaFormInputTextComponent {
     listFormGroup: FormGroup;
     formControl: FormControl;
     submitted: boolean;
+    index: number | null;
     valueChange: EventEmitter<any>;
     isRequired: Function;
     classValidate: Function;
     ngOnInit(): void;
     onValueChange(newValue: any): void;
+    onHandle(event: any): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<PlaFormInputTextComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<PlaFormInputTextComponent, "pla-form-input-text", never, { "control": { "alias": "control"; "required": false; }; "listFormGroup": { "alias": "listFormGroup"; "required": false; }; "formControl": { "alias": "formControl"; "required": false; }; "submitted": { "alias": "submitted"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<PlaFormInputTextComponent, "pla-form-input-text", never, { "control": { "alias": "control"; "required": false; }; "listFormGroup": { "alias": "listFormGroup"; "required": false; }; "formControl": { "alias": "formControl"; "required": false; }; "submitted": { "alias": "submitted"; "required": false; }; "index": { "alias": "index"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
 }
