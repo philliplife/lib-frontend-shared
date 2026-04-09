@@ -95,3 +95,12 @@ export declare enum OPERATOR {
     IS_NULL = "IS_NULL",
     IS_NOT_NULL = "IS_NOT_NULL"
 }
+export interface ITableSearchPayload {
+    rowPerPage: number;
+    pageNumber: number;
+    sortBy: string | string[] | null | undefined;
+    sortType: string;
+    searchParams: {
+        columns: IFilterColumn[];
+    };
+}
