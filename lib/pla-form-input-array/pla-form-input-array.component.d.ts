@@ -10,16 +10,17 @@ export declare class PlaFormInputArrayComponent implements OnInit {
     formSections: any[];
     isSubmitted: boolean;
     isLoadingPackage: boolean;
+    isAllowAddAnyPosition: boolean;
     isSmallScreen: boolean;
     constructor(formBuilder: FormBuilder);
     ngOnInit(): void;
-    get items(): FormArray;
     getNestedFormGroup(i: number, key: string): FormGroup;
-    addItem(): void;
+    get items(): FormArray;
+    addItem(index: number): void;
     removeItem(index: number): void;
     private defaultCreateItem;
     onSubmit(): void;
     getControls(): FormGroup[];
     static ɵfac: i0.ɵɵFactoryDeclaration<PlaFormInputArrayComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<PlaFormInputArrayComponent, "pla-form-input-array", never, { "pageState": { "alias": "pageState"; "required": false; }; "form": { "alias": "form"; "required": false; }; "formArrayName": { "alias": "formArrayName"; "required": false; }; "createItemFn": { "alias": "createItemFn"; "required": true; }; "formSections": { "alias": "formSections"; "required": true; }; "isSubmitted": { "alias": "isSubmitted"; "required": false; }; "isLoadingPackage": { "alias": "isLoadingPackage"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<PlaFormInputArrayComponent, "pla-form-input-array", never, { "pageState": { "alias": "pageState"; "required": false; }; "form": { "alias": "form"; "required": false; }; "formArrayName": { "alias": "formArrayName"; "required": false; }; "createItemFn": { "alias": "createItemFn"; "required": true; }; "formSections": { "alias": "formSections"; "required": true; }; "isSubmitted": { "alias": "isSubmitted"; "required": false; }; "isLoadingPackage": { "alias": "isLoadingPackage"; "required": false; }; "isAllowAddAnyPosition": { "alias": "isAllowAddAnyPosition"; "required": false; }; }, {}, never, never, true, never>;
 }
