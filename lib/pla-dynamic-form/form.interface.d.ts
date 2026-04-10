@@ -1,4 +1,5 @@
 import { AbstractControl } from '@angular/forms';
+import { ToggleSwitchChangeEvent } from 'primeng/toggleswitch';
 import { Observable } from 'rxjs';
 export declare class TYPE {
     static readonly TEXT = "text";
@@ -91,4 +92,5 @@ export interface IFormControlDynamic {
     floatingSuffix?: string;
     trueValue?: any;
     falseValue?: any;
+    onFormToggleChange?: (event: ToggleSwitchChangeEvent, controlName?: string) => void;
 }
