@@ -13,7 +13,6 @@ export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges
     applicationStorageName: string;
     tableName: string;
     onChangeTableFiltersEmit: EventEmitter<any>;
-    first: number;
     rows: number;
     skeletonTable: number[];
     ngOnInit(): void;

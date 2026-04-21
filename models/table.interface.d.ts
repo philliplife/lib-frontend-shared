@@ -25,6 +25,7 @@ export interface ITableLazyLoad {
     totalRecord: number;
 }
 export interface ITableConfig {
+    first: number;
     rows: number;
     tableLazyLoadConfig: ITableLazyLoad;
     tablePaginatorConfig: ITablePaginator;
