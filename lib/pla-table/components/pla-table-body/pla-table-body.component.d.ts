@@ -7,7 +7,7 @@ export declare class PlaTableBodyComponent<T = unknown> implements OnInit {
     rowData: any;
     rowIndex: number;
     ngOnInit(): void;
-    getSeverity(status: TagSeverity): "success" | "secondary" | "info" | "contrast" | "warn" | "danger";
+    getSeverity(status: TagSeverity): "success" | "info" | "warn" | "danger" | "secondary" | "contrast";
     static ɵfac: i0.ɵɵFactoryDeclaration<PlaTableBodyComponent<any>, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<PlaTableBodyComponent<any>, "tr[pla-table-body]", never, { "tableColumns": { "alias": "tableColumns"; "required": true; }; "rowData": { "alias": "rowData"; "required": true; }; "rowIndex": { "alias": "rowIndex"; "required": true; }; }, {}, never, never, true, never>;
 }

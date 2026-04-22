@@ -27,6 +27,13 @@ export interface ICommonData {
     id?: string;
     disabled?: boolean;
 }
+export interface IAdditionalButtons {
+    isDisable: boolean;
+    variant: 'outlined' | 'text' | undefined;
+    severity: 'success' | 'info' | 'warn' | 'danger' | 'help' | 'primary' | 'secondary' | 'contrast' | null | undefined;
+    icon: string;
+    bindingFunction?: (index: number) => void;
+}
 export interface IFormControlDynamic {
     type?: 'text' | 'number' | 'decimal' | 'textarea' | 'dropdown' | 'empty' | 'select' | 'select-obs' | 'datepicker' | 'toggleswitch' | 'radio' | 'multiselect' | 'checkbox' | 'input-group' | 'select-button';
     value?: any;
