@@ -1,5 +1,6 @@
 import { AbstractControl } from '@angular/forms';
 import { ToggleSwitchChangeEvent } from 'primeng/toggleswitch';
+import { KeyFilterPattern } from 'primeng/keyfilter';
 import { Observable } from 'rxjs';
 export declare class TYPE {
     static readonly TEXT = "text";
@@ -71,6 +72,7 @@ export interface IFormControlDynamic {
     msgCustom?: string;
     suffix?: string;
     prefix?: string;
+    keyFilter?: KeyFilterPattern | RegExp | string | any;
     cols?: number;
     rows?: number;
     dateFormat?: string;
