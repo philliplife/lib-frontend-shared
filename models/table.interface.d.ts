@@ -51,6 +51,7 @@ export interface ITableColumn<T> {
     emptyValueText?: string;
     dateFormat?: string;
     severity?: TagSeverity;
+    menu_UAM?: string;
     action_Disable?: Record<string, string>;
     action_Buttons?: IActionButton<T>[];
     frozenColumn?: boolean;
