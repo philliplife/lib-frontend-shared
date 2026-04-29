@@ -2265,7 +2265,7 @@ class ErrorModalService {
     }
     showError(message) {
         Swal.fire({
-            title: MSG_MODAL.TITLE_CONFIRM,
+            title: MSG_MODAL.TITLE_WARN,
             text: message,
             icon: MSG_MODAL.ICON_WARN,
             showLoaderOnConfirm: true,
