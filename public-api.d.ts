@@ -32,6 +32,7 @@ export * from './lib/pla-topbar/pla-topbar.component';
 export * from './lib/pla-dialog/pla-dialog.component';
 export * from './lib/pla-stepper/pla-stepper.component';
 export * from './constant/tag-status.data';
+export * from './constant/modal.data';
 export * from './models/response.interface';
 export * from './models/authorization.interface';
 export * from './models/user-profile.interface';
