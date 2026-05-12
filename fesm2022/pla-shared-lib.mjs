@@ -2130,6 +2130,8 @@ class ErrorModalService {
             html: this.buildModalHtml(title, text),
             confirmButtonText: 'Confirm',
             showLoaderOnConfirm: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
             buttonsStyling: false,
             customClass: {
                 popup: 'custom-swal-popup',
