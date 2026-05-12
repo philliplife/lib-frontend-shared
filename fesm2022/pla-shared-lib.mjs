@@ -2134,7 +2134,7 @@ class ErrorModalService {
             customClass: {
                 popup: 'custom-swal-popup',
                 confirmButton: 'p-button btn-small btn-primary-linear-gradient',
-                actions: 'custom-actions-container',
+                actions: 'custom-actions-container hide-background',
             },
             preConfirm: () => this.createDelay(1000),
         }).then((result) => {

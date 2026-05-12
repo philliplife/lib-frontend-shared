@@ -168,6 +168,9 @@ $modal-border-radius: 1.25rem;
 
 div:where(.swal2-container).swal2-backdrop-show:has(
     .custom-swal-icon-container.hide-background
+  ),
+div:where(.swal2-container).swal2-backdrop-show:has(
+    .custom-actions-container.hide-background
   ) {
   background: #efefef;
 }
