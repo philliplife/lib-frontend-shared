@@ -165,3 +165,9 @@ $modal-border-radius: 1.25rem;
     height: 3.75rem;
   }
 }
+
+div:where(.swal2-container).swal2-backdrop-show:has(
+    .custom-swal-icon-container.hide-background
+  ) {
+  background: #efefef;
+}
