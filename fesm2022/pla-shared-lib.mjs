@@ -2117,7 +2117,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
 class ErrorModalService {
     sessionExpiredShown = false;
     authState = inject(AuthStateService);
-    showSessionExpired(uamLoginURL, applilcationStorageKey) {
+    showSessionExpired(uamLoginURL, applilcationStorageKey, envName) {
         // Prevent showing multiple session expired modals
         if (this.sessionExpiredShown) {
             return;
@@ -2141,7 +2141,7 @@ class ErrorModalService {
             preConfirm: () => this.createDelay(1000),
         }).then((result) => {
             if (result.isConfirmed) {
-                this.handleLogout(uamLoginURL, applilcationStorageKey);
+                this.handleLogout(uamLoginURL, applilcationStorageKey, envName);
             }
         });
     }
@@ -2170,24 +2170,10 @@ class ErrorModalService {
     createDelay(ms) {
         return new Promise((resolve) => setTimeout(() => resolve(null), ms));
     }
-    handleLogout(uamLoginURL, applilcationStorageKey) {
+    handleLogout(uamLoginURL, applilcationStorageKey, envName) {
         // Trigger cross-tab logout event
         localStorage.setItem('logout-event', Date.now().toString());
-        this.cleanupAndRedirect(uamLoginURL, applilcationStorageKey);
-        // const username = this.getUsernameFromStorage();
-        // const payload = {
-        //   Username: username,
-        //   ClientId: environment.clientId,
-        // };
-        // this.loginService.logout(payload).subscribe({
-        //   next: () => {
-        //     this.cleanupAndRedirect();
-        //   },
-        //   error: err => {
-        //     console.error('Logout error:', err);
-        //     this.cleanupAndRedirect();
-        //   },
-        // });
+        this.cleanupAndRedirect(uamLoginURL, applilcationStorageKey, envName);
     }
     getUsernameFromStorage() {
         const gioStorage = localStorage.getItem('GIO-STORAGE');
@@ -2200,7 +2186,8 @@ class ErrorModalService {
             return '';
         }
     }
-    cleanupAndRedirect(uamLoginURL, applilcationStorageKey) {
+    cleanupAndRedirect(uamLoginURL, applilcationStorageKey, envName) {
+        localStorage.removeItem(`${envName}_session_id`);
         localStorage.removeItem(applilcationStorageKey);
         setTimeout(() => {
             window.location.href = uamLoginURL;
@@ -2290,7 +2277,6 @@ class HttpErrorHandler {
         AUTH_ERROR_CODE.CLIENT_ID_NOT_MATCHED,
     ]);
     processError(error) {
-        // this.spinner.hide();
         const errorCode = error?.error?.errorCode;
         const isTokenExpired = errorCode === AUTH_ERROR_CODE.TOKEN_EXPIRED;
         const requiresReauth = this.requiresReauthentication(errorCode);
@@ -2314,9 +2300,9 @@ class HttpErrorHandler {
             : false;
         return this.isNetworkError(error) || isStaticResourceError;
     }
-    handleProcessedError(processedError, uamLoginURL, applilcationStorageKey) {
+    handleProcessedError(processedError, uamLoginURL, applilcationStorageKey, envName) {
         if (processedError.requiresReauth) {
-            this.errorModal.showSessionExpired(uamLoginURL, applilcationStorageKey);
+            this.errorModal.showSessionExpired(uamLoginURL, applilcationStorageKey, envName);
         }
         else if (processedError.message) {
             this.errorModal.showError(processedError.message);
@@ -2363,18 +2349,18 @@ class TokenRefreshService {
     loginService = inject(LoginService);
     authState = inject(AuthStateService);
     errorModal = inject(ErrorModalService);
-    refreshAndRetry(req, next, urlConfig, clientId, applilcationStorageKey) {
+    refreshAndRetry(req, next, urlConfig, clientId, applilcationStorageKey, envName) {
         if (this.authState.isRefreshing) {
             // Wait for ongoing refresh to complete, then retry request
             return this.authState.waitForRefresh().pipe(switchMap(() => next(req)), catchError$1((err) => {
-                this.errorModal.showSessionExpired(urlConfig.uamLoginURL, applilcationStorageKey);
+                this.errorModal.showSessionExpired(urlConfig.uamLoginURL, applilcationStorageKey, envName);
                 return throwError(() => err);
             }));
         }
         // Start new refresh process
-        return this.performRefresh(req, next, urlConfig, clientId, applilcationStorageKey);
+        return this.performRefresh(req, next, urlConfig, clientId, applilcationStorageKey, envName);
     }
-    performRefresh(req, next, urlConfig, clientId, applilcationStorageKey) {
+    performRefresh(req, next, urlConfig, clientId, applilcationStorageKey, envName) {
         this.authState.startRefresh();
         return this.loginService
             .refreshToken(urlConfig.uamBaseApiUrl, clientId)
@@ -2383,7 +2369,7 @@ class TokenRefreshService {
             return next(req);
         }), catchError$1((err) => {
             this.authState.failRefresh();
-            this.errorModal.showSessionExpired(urlConfig.uamLoginURL, applilcationStorageKey);
+            this.errorModal.showSessionExpired(urlConfig.uamLoginURL, applilcationStorageKey, envName);
             return throwError(() => err);
         }));
     }
@@ -2443,17 +2429,17 @@ function authInterceptor(config) {
                     message: error.message,
                     shouldRetry: false,
                     requiresReauth: false,
-                }, config.urlConfig.uamLoginURL, config.currentAppStorageKey);
+                }, config.urlConfig.uamLoginURL, config.currentAppStorageKey, config.envName);
                 return throwError(() => error);
             }
             // Process the error
             const processedError = httpErrorHandler.processError(error);
             // If token expired, attempt refresh and retry
             if (processedError.shouldRetry) {
-                return tokenRefreshService.refreshAndRetry(authReq, next, config.urlConfig, config.clientId, config.currentAppStorageKey);
+                return tokenRefreshService.refreshAndRetry(authReq, next, config.urlConfig, config.clientId, config.currentAppStorageKey, config.envName);
             }
             // Handle other errors (show modal if needed, invalidate session if reauth required)
-            httpErrorHandler.handleProcessedError(processedError, config.urlConfig.uamLoginURL, config.currentAppStorageKey);
+            httpErrorHandler.handleProcessedError(processedError, config.urlConfig.uamLoginURL, config.currentAppStorageKey, config.envName);
             return throwError(() => error);
         }));
     };
