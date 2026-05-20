@@ -1581,13 +1581,27 @@ class PlaTableComponent {
         const currentAppStorageData = localStorage.getItem(this.applicationStorageName) || '{}';
         const currentFilter = JSON.parse(currentAppStorageData).filter?.[this.tableName];
         if (currentFilter) {
+            // Remark: When we get filter from local storage we need to normalize the date filter value because the value is string after we save to local storage but the table component expect the value is Date type for date column to work with p-table filter feature.
+            console.log('testValue1.1', { currentAppStorageData, currentFilter });
             this.normalizeDateFilters(currentFilter);
             this.appliedFilters = currentFilter;
             // this.onSetFilterToLocalStorage(currentFilter);
         }
         else {
+            // Remark: For the first time when there is no filter in local storage we will build default filter base on the column that have field and save to local storage then assign to appliedFilters that will bind with pla-table-filter component.
             const defaultFilters = this.buildDefaultFilters();
             this.appliedFilters = defaultFilters;
+            console.log('testValue1.2', {
+                currentAppStorageData,
+                currentFilter,
+                defaultFilters,
+            });
+            localStorage.setItem(this.applicationStorageName, JSON.stringify({
+                filter: {
+                    ...JSON.parse(currentAppStorageData).filter,
+                    [this.tableName]: defaultFilters,
+                },
+            }));
             // this.table?._filter();
         }
     }
