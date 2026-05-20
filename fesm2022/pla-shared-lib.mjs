@@ -1485,7 +1485,7 @@ class PlaTableComponent {
     tableData = [];
     tableColumns = [];
     tableConfig = {
-        isShowFilter: false,
+        isShowFilter: true,
         first: DEFAULT_FIRST_PAGE,
         rows: DEFAULT_ROW_PER_PAGE,
         tableLazyLoadConfig: DEFAULT_TABLE_LAZY_LOAD_CONFIG,

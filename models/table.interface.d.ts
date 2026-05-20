@@ -25,7 +25,7 @@ export interface ITableLazyLoad {
     totalRecord: number;
 }
 export interface ITableConfig {
-    isShowFilter: boolean;
+    isShowFilter?: boolean;
     first: number;
     rows: number;
     tableLazyLoadConfig: ITableLazyLoad;
