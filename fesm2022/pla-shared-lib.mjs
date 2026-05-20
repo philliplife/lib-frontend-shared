@@ -1591,17 +1591,19 @@ class PlaTableComponent {
             // Remark: For the first time when there is no filter in local storage we will build default filter base on the column that have field and save to local storage then assign to appliedFilters that will bind with pla-table-filter component.
             const defaultFilters = this.buildDefaultFilters();
             this.appliedFilters = defaultFilters;
-            console.log('testValue1.2', {
-                currentAppStorageData,
-                currentFilter,
-                defaultFilters,
-            });
-            localStorage.setItem(this.applicationStorageName, JSON.stringify({
+            // console.log('testValue1.2', {
+            //   currentAppStorageData,
+            //   currentFilter,
+            //   defaultFilters,
+            // });
+            const dataState = JSON.parse(currentAppStorageData);
+            Object.assign(dataState, {
                 filter: {
-                    ...JSON.parse(currentAppStorageData).filter,
+                    ...dataState.filter,
                     [this.tableName]: defaultFilters,
                 },
-            }));
+            });
+            localStorage.setItem(this.applicationStorageName, JSON.stringify(dataState));
             // this.table?._filter();
         }
     }
