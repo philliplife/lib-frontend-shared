@@ -1509,7 +1509,6 @@ class PlaTableComponent {
         this.onGetFilterFromLocalStorage();
     }
     ngOnChanges() {
-        console.log('testValue1.3', this.operatorOptions);
         if (this.operatorOptions.length === 0) {
             this.operatorOptions = DEFAULT_TABLE_FILTER_OPERATOR_OPTIONS;
         }
@@ -1592,7 +1591,6 @@ class PlaTableComponent {
         const currentFilter = JSON.parse(currentAppStorageData).filter?.[this.tableName];
         if (currentFilter) {
             // Remark: When we get filter from local storage we need to normalize the date filter value because the value is string after we save to local storage but the table component expect the value is Date type for date column to work with p-table filter feature.
-            console.log('testValue1.1', { currentAppStorageData, currentFilter });
             this.normalizeDateFilters(currentFilter);
             this.appliedFilters = currentFilter;
             // this.onSetFilterToLocalStorage(currentFilter);
