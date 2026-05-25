@@ -4,8 +4,8 @@ import * as i0 from "@angular/core";
 export declare class PlaTableFilterComponent<T = unknown> implements OnInit {
     tableColumns: ITableColumn<T>[];
     appliedFilters: IAppliedFilters;
-    readonly operatorOptions: IOperatorOptions[];
+    operatorOptions: IOperatorOptions[];
     ngOnInit(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<PlaTableFilterComponent<any>, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<PlaTableFilterComponent<any>, "tr[pla-table-filter]", never, { "tableColumns": { "alias": "tableColumns"; "required": true; }; "appliedFilters": { "alias": "appliedFilters"; "required": true; }; }, {}, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<PlaTableFilterComponent<any>, "tr[pla-table-filter]", never, { "tableColumns": { "alias": "tableColumns"; "required": true; }; "appliedFilters": { "alias": "appliedFilters"; "required": true; }; "operatorOptions": { "alias": "operatorOptions"; "required": true; }; }, {}, never, never, true, never>;
 }

@@ -1,7 +1,7 @@
 import { EventEmitter, OnChanges, OnInit } from '@angular/core';
 import { Table, TableFilterEvent, TableLazyLoadEvent } from 'primeng/table';
 import { FilterMetadata, SortEvent } from 'primeng/api';
-import { IAppliedFilters, IFilterColumn, IPaginatorProperties, ITableColumn, ITableConfig } from '../../models/table.interface';
+import { IAppliedFilters, IFilterColumn, IOperatorOptions, IPaginatorProperties, ITableColumn, ITableConfig } from '../../models/table.interface';
 import * as i0 from "@angular/core";
 export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges {
     table: Table;
@@ -12,6 +12,7 @@ export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges
     appliedFilters: IAppliedFilters;
     applicationStorageName: string;
     tableName: string;
+    operatorOptions: IOperatorOptions[];
     onChangeTableFiltersEmit: EventEmitter<any>;
     rows: number;
     skeletonTable: number[];
@@ -31,5 +32,5 @@ export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges
     formatDate: (dateInput: string | string[]) => string | string[];
     private getOperator;
     static ɵfac: i0.ɵɵFactoryDeclaration<PlaTableComponent<any>, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<PlaTableComponent<any>, "pla-table", never, { "tableLoading": { "alias": "tableLoading"; "required": true; }; "tableData": { "alias": "tableData"; "required": true; }; "tableColumns": { "alias": "tableColumns"; "required": true; }; "tableConfig": { "alias": "tableConfig"; "required": true; }; "appliedFilters": { "alias": "appliedFilters"; "required": false; }; "applicationStorageName": { "alias": "applicationStorageName"; "required": true; }; "tableName": { "alias": "tableName"; "required": true; }; }, { "onChangeTableFiltersEmit": "onChangeTableFiltersEmit"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<PlaTableComponent<any>, "pla-table", never, { "tableLoading": { "alias": "tableLoading"; "required": true; }; "tableData": { "alias": "tableData"; "required": true; }; "tableColumns": { "alias": "tableColumns"; "required": true; }; "tableConfig": { "alias": "tableConfig"; "required": true; }; "appliedFilters": { "alias": "appliedFilters"; "required": false; }; "applicationStorageName": { "alias": "applicationStorageName"; "required": true; }; "tableName": { "alias": "tableName"; "required": true; }; "operatorOptions": { "alias": "operatorOptions"; "required": false; }; }, { "onChangeTableFiltersEmit": "onChangeTableFiltersEmit"; }, never, never, true, never>;
 }
