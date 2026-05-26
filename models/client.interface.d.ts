@@ -9,10 +9,10 @@ export interface ClientConsent {
     consent_Type_Description: NameDescription;
     consent_Status_Code: string;
     consent_Status_Description: NameDescription;
-    consent_Start_Date: string;
-    consent_Expiry_Date: string;
-    revoked_Date: string;
-    revoked_Reason: string;
+    consent_Start_Date: string | null;
+    consent_Expiry_Date: string | null;
+    revoked_Date: string | null;
+    revoked_Reason: string | null;
 }
 export interface ClientInfo {
     client_Code: string;
@@ -68,22 +68,22 @@ export interface NameDescription {
 export interface ClientAddress {
     address_Type_Code: string;
     address_Type_Description: NameDescription;
-    workplace_Name: string;
-    house_No: string;
-    village_Building_Name: string;
-    moo: string;
-    room: string;
-    floor: string;
-    alley: string;
-    road: string;
-    subdistrict_Code: string;
-    subdistrict_Description: NameDescription;
-    district_Code: string;
-    district_Description: NameDescription;
-    province_Code: string;
-    province_Description: NameDescription;
-    postal_Code: string;
-    full_Address: string;
+    workplace_Name: string | null;
+    house_No: string | null;
+    village_Building_Name: string | null;
+    moo: string | null;
+    room: string | null;
+    floor: string | null;
+    alley: string | null;
+    road: string | null;
+    subdistrict_Code: string | null;
+    subdistrict_Description: NameDescription | null;
+    district_Code: string | null;
+    district_Description: NameDescription | null;
+    province_Code: string | null;
+    province_Description: NameDescription | null;
+    postal_Code: string | null;
+    full_Address: string | null;
     is_Primary: boolean;
 }
 export interface ClientContact {
