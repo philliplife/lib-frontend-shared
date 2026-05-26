@@ -1,0 +1,51 @@
+.pla-container-layout {
+  display: flex;
+  flex-direction: column;
+
+  .pla-container-layout-header {
+    padding: 1.5625rem 2.5rem;
+    border-top: 0.0625rem solid #e6e6e6;
+    border-bottom: 0.0625rem solid #e6e6e6;
+    background: #f3f3f3;
+  }
+
+  .pla-container-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1.25rem 2.5rem;
+
+    .pla-container-menu {
+      padding: 1rem;
+      border-radius: 1rem;
+      border: 0.0625rem solid #e9eaeb;
+      background: #fff;
+
+      .p-tablist-content {
+        flex-grow: 0;
+        margin: auto;
+        .p-tablist-tab-list {
+          border-width: 0;
+          .p-tab {
+            border-width: 0;
+            font-weight: 400;
+            &.p-tab-active {
+              font-weight: 700;
+              border-width: 0 0 0.25rem 0;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .p-accordionheader {
+    color: #00317a !important;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .pla-container-layout-body {
+    // padding: 1rem;
+  }
+}
