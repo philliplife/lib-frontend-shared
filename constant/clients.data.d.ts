@@ -55,4 +55,5 @@ export declare const clientLabels: {
     consent_Revoked_Reason: string;
     no_Address: string;
     no_Consent: string;
+    no_Contact_Person: string;
 };

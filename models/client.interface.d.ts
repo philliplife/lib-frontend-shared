@@ -3,6 +3,7 @@ export interface ClientDetail {
     client_Address: ClientAddress[];
     client_Contact: ClientContact[];
     client_Consent: ClientConsent[];
+    client_Contact_Person: ClientContactPerson[];
 }
 export interface ClientConsent {
     consent_Type_Code: string;
@@ -115,7 +116,7 @@ export interface ClientOccupation {
     occupation_Group_Description: NameDescription;
     occupation_Class_Code: string;
     occupation_Class_Description: NameDescription;
-    occupation_Organization_Name: string;
+    occupation_Organization_Name: string | null;
     income_Per_Year: string;
 }
 export interface ProfileDetailConfig {
@@ -180,4 +181,24 @@ export interface ProfileDetailLabelConfig {
     consent_Revoked_Reason: string;
     no_Address: string;
     no_Consent: string;
+    no_Contact_Person: string;
+}
+export interface ClientContactPerson {
+    first_Name: string;
+    first_Name_En: string;
+    last_Name: string;
+    last_Name_En: string;
+    middle_Name: string;
+    middle_Name_En: string;
+    suffix_Name: string;
+    suffix_Name_En: string;
+    title_Description: NameDescription;
+    porsition_Title: string;
+    department_Title: string;
+    mobile_Number: string;
+    phone_number: string;
+    email: string;
+    line_Id: string;
+    other_Contact: string;
+    is_Primary: boolean;
 }
