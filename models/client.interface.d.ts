@@ -47,11 +47,11 @@ export interface ClientInfo {
     organization_Name: string | null;
     organization_Name_En: string | null;
     organization_Registration_Date: string | null;
-    place_Of_Birth_Country_Code: string;
-    place_Of_Birth_Country_Description: NameDescription;
+    place_Of_Birth_Country_Code: string | null;
+    place_Of_Birth_Country_Description: NameDescription | null;
     premium_Capacity: string | null;
-    religion_Code: string;
-    religion_Description: NameDescription;
+    religion_Code: string | null;
+    religion_Description: NameDescription | null;
     remark: string | null;
     suffix_Name: string | null;
     suffix_Name_En: string | null;
