@@ -11,6 +11,7 @@ export declare class PlaContentContainerComponent implements OnInit, OnChanges {
         label_key: string;
         value: string;
     } | null;
+    sidebarMaximumHeight: string | undefined;
     selectMenuChange: EventEmitter<{
         label_key: string;
         value: string;
@@ -24,5 +25,5 @@ export declare class PlaContentContainerComponent implements OnInit, OnChanges {
         value: string;
     }): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<PlaContentContainerComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<PlaContentContainerComponent, "pla-content-container", never, { "title": { "alias": "title"; "required": false; }; "menuList": { "alias": "menuList"; "required": false; }; "selectMenu": { "alias": "selectMenu"; "required": false; }; }, { "selectMenuChange": "selectMenuChange"; }, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<PlaContentContainerComponent, "pla-content-container", never, { "title": { "alias": "title"; "required": false; }; "menuList": { "alias": "menuList"; "required": false; }; "selectMenu": { "alias": "selectMenu"; "required": false; }; "sidebarMaximumHeight": { "alias": "sidebarMaximumHeight"; "required": false; }; }, { "selectMenuChange": "selectMenuChange"; }, never, ["*"], true, never>;
 }
