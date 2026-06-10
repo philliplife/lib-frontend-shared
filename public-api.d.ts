@@ -29,6 +29,7 @@ export * from './lib/pla-table/pla-table.component';
 export * from './pipes/pla-message-mapping.pipe';
 export * from './pipes/identity-no.pipe';
 export * from './pipes/phone-no.pipe';
+export * from './pipes/number-decimal.pipe';
 export * from './directives/char-count.directive';
 export * from './directives/overlay-text.directive';
 export * from './directives/has-permission.directive';
