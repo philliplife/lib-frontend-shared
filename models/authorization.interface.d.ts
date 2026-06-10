@@ -52,6 +52,7 @@ export interface IWebapiInterceptor {
     authorizationType: string;
     envName: 'dev' | 'uat' | 'preprod' | 'prod';
     currentAppStorageKey: string;
+    whiteListEndpoint?: string[];
 }
 export interface IUrlConfig {
     uamLoginURL: string;

@@ -2742,14 +2742,15 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
 /**
  * Check if the endpoint should be allowed even when session is invalidated
  */
-function isWhitelistedEndpoint(url) {
-    // TO DO: Retrieve whitelist from argument.
+function isWhitelistedEndpoint(url, whiteListEndpoint) {
+    // Remark: Whitelist is for endpoint that no need to add custom headers
     const whitelistedEndpoints = [
         '/login',
         '/api/auth/logout',
         '/api/logout',
-        // Add other endpoints that should always be allowed
+        ...whiteListEndpoint,
     ];
+    console.log('testValue1.1');
     return whitelistedEndpoints.some((endpoint) => url.includes(endpoint));
 }
 function authInterceptor(config) {
@@ -2758,10 +2759,12 @@ function authInterceptor(config) {
         const httpErrorHandler = inject(HttpErrorHandler);
         const tokenRefreshService = inject(TokenRefreshService);
         const authState = inject(AuthStateService);
-        // Whitelist: Allow these endpoints even when session is invalidated
-        const isWhitelisted = isWhitelistedEndpoint(req.url);
-        // Stop request if session has been invalidated (unless whitelisted)
-        if (authState.isSessionInvalidated && !isWhitelisted) {
+        // Whitelisted endpoints pass through without custom headers or retry logic
+        if (isWhitelistedEndpoint(req.url, config.whiteListEndpoint ?? [])) {
+            return next(req);
+        }
+        // Stop request if session has been invalidated
+        if (authState.isSessionInvalidated) {
             return throwError(() => new Error('Session invalidated'));
         }
         // Add authentication headers to request
