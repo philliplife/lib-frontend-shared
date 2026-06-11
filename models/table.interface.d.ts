@@ -35,6 +35,7 @@ export interface ITableColumn<T> {
     minWidth?: string;
     maxWidth?: string;
     minHeight?: string;
+    searchPlaceHolder?: string;
     field: string;
     title: string;
     columnType: ColumnType;
