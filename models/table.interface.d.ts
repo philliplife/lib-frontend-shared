@@ -34,6 +34,7 @@ export interface ITableConfig {
 export interface ITableColumn<T> {
     minWidth?: string;
     maxWidth?: string;
+    minHeight?: string;
     field: string;
     title: string;
     columnType: ColumnType;
