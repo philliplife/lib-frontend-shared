@@ -2767,7 +2767,6 @@ function isWhitelistedEndpoint(url, whiteListEndpoint) {
         '/api/logout',
         ...whiteListEndpoint,
     ];
-    console.log('testValue1.1');
     return whitelistedEndpoints.some((endpoint) => url.includes(endpoint));
 }
 function authInterceptor(config) {
