@@ -53,6 +53,7 @@ export interface ITableColumn<T> {
     decimalDigit?: string;
     emptyValueText?: string;
     dateFormat?: string;
+    dateLocalBuddhist?: boolean;
     severity?: TagSeverity;
     menu_UAM?: string;
     action_Disable?: Record<string, string>;
