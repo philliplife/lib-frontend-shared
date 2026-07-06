@@ -14,10 +14,13 @@ export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges
     tableName: string;
     operatorOptions: IOperatorOptions[];
     onChangeTableFiltersEmit: EventEmitter<any>;
+    metaKey: boolean;
+    selectedRow: T | T[] | null;
     rows: number;
     skeletonTable: number[];
     ngOnInit(): void;
     ngOnChanges(): void;
+    onRowSelect(event: any): void;
     get paginatorConfig(): IPaginatorProperties;
     customSort(event: SortEvent): void;
     onChangeFilter(event: TableFilterEvent): void;
