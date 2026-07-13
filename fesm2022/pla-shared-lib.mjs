@@ -1766,7 +1766,27 @@ const DEFAULT_TABLE_FILTER_OPERATOR_OPTIONS = [
     { label: 'Equals', value: FilterMatchMode.EQUALS },
     { label: 'Not Equals', value: FilterMatchMode.NOT_EQUALS },
 ];
+// Remark: 'tag' columns render rowData[field] as { value, severity } (see pla-table-body.component.html),
+// but PrimeNG's client-side (islazyLoad: false) filter reads rowData[field] directly and compares the
+// whole object against the filter value, so it never matches. Unwrap '.value' before delegating to the
+// default constraint so 'tag' columns are filterable when islazyLoad is false. Registered once globally
+// since FilterService is a root-level singleton shared by every pla-table instance.
+const TAG_AWARE_FILTER_MATCH_MODES = [
+    FilterMatchMode.STARTS_WITH,
+    FilterMatchMode.CONTAINS,
+    FilterMatchMode.ENDS_WITH,
+    FilterMatchMode.EQUALS,
+    FilterMatchMode.NOT_EQUALS,
+    FilterMatchMode.IN,
+];
+let tagAwareFilterMatchModesRegistered = false;
+function unwrapTagValue(value) {
+    return value && typeof value === 'object' && 'value' in value
+        ? value.value
+        : value;
+}
 class PlaTableComponent {
+    filterService;
     table;
     tableLoading = false;
     tableData = [];
@@ -1791,8 +1811,22 @@ class PlaTableComponent {
     skeletonTable = Array.from({
         length: DEFAULT_ROW_PER_PAGE,
     }).map((_, i) => i);
+    constructor(filterService) {
+        this.filterService = filterService;
+        this.registerTagAwareFilterMatchModes();
+    }
     ngOnInit() {
         this.onGetFilterFromLocalStorage();
+    }
+    registerTagAwareFilterMatchModes() {
+        if (tagAwareFilterMatchModesRegistered) {
+            return;
+        }
+        tagAwareFilterMatchModesRegistered = true;
+        TAG_AWARE_FILTER_MATCH_MODES.forEach((mode) => {
+            const baseFilter = this.filterService.filters[mode];
+            this.filterService.register(mode, (value, filter, filterLocale) => baseFilter(unwrapTagValue(value), filter, filterLocale));
+        });
     }
     ngOnChanges() {
         if (this.operatorOptions.length === 0) {
@@ -1878,26 +1912,37 @@ class PlaTableComponent {
     onGetFilterFromLocalStorage() {
         const currentAppStorageData = localStorage.getItem(this.applicationStorageName) || '{}';
         const currentFilter = JSON.parse(currentAppStorageData).filter?.[this.tableName];
-        if (currentFilter) {
-            // Remark: When we get filter from local storage we need to normalize the date filter value because the value is string after we save to local storage but the table component expect the value is Date type for date column to work with p-table filter feature.
-            this.normalizeDateFilters(currentFilter);
-            this.appliedFilters = currentFilter;
-            // this.onSetFilterToLocalStorage(currentFilter);
-        }
-        else {
-            // Remark: For the first time when there is no filter in local storage we will build default filter base on the column that have field and save to local storage then assign to appliedFilters that will bind with pla-table-filter component.
-            const defaultFilters = this.buildDefaultFilters();
-            this.appliedFilters = defaultFilters;
-            const dataState = JSON.parse(currentAppStorageData);
-            Object.assign(dataState, {
-                filter: {
-                    ...dataState.filter,
-                    [this.tableName]: defaultFilters,
-                },
-            });
-            localStorage.setItem(this.applicationStorageName, JSON.stringify(dataState));
-            // this.table?._filter();
-        }
+        // Remark: Reconcile against the current column config even when a persisted filter already exists.
+        // A column's filterType can change between releases (e.g. multi-select -> input-text), but a returning
+        // user's localStorage may still hold the old matchMode/value shape (e.g. an 'in' array filter left over
+        // from multi-select), which is incompatible with the new filterType and silently never matches.
+        const resolvedFilters = currentFilter
+            ? this.reconcileFilterMatchModes(currentFilter)
+            : this.buildDefaultFilters();
+        // Remark: When we get filter from local storage we need to normalize the date filter value because the value is string after we save to local storage but the table component expect the value is Date type for date column to work with p-table filter feature.
+        this.normalizeDateFilters(resolvedFilters);
+        this.appliedFilters = resolvedFilters;
+        const dataState = JSON.parse(currentAppStorageData);
+        Object.assign(dataState, {
+            filter: {
+                ...dataState.filter,
+                [this.tableName]: resolvedFilters,
+            },
+        });
+        localStorage.setItem(this.applicationStorageName, JSON.stringify(dataState));
+    }
+    reconcileFilterMatchModes(persistedFilters) {
+        return this.tableColumns
+            .filter((col) => col.field)
+            .reduce((acc, col) => {
+            const expectedMatchMode = this.initFilterMatchMode(col.filterType);
+            const persisted = persistedFilters[col.field];
+            acc[col.field] =
+                persisted?.matchMode === expectedMatchMode
+                    ? persisted
+                    : { value: null, matchMode: expectedMatchMode };
+            return acc;
+        }, {});
     }
     normalizeDateFilters(filters) {
         // Get all keys from the filters object
@@ -2038,7 +2083,7 @@ class PlaTableComponent {
         }
         return operator;
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableComponent, deps: [{ token: i2$2.FilterService }], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: PlaTableComponent, isStandalone: true, selector: "pla-table", inputs: { tableLoading: "tableLoading", tableData: "tableData", tableColumns: "tableColumns", tableConfig: "tableConfig", appliedFilters: "appliedFilters", applicationStorageName: "applicationStorageName", tableName: "tableName", operatorOptions: "operatorOptions" }, outputs: { onChangeTableFiltersEmit: "onChangeTableFiltersEmit", rowSelect: "rowSelect" }, viewQueries: [{ propertyName: "table", first: true, predicate: ["dt"], descendants: true }], usesOnChanges: true, ngImport: i0, template: "<p-table\n  #dt\n  [rows]=\"tableConfig.rows\"\n  [value]=\"tableLoading ? skeletonTable : tableData\"\n  [totalRecords]=\"\n    tableConfig.tableLazyLoadConfig.islazyLoad\n      ? tableConfig.tableLazyLoadConfig.totalRecord\n      : 0\n  \"\n  [lazy]=\"tableConfig.tableLazyLoadConfig.islazyLoad\"\n  (onLazyLoad)=\"\n    tableConfig.tableLazyLoadConfig.islazyLoad\n      ? onChangeTableFilters($event)\n      : null\n  \"\n  [customSort]=\"true\"\n  [filters]=\"appliedFilters\"\n  (onFilter)=\"onChangeFilter($event)\"\n  (sortFunction)=\"customSort($event)\"\n  [paginator]=\"tableConfig.tablePaginatorConfig.isShowPagination\"\n  [rowsPerPageOptions]=\"paginatorConfig.rowsPerPageOptions\"\n  [showCurrentPageReport]=\"paginatorConfig.showCurrentPageReport\"\n  [paginatorDropdownAppendTo]=\"paginatorConfig.paginatorDropdownAppendTo\"\n  [currentPageReportTemplate]=\"paginatorConfig.currentPageReportTemplate\"\n  columnResizeMode=\"fit\"\n  [scrollable]=\"true\"\n  [resizableColumns]=\"true\"\n  [(first)]=\"tableConfig.first\"\n  [selectionMode]=\"tableConfig.selectionMode\"\n  [(selection)]=\"selectedRow\"\n  [metaKeySelection]=\"metaKey\"\n  (onRowSelect)=\"onRowSelect($event)\"\n>\n  <ng-template pTemplate=\"header\">\n    <tr pla-table-header [tableColumns]=\"tableColumns\"></tr>\n    <!-- Remark: Allow show filter as default -->\n    @if (tableConfig.isShowFilter ?? true) {\n      <tr\n        pla-table-filter\n        [tableColumns]=\"tableColumns\"\n        [appliedFilters]=\"appliedFilters\"\n        [operatorOptions]=\"operatorOptions\"\n      ></tr>\n    }\n  </ng-template>\n\n  <ng-template pTemplate=\"body\" let-rowData let-rowIndex=\"rowIndex\">\n    @if (!tableLoading) {\n      <tr\n        pla-table-body\n        [applicationStorageName]=\"applicationStorageName\"\n        [tableColumns]=\"tableColumns\"\n        [rowData]=\"rowData\"\n        [rowIndex]=\"rowIndex\"\n        [pSelectableRow]=\"\n          tableConfig.selectionMode !== undefined ? rowData : null\n        \"\n      ></tr>\n    }\n  </ng-template>\n</p-table>\n", styles: [".p-datatable-filter-constraint-selected{color:var(--color-white)!important}.p-datatable-filter>p-columnfilterformelement{width:100%!important}.p-datatable-filter>p-columnfilterformelement p-datepicker,.p-datatable-filter>p-columnfilterformelement .p-datepicker,.p-datatable-filter>p-columnfilterformelement .p-inputtext{width:100%!important;max-width:none!important}.p-datatable{border:1px solid #eaeaea;border-radius:1.25rem;overflow:hidden}.p-datatable .p-datatable-thead>tr th{background-color:var(--table-header);font-weight:500}.p-datatable .p-datatable-thead>tr:first-child th:first-child{border-top-left-radius:var(--border-radius-table)}.p-datatable .p-datatable-thead>tr:first-child th:last-child{border-top-right-radius:var(--border-radius-table)}.p-datatable .p-datatable-thead>tr>th.p-datatable-column-sorted{background-color:transparent!important;color:inherit!important}.p-datatable .p-datatable-thead>tr>th{height:3.4375rem!important;padding:0rem .625rem!important}.p-datatable .p-datatable-thead>tr>th .p-datepicker-input{width:14.6875rem}.p-datatable .p-datatable-thead>tr>th .p-button-secondary{border:0rem}.p-datatable .p-datatable-thead>tr>th .p-button-secondary:hover{background-color:var(--color-white)!important;box-shadow:none}.p-datatable .p-datatable-header{padding:0rem!important}.p-datatable .p-datatable-thead{z-index:5!important}.p-datatable .p-datatable-thead .p-inputtext{height:2.125rem}.p-datatable .p-datatable-thead .p-select{height:2.125rem!important}.p-datatable .p-datatable-tbody>tr>td[pfrozencolumn]{padding:0}.p-datatable .p-datatable-tbody>tr.p-datatable-row-selected{color:var(--color-white)}.p-datatable table .p-multiselect{min-height:unset!important;height:2.125rem!important}.p-datatable table .p-multiselect .p-multiselect-label-container{align-items:center!important}.p-datatable table .p-multiselect .p-multiselect-label{padding-top:0!important;padding-bottom:0!important}.p-datatable table .p-multiselect .p-multiselect-label.p-placeholder{color:gray!important}.p-datatable table .p-multiselect .p-multiselect-dropdown{padding:0!important;align-items:center!important}.p-datatable .p-button-text:not(:disabled):not(:hover){color:#757575!important}.p-datatable .p-datatable-column-filter-button{display:flex;align-items:center;border:none!important;background-color:transparent!important;padding:.75rem!important;width:1rem!important;max-height:1rem!important}.p-datatable .p-datatable-column-filter-button:hover{box-shadow:none!important;background-color:transparent!important}.p-datatable .p-datatable-filter-add-rule-button,.p-datatable .p-datatable-filter-operator{display:none!important}.p-datatable .p-datepicker{position:relative!important}.p-datatable .p-datepicker .p-icon{cursor:pointer;margin-left:-3.125rem}.p-datatable .p-datepicker .p-inputwrapper{position:relative!important}.p-datatable .p-datatable-sortable-column:not(.p-datatable-column-sorted):hover{background-color:transparent!important;color:inherit!important}.p-datatable .pi{cursor:pointer;padding:0}.p-datatable .pi .pi-filter-fill{color:var(--color-primary-2)!important}.p-datatable .p-paginator{padding:.9375rem 1.25rem .9375rem 1.5rem;border-bottom:1px solid #eaeaea!important;border-bottom-left-radius:1.25rem!important;border-bottom-right-radius:1.25rem!important}.p-datatable .p-paginator .p-paginator-page,.p-datatable .p-paginator .p-paginator-next,.p-datatable .p-paginator .p-paginator-last,.p-datatable .p-paginator .p-paginator-first,.p-datatable .p-paginator .p-paginator-prev{color:#333!important;font-size:1rem;height:1.875rem!important;min-width:1.875rem!important;display:flex;align-items:center;justify-content:center;font-family:var(--font-family);font-weight:400}.p-datatable .p-paginator .p-paginator-page.p-paginator-page-selected{background-color:transparent!important;color:var(--color-primary-1)!important;border-color:var(--color-primary-1)!important;border-width:.0625rem!important;border-style:solid!important;font-family:var(--font-family);font-weight:400}.p-datatable .p-paginator .p-paginator-current{order:-1;margin-right:auto}.p-datatable .p-paginator-rpp-dropdown{height:2.5rem!important}.filter-select.p-select-overlay{max-width:15.625rem!important}.filter-select.p-select-overlay li{text-wrap:auto}.filter-select.p-multiselect-overlay{max-width:15.625rem!important}.filter-select.p-multiselect-overlay li{text-wrap:auto}.p-datatable-tbody>tr>td.p-cell-editing{padding:.25rem}.p-datatable-tbody>tr>td.p-cell-editing .p-inputtext,.p-datatable-tbody>tr>td.p-cell-editing .p-select{height:2.25rem!important;padding:0 .25rem;width:auto;max-width:100%}.p-datatable-tbody>tr>td.p-cell-editing .p-inputtext input,.p-datatable-tbody>tr>td.p-cell-editing .p-select input{max-width:100%}.p-datatable-tbody>tr>td.p-cell-editing .p-select>span{padding-top:0!important;padding-bottom:0!important}.p-datatable-tbody>tr>td.p-cell-editing .p-floatlabel-in>label{display:none!important}.p-datatable-tbody>tr.editable-column-submitted-invalid td:first-child{background-color:#fceaea!important}.p-datatable-tbody>tr.editable-column-submitted-invalid td.p-datatable-frozen-column{background-color:#fceaea!important}.p-datatable-tbody>tr.editable-column-submitted-invalid td:has(.ng-invalid.ng-dirty){background-color:#fceaea!important}.p-datatable-tbody>tr td.invalid-input-cell{background-color:#fceaea!important}.p-datatable-tbody td.disabled-editable-cell{background-color:#f5f5f5!important}.p-datatable-tbody>tr>td>p-cellEditor{word-break:break-all;text-wrap:auto}\n"], dependencies: [{ kind: "ngmodule", type: TableModule }, { kind: "component", type: i1$5.Table, selector: "p-table", inputs: ["frozenColumns", "frozenValue", "style", "styleClass", "tableStyle", "tableStyleClass", "paginator", "pageLinks", "rowsPerPageOptions", "alwaysShowPaginator", "paginatorPosition", "paginatorStyleClass", "paginatorDropdownAppendTo", "paginatorDropdownScrollHeight", "currentPageReportTemplate", "showCurrentPageReport", "showJumpToPageDropdown", "showJumpToPageInput", "showFirstLastIcon", "showPageLinks", "defaultSortOrder", "sortMode", "resetPageOnSort", "selectionMode", "selectionPageOnly", "contextMenuSelection", "contextMenuSelectionMode", "dataKey", "metaKeySelection", "rowSelectable", "rowTrackBy", "lazy", "lazyLoadOnInit", "compareSelectionBy", "csvSeparator", "exportFilename", "filters", "globalFilterFields", "filterDelay", "filterLocale", "expandedRowKeys", "editingRowKeys", "rowExpandMode", "scrollable", "scrollDirection", "rowGroupMode", "scrollHeight", "virtualScroll", "virtualScrollItemSize", "virtualScrollOptions", "virtualScrollDelay", "frozenWidth", "responsive", "contextMenu", "resizableColumns", "columnResizeMode", "reorderableColumns", "loading", "loadingIcon", "showLoader", "rowHover", "customSort", "showInitialSortBadge", "autoLayout", "exportFunction", "exportHeader", "stateKey", "stateStorage", "editMode", "groupRowsBy", "size", "showGridlines", "stripedRows", "groupRowsByOrder", "responsiveLayout", "breakpoint", "paginatorLocale", "value", "columns", "first", "rows", "totalRecords", "sortField", "sortOrder", "multiSortMeta", "selection", "virtualRowHeight", "selectAll"], outputs: ["contextMenuSelectionChange", "selectAllChange", "selectionChange", "onRowSelect", "onRowUnselect", "onPage", "onSort", "onFilter", "onLazyLoad", "onRowExpand", "onRowCollapse", "onContextMenuSelect", "onColResize", "onColReorder", "onRowReorder", "onEditInit", "onEditComplete", "onEditCancel", "onHeaderCheckboxToggle", "sortFunction", "firstChange", "rowsChange", "onStateSave", "onStateRestore"] }, { kind: "directive", type: i2$2.PrimeTemplate, selector: "[pTemplate]", inputs: ["type", "pTemplate"] }, { kind: "directive", type: i1$5.SelectableRow, selector: "[pSelectableRow]", inputs: ["pSelectableRow", "pSelectableRowIndex", "pSelectableRowDisabled"] }, { kind: "ngmodule", type: CommonModule }, { kind: "component", type: PlaTableHeaderComponent, selector: "tr[pla-table-header]", inputs: ["tableColumns"] }, { kind: "component", type: PlaTableFilterComponent, selector: "tr[pla-table-filter]", inputs: ["tableColumns", "appliedFilters", "operatorOptions"] }, { kind: "component", type: PlaTableBodyComponent, selector: "tr[pla-table-body]", inputs: ["applicationStorageName", "tableColumns", "rowData", "rowIndex"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaTableComponent, decorators: [{
@@ -2050,7 +2095,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                         PlaTableFilterComponent,
                         PlaTableBodyComponent,
                     ], template: "<p-table\n  #dt\n  [rows]=\"tableConfig.rows\"\n  [value]=\"tableLoading ? skeletonTable : tableData\"\n  [totalRecords]=\"\n    tableConfig.tableLazyLoadConfig.islazyLoad\n      ? tableConfig.tableLazyLoadConfig.totalRecord\n      : 0\n  \"\n  [lazy]=\"tableConfig.tableLazyLoadConfig.islazyLoad\"\n  (onLazyLoad)=\"\n    tableConfig.tableLazyLoadConfig.islazyLoad\n      ? onChangeTableFilters($event)\n      : null\n  \"\n  [customSort]=\"true\"\n  [filters]=\"appliedFilters\"\n  (onFilter)=\"onChangeFilter($event)\"\n  (sortFunction)=\"customSort($event)\"\n  [paginator]=\"tableConfig.tablePaginatorConfig.isShowPagination\"\n  [rowsPerPageOptions]=\"paginatorConfig.rowsPerPageOptions\"\n  [showCurrentPageReport]=\"paginatorConfig.showCurrentPageReport\"\n  [paginatorDropdownAppendTo]=\"paginatorConfig.paginatorDropdownAppendTo\"\n  [currentPageReportTemplate]=\"paginatorConfig.currentPageReportTemplate\"\n  columnResizeMode=\"fit\"\n  [scrollable]=\"true\"\n  [resizableColumns]=\"true\"\n  [(first)]=\"tableConfig.first\"\n  [selectionMode]=\"tableConfig.selectionMode\"\n  [(selection)]=\"selectedRow\"\n  [metaKeySelection]=\"metaKey\"\n  (onRowSelect)=\"onRowSelect($event)\"\n>\n  <ng-template pTemplate=\"header\">\n    <tr pla-table-header [tableColumns]=\"tableColumns\"></tr>\n    <!-- Remark: Allow show filter as default -->\n    @if (tableConfig.isShowFilter ?? true) {\n      <tr\n        pla-table-filter\n        [tableColumns]=\"tableColumns\"\n        [appliedFilters]=\"appliedFilters\"\n        [operatorOptions]=\"operatorOptions\"\n      ></tr>\n    }\n  </ng-template>\n\n  <ng-template pTemplate=\"body\" let-rowData let-rowIndex=\"rowIndex\">\n    @if (!tableLoading) {\n      <tr\n        pla-table-body\n        [applicationStorageName]=\"applicationStorageName\"\n        [tableColumns]=\"tableColumns\"\n        [rowData]=\"rowData\"\n        [rowIndex]=\"rowIndex\"\n        [pSelectableRow]=\"\n          tableConfig.selectionMode !== undefined ? rowData : null\n        \"\n      ></tr>\n    }\n  </ng-template>\n</p-table>\n", styles: [".p-datatable-filter-constraint-selected{color:var(--color-white)!important}.p-datatable-filter>p-columnfilterformelement{width:100%!important}.p-datatable-filter>p-columnfilterformelement p-datepicker,.p-datatable-filter>p-columnfilterformelement .p-datepicker,.p-datatable-filter>p-columnfilterformelement .p-inputtext{width:100%!important;max-width:none!important}.p-datatable{border:1px solid #eaeaea;border-radius:1.25rem;overflow:hidden}.p-datatable .p-datatable-thead>tr th{background-color:var(--table-header);font-weight:500}.p-datatable .p-datatable-thead>tr:first-child th:first-child{border-top-left-radius:var(--border-radius-table)}.p-datatable .p-datatable-thead>tr:first-child th:last-child{border-top-right-radius:var(--border-radius-table)}.p-datatable .p-datatable-thead>tr>th.p-datatable-column-sorted{background-color:transparent!important;color:inherit!important}.p-datatable .p-datatable-thead>tr>th{height:3.4375rem!important;padding:0rem .625rem!important}.p-datatable .p-datatable-thead>tr>th .p-datepicker-input{width:14.6875rem}.p-datatable .p-datatable-thead>tr>th .p-button-secondary{border:0rem}.p-datatable .p-datatable-thead>tr>th .p-button-secondary:hover{background-color:var(--color-white)!important;box-shadow:none}.p-datatable .p-datatable-header{padding:0rem!important}.p-datatable .p-datatable-thead{z-index:5!important}.p-datatable .p-datatable-thead .p-inputtext{height:2.125rem}.p-datatable .p-datatable-thead .p-select{height:2.125rem!important}.p-datatable .p-datatable-tbody>tr>td[pfrozencolumn]{padding:0}.p-datatable .p-datatable-tbody>tr.p-datatable-row-selected{color:var(--color-white)}.p-datatable table .p-multiselect{min-height:unset!important;height:2.125rem!important}.p-datatable table .p-multiselect .p-multiselect-label-container{align-items:center!important}.p-datatable table .p-multiselect .p-multiselect-label{padding-top:0!important;padding-bottom:0!important}.p-datatable table .p-multiselect .p-multiselect-label.p-placeholder{color:gray!important}.p-datatable table .p-multiselect .p-multiselect-dropdown{padding:0!important;align-items:center!important}.p-datatable .p-button-text:not(:disabled):not(:hover){color:#757575!important}.p-datatable .p-datatable-column-filter-button{display:flex;align-items:center;border:none!important;background-color:transparent!important;padding:.75rem!important;width:1rem!important;max-height:1rem!important}.p-datatable .p-datatable-column-filter-button:hover{box-shadow:none!important;background-color:transparent!important}.p-datatable .p-datatable-filter-add-rule-button,.p-datatable .p-datatable-filter-operator{display:none!important}.p-datatable .p-datepicker{position:relative!important}.p-datatable .p-datepicker .p-icon{cursor:pointer;margin-left:-3.125rem}.p-datatable .p-datepicker .p-inputwrapper{position:relative!important}.p-datatable .p-datatable-sortable-column:not(.p-datatable-column-sorted):hover{background-color:transparent!important;color:inherit!important}.p-datatable .pi{cursor:pointer;padding:0}.p-datatable .pi .pi-filter-fill{color:var(--color-primary-2)!important}.p-datatable .p-paginator{padding:.9375rem 1.25rem .9375rem 1.5rem;border-bottom:1px solid #eaeaea!important;border-bottom-left-radius:1.25rem!important;border-bottom-right-radius:1.25rem!important}.p-datatable .p-paginator .p-paginator-page,.p-datatable .p-paginator .p-paginator-next,.p-datatable .p-paginator .p-paginator-last,.p-datatable .p-paginator .p-paginator-first,.p-datatable .p-paginator .p-paginator-prev{color:#333!important;font-size:1rem;height:1.875rem!important;min-width:1.875rem!important;display:flex;align-items:center;justify-content:center;font-family:var(--font-family);font-weight:400}.p-datatable .p-paginator .p-paginator-page.p-paginator-page-selected{background-color:transparent!important;color:var(--color-primary-1)!important;border-color:var(--color-primary-1)!important;border-width:.0625rem!important;border-style:solid!important;font-family:var(--font-family);font-weight:400}.p-datatable .p-paginator .p-paginator-current{order:-1;margin-right:auto}.p-datatable .p-paginator-rpp-dropdown{height:2.5rem!important}.filter-select.p-select-overlay{max-width:15.625rem!important}.filter-select.p-select-overlay li{text-wrap:auto}.filter-select.p-multiselect-overlay{max-width:15.625rem!important}.filter-select.p-multiselect-overlay li{text-wrap:auto}.p-datatable-tbody>tr>td.p-cell-editing{padding:.25rem}.p-datatable-tbody>tr>td.p-cell-editing .p-inputtext,.p-datatable-tbody>tr>td.p-cell-editing .p-select{height:2.25rem!important;padding:0 .25rem;width:auto;max-width:100%}.p-datatable-tbody>tr>td.p-cell-editing .p-inputtext input,.p-datatable-tbody>tr>td.p-cell-editing .p-select input{max-width:100%}.p-datatable-tbody>tr>td.p-cell-editing .p-select>span{padding-top:0!important;padding-bottom:0!important}.p-datatable-tbody>tr>td.p-cell-editing .p-floatlabel-in>label{display:none!important}.p-datatable-tbody>tr.editable-column-submitted-invalid td:first-child{background-color:#fceaea!important}.p-datatable-tbody>tr.editable-column-submitted-invalid td.p-datatable-frozen-column{background-color:#fceaea!important}.p-datatable-tbody>tr.editable-column-submitted-invalid td:has(.ng-invalid.ng-dirty){background-color:#fceaea!important}.p-datatable-tbody>tr td.invalid-input-cell{background-color:#fceaea!important}.p-datatable-tbody td.disabled-editable-cell{background-color:#f5f5f5!important}.p-datatable-tbody>tr>td>p-cellEditor{word-break:break-all;text-wrap:auto}\n"] }]
-        }], propDecorators: { table: [{
+        }], ctorParameters: () => [{ type: i2$2.FilterService }], propDecorators: { table: [{
                 type: ViewChild,
                 args: ['dt']
             }], tableLoading: [{

@@ -1,9 +1,10 @@
 import { EventEmitter, OnChanges, OnInit } from '@angular/core';
 import { Table, TableFilterEvent, TableLazyLoadEvent, TableRowSelectEvent } from 'primeng/table';
-import { FilterMetadata, SortEvent } from 'primeng/api';
+import { FilterMetadata, FilterService, SortEvent } from 'primeng/api';
 import { IAppliedFilters, IFilterColumn, IOperatorOptions, IPaginatorProperties, ITableColumn, ITableConfig } from '../../models/table.interface';
 import * as i0 from "@angular/core";
 export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges {
+    private readonly filterService;
     table: Table;
     tableLoading: boolean;
     tableData: T[];
@@ -19,7 +20,9 @@ export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges
     selectedRow: T | T[] | null;
     rows: number;
     skeletonTable: number[];
+    constructor(filterService: FilterService);
     ngOnInit(): void;
+    private registerTagAwareFilterMatchModes;
     ngOnChanges(): void;
     onRowSelect(event: TableRowSelectEvent): void;
     get paginatorConfig(): IPaginatorProperties;
@@ -27,6 +30,7 @@ export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges
     onChangeFilter(event: TableFilterEvent): void;
     private isDate;
     onGetFilterFromLocalStorage(): void;
+    private reconcileFilterMatchModes;
     private normalizeDateFilters;
     private buildDefaultFilters;
     private initFilterMatchMode;
