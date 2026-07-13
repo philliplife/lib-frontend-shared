@@ -1853,15 +1853,12 @@ class PlaTableComponent {
     customSort(event) {
         event.data?.sort((data1, data2) => {
             const field = event.field;
-            let value1 = data1[field];
-            let value2 = data2[field];
-            // Handle tag columns (objects with 'value' property)
-            if (typeof value1 === 'object' && value1?.value) {
-                value1 = value1.value;
-            }
-            if (typeof value2 === 'object' && value2?.value) {
-                value2 = value2.value;
-            }
+            // Remark: Reuse unwrapTagValue (not a truthy check on '.value') so tag columns whose
+            // value is legitimately 0/false/'' still unwrap correctly instead of comparing as objects.
+            // Cast back to 'any' (matching the pre-existing loose comparison below, which relies on
+            // JS's runtime '<'/'>' across heterogeneous comparable types, not static typing).
+            const value1 = unwrapTagValue(data1[field]);
+            const value2 = unwrapTagValue(data2[field]);
             let result = 0;
             if (value1 == null && value2 != null) {
                 result = -1;
