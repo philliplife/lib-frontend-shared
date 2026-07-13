@@ -1779,7 +1779,7 @@ const TAG_AWARE_FILTER_MATCH_MODES = [
     FilterMatchMode.NOT_EQUALS,
     FilterMatchMode.IN,
 ];
-let tagAwareFilterMatchModesRegistered = false;
+const TAG_AWARE_FILTER_MARKER = '__isTagAwareFilter__';
 function unwrapTagValue(value) {
     return value && typeof value === 'object' && 'value' in value
         ? value.value
@@ -1819,13 +1819,16 @@ class PlaTableComponent {
         this.onGetFilterFromLocalStorage();
     }
     registerTagAwareFilterMatchModes() {
-        if (tagAwareFilterMatchModesRegistered) {
-            return;
-        }
-        tagAwareFilterMatchModesRegistered = true;
+        // Remark: Guard against re-wrapping by marking the registered function itself rather than a
+        // module-level flag — a module flag would go stale (and silently skip registration) if this
+        // component's FilterService instance is ever recreated without the module being reloaded too.
         TAG_AWARE_FILTER_MATCH_MODES.forEach((mode) => {
             const baseFilter = this.filterService.filters[mode];
-            this.filterService.register(mode, (value, filter, filterLocale) => baseFilter(unwrapTagValue(value), filter, filterLocale));
+            if (baseFilter[TAG_AWARE_FILTER_MARKER]) {
+                return;
+            }
+            const tagAwareFilter = Object.assign((value, filter, filterLocale) => baseFilter(unwrapTagValue(value), filter, filterLocale), { [TAG_AWARE_FILTER_MARKER]: true });
+            this.filterService.register(mode, tagAwareFilter);
         });
     }
     ngOnChanges() {
