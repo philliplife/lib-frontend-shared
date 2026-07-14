@@ -20,7 +20,7 @@ export declare class TYPE {
     static readonly TOGGLESWITCH = "toggleswitch";
 }
 export interface ICommonData {
-    code: string | number | string[];
+    code: string | number | string[] | boolean;
     name?: string;
     name_En?: string;
     desc?: string;
