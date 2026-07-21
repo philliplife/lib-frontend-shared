@@ -50,6 +50,7 @@ export interface ITableColumn<T> {
     searchField?: string;
     searchFunction?: (query: IFilteredOptions) => void;
     loading?: boolean;
+    maxSelectedLabels?: number;
     textAlign?: AlignType;
     decimalDigit?: string;
     emptyValueText?: string;
