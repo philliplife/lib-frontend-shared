@@ -1,7 +1,7 @@
 import { FilterMetadata } from 'primeng/api';
 import { ICommonData, TagSeverity } from '../public-api';
 export type AlignType = 'center' | 'left' | 'right';
-export type ColumnType = 'text' | 'date' | 'decimal' | 'tag' | 'action';
+export type ColumnType = 'text' | 'date' | 'decimal' | 'tag' | 'text-badge' | 'action';
 export type FilterType = 'input-text' | 'multi-select' | 'date';
 export interface IOperatorOptions {
     label: string;
@@ -27,6 +27,7 @@ export interface ITableLazyLoad {
 export interface ITableConfig {
     selectionMode?: 'single' | 'multiple';
     isShowFilter?: boolean;
+    stripedRows?: boolean;
     first: number;
     rows: number;
     tableLazyLoadConfig: ITableLazyLoad;
@@ -57,6 +58,8 @@ export interface ITableColumn<T> {
     dateFormat?: string;
     dateLocalBuddhist?: boolean;
     severity?: TagSeverity;
+    badgeField?: string;
+    badgeSeverity?: TagSeverity;
     menu_UAM?: string;
     action_Disable?: Record<string, string>;
     action_Buttons?: IActionButton<T>[];
