@@ -7,8 +7,10 @@ export declare class PlaTableBodyComponent<T = unknown> implements OnInit {
     tableColumns: ITableColumn<T>[];
     rowData: any;
     rowIndex: number;
+    selectionMode?: 'single' | 'multiple';
+    isShowSelectionColumn: boolean;
     ngOnInit(): void;
     getSeverity(status: TagSeverity): "success" | "info" | "warn" | "danger" | "secondary" | "contrast";
     static ɵfac: i0.ɵɵFactoryDeclaration<PlaTableBodyComponent<any>, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<PlaTableBodyComponent<any>, "tr[pla-table-body]", never, { "applicationStorageName": { "alias": "applicationStorageName"; "required": true; }; "tableColumns": { "alias": "tableColumns"; "required": true; }; "rowData": { "alias": "rowData"; "required": true; }; "rowIndex": { "alias": "rowIndex"; "required": true; }; }, {}, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<PlaTableBodyComponent<any>, "tr[pla-table-body]", never, { "applicationStorageName": { "alias": "applicationStorageName"; "required": true; }; "tableColumns": { "alias": "tableColumns"; "required": true; }; "rowData": { "alias": "rowData"; "required": true; }; "rowIndex": { "alias": "rowIndex"; "required": true; }; "selectionMode": { "alias": "selectionMode"; "required": false; }; "isShowSelectionColumn": { "alias": "isShowSelectionColumn"; "required": false; }; }, {}, never, never, true, never>;
 }

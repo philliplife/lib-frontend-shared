@@ -1,7 +1,7 @@
 import { OnInit } from '@angular/core';
 import * as i0 from "@angular/core";
 export declare class HasMenuUAMDirective implements OnInit {
-    menuUrl: string;
+    menuUrl?: string;
     storage: string;
     private templateRef;
     private viewContainer;

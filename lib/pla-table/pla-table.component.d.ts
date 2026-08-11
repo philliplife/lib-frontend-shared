@@ -1,5 +1,5 @@
 import { EventEmitter, OnChanges, OnInit } from '@angular/core';
-import { Table, TableFilterEvent, TableLazyLoadEvent, TableRowSelectEvent } from 'primeng/table';
+import { Table, TableFilterEvent, TableLazyLoadEvent, TableRowSelectEvent, TableRowUnSelectEvent } from 'primeng/table';
 import { FilterMetadata, FilterService, SortEvent } from 'primeng/api';
 import { IAppliedFilters, IFilterColumn, IOperatorOptions, IPaginatorProperties, ITableColumn, ITableConfig } from '../../models/table.interface';
 import * as i0 from "@angular/core";
@@ -16,6 +16,8 @@ export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges
     operatorOptions: IOperatorOptions[];
     onChangeTableFiltersEmit: EventEmitter<any>;
     rowSelect: EventEmitter<T>;
+    rowUnselect: EventEmitter<T>;
+    selectionChange: EventEmitter<T | T[] | null>;
     metaKey: boolean;
     selectedRow: T | T[] | null;
     rows: number;
@@ -24,7 +26,10 @@ export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges
     ngOnInit(): void;
     private registerTagAwareFilterMatchModes;
     ngOnChanges(): void;
+    private normalizeSelectionShape;
     onRowSelect(event: TableRowSelectEvent): void;
+    onRowUnselect(event: TableRowUnSelectEvent): void;
+    onSelectionChange(selection: T | T[] | null): void;
     get paginatorConfig(): IPaginatorProperties;
     customSort(event: SortEvent): void;
     onChangeFilter(event: TableFilterEvent): void;
@@ -40,5 +45,5 @@ export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges
     formatDate: (dateInput: string | string[]) => string | string[];
     private getOperator;
     static ɵfac: i0.ɵɵFactoryDeclaration<PlaTableComponent<any>, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<PlaTableComponent<any>, "pla-table", never, { "tableLoading": { "alias": "tableLoading"; "required": true; }; "tableData": { "alias": "tableData"; "required": true; }; "tableColumns": { "alias": "tableColumns"; "required": true; }; "tableConfig": { "alias": "tableConfig"; "required": true; }; "appliedFilters": { "alias": "appliedFilters"; "required": false; }; "applicationStorageName": { "alias": "applicationStorageName"; "required": true; }; "tableName": { "alias": "tableName"; "required": true; }; "operatorOptions": { "alias": "operatorOptions"; "required": false; }; }, { "onChangeTableFiltersEmit": "onChangeTableFiltersEmit"; "rowSelect": "rowSelect"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<PlaTableComponent<any>, "pla-table", never, { "tableLoading": { "alias": "tableLoading"; "required": true; }; "tableData": { "alias": "tableData"; "required": true; }; "tableColumns": { "alias": "tableColumns"; "required": true; }; "tableConfig": { "alias": "tableConfig"; "required": true; }; "appliedFilters": { "alias": "appliedFilters"; "required": false; }; "applicationStorageName": { "alias": "applicationStorageName"; "required": true; }; "tableName": { "alias": "tableName"; "required": true; }; "operatorOptions": { "alias": "operatorOptions"; "required": false; }; }, { "onChangeTableFiltersEmit": "onChangeTableFiltersEmit"; "rowSelect": "rowSelect"; "rowUnselect": "rowUnselect"; "selectionChange": "selectionChange"; }, never, never, true, never>;
 }

@@ -26,6 +26,8 @@ export interface ITableLazyLoad {
 }
 export interface ITableConfig {
     selectionMode?: 'single' | 'multiple';
+    isShowSelectionColumn?: boolean;
+    dataKey?: string;
     isShowFilter?: boolean;
     stripedRows?: boolean;
     first: number;
