@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Injectable, Component, Input, EventEmitter, Output, forwardRef, Pipe, Directive, inject, TemplateRef, ViewContainerRef, ViewChild, LOCALE_ID } from '@angular/core';
+import { Injectable, Component, Input, EventEmitter, Output, forwardRef, Pipe, Directive, inject, ViewChild, TemplateRef, ViewContainerRef, LOCALE_ID } from '@angular/core';
 import * as i1$1 from '@angular/common';
 import { CommonModule, DatePipe } from '@angular/common';
 import * as i1 from 'primeng/button';
@@ -52,6 +52,10 @@ import * as i1$3 from 'primeng/dialog';
 import { DialogModule } from 'primeng/dialog';
 import * as i1$4 from 'primeng/toast';
 import { ToastModule } from 'primeng/toast';
+import { FileUpload } from 'primeng/fileupload';
+import * as i2$5 from 'primeng/tooltip';
+import { TooltipModule } from 'primeng/tooltip';
+import { PrimeNG } from 'primeng/config';
 import * as i1$5 from 'primeng/table';
 import { TableModule } from 'primeng/table';
 import * as i4$5 from 'primeng/tieredmenu';
@@ -61,7 +65,7 @@ import { TagModule } from 'primeng/tag';
 import * as i6$1 from 'primeng/overlaybadge';
 import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { Router } from '@angular/router';
-import * as i2$5 from 'primeng/stepper';
+import * as i2$6 from 'primeng/stepper';
 import { StepperModule } from 'primeng/stepper';
 import { StepsModule } from 'primeng/steps';
 import * as i1$6 from '@angular/common/http';
@@ -1303,6 +1307,267 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
             args: [{ selector: 'pla-toast', imports: [CommonModule, ToastModule, AngularSvgIconModule], providers: [MessageService], template: "<p-toast>\n  <ng-template let-message #message>\n    <div class=\"flex flex items-start flex-auto p-2 toast-container\">\n      <div class=\"icon mr-3\">\n        <svg-icon\n          class=\"icon-primary\"\n          [src]=\"svgIconPath || 'assets/svg/icon-bell.svg'\"\n          [svgStyle]=\"{\n            'height.rem': 1.5,\n            'width.rem': 1.5,\n          }\"></svg-icon>\n      </div>\n      <div class=\"flex flex-column\">\n        <div class=\"font-bold text-lg\">{{ message.summary }}</div>\n        <div class=\"font-normal text-md text-black\">{{ message.detail }}</div>\n      </div>\n    </div>\n  </ng-template>\n</p-toast>\n", styles: [".toast-container{border:0px;border-radius:1.25rem}.toast-container .icon{width:2.5rem;height:2.5rem;background-color:#fff;border-radius:.625rem;display:flex;align-items:center;justify-content:center}.toast-container .text-black{color:#000!important}\n"] }]
         }] });
 
+class PlaBrowsePanelComponent {
+    uploader;
+    allowFileTypeDesc = '';
+    // Remark: pre-formatted description strings from pla-file-uploader, rendered as-is
+    maxFileSizeDesc = '';
+    maxFilesDesc = '';
+    /** Illustration path. Empty string falls back to a PrimeNG icon so the lib needs no asset. */
+    iconSrc = '';
+    isDragOver = false;
+    // Remark: dragenter/dragleave fire once per element entered and bubble up from children, so a
+    // plain boolean flickers as the cursor crosses the panel's inner nodes — count the depth instead.
+    dragDepth = 0;
+    onClickChoose() {
+        // Opens the native file selection dialog
+        this.uploader.choose();
+    }
+    onDragEnter() {
+        this.dragDepth++;
+        this.isDragOver = true;
+    }
+    onDragLeave() {
+        this.dragDepth = Math.max(0, this.dragDepth - 1);
+        this.isDragOver = this.dragDepth > 0;
+    }
+    // Remark: the drop itself is handled by p-fileupload's own content listener — the event bubbles
+    // up to it, we only reset the highlight here.
+    onDrop() {
+        this.dragDepth = 0;
+        this.isDragOver = false;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaBrowsePanelComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: PlaBrowsePanelComponent, isStandalone: true, selector: "pla-browse-panel", inputs: { uploader: "uploader", allowFileTypeDesc: "allowFileTypeDesc", maxFileSizeDesc: "maxFileSizeDesc", maxFilesDesc: "maxFilesDesc", iconSrc: "iconSrc" }, ngImport: i0, template: "<div\n  class=\"text-center browser-container\"\n  [class.is-drag-over]=\"isDragOver\"\n  (dragenter)=\"onDragEnter()\"\n  (dragleave)=\"onDragLeave()\"\n  (drop)=\"onDrop()\">\n  @if (iconSrc) {\n    <img [src]=\"iconSrc\" alt=\"icon-upload\" />\n  } @else {\n    <i class=\"pi pi-cloud-upload icon-fallback\"></i>\n  }\n\n  <div class=\"flex align-items-center justify-content-center\">\n    <button\n      id=\"browse-file\"\n      type=\"button\"\n      (click)=\"onClickChoose()\"\n      class=\"icon-button mr-1 underline click-here-style vertical-align-middle\"\n      aria-label=\"Click here to upload your file\">\n      Click here\n    </button>\n    <span class=\"line-1-style\"> to upload your file</span>\n  </div>\n\n  <div>\n    <span class=\"grey-font-style\">Supported formats: </span>\n    <span class=\"black-font-style\">{{ allowFileTypeDesc }}</span>\n  </div>\n\n  <div>\n    <span class=\"grey-font-style\">Maximum size: </span>\n    <span class=\"black-font-style\">{{ maxFileSizeDesc }}</span>\n    <span class=\"grey-font-style\"> | Maximum files: </span>\n    <span class=\"black-font-style\">{{ maxFilesDesc }}</span>\n  </div>\n</div>\n", styles: [".browser-container{display:flex;align-items:center;flex-direction:column;border:1px dashed #7f8ca4;background-color:#f5f8fe;border-radius:1.25rem;transition:border-color .15s ease-in-out,background-color .15s ease-in-out,box-shadow .15s ease-in-out}@media screen and (max-width: 575px){.browser-container{padding:1rem}}@media screen and (min-width: 576px){.browser-container{padding:1.875rem}}.browser-container.is-drag-over{border-color:var(--color-primary-9);box-shadow:inset 0 0 0 1px var(--color-primary-9);background-color:#e8f0ff}.icon-fallback{font-size:2.8rem;color:var(--color-primary-9)}.click-here-style{font-size:var(--font-size-3);color:var(--color-primary-9);font-weight:600;display:inline-block;margin:0;background:none;border:0;cursor:pointer}.line-1-style{font-size:1.25rem;font-weight:400;color:var(--color-text-1)}.grey-font-style{color:var(--color-text-2);font-size:var(--font-size-6);font-weight:400}.black-font-style{color:var(--color-text-1);font-size:var(--font-size-6);font-weight:500}\n"] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaBrowsePanelComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'pla-browse-panel', imports: [], template: "<div\n  class=\"text-center browser-container\"\n  [class.is-drag-over]=\"isDragOver\"\n  (dragenter)=\"onDragEnter()\"\n  (dragleave)=\"onDragLeave()\"\n  (drop)=\"onDrop()\">\n  @if (iconSrc) {\n    <img [src]=\"iconSrc\" alt=\"icon-upload\" />\n  } @else {\n    <i class=\"pi pi-cloud-upload icon-fallback\"></i>\n  }\n\n  <div class=\"flex align-items-center justify-content-center\">\n    <button\n      id=\"browse-file\"\n      type=\"button\"\n      (click)=\"onClickChoose()\"\n      class=\"icon-button mr-1 underline click-here-style vertical-align-middle\"\n      aria-label=\"Click here to upload your file\">\n      Click here\n    </button>\n    <span class=\"line-1-style\"> to upload your file</span>\n  </div>\n\n  <div>\n    <span class=\"grey-font-style\">Supported formats: </span>\n    <span class=\"black-font-style\">{{ allowFileTypeDesc }}</span>\n  </div>\n\n  <div>\n    <span class=\"grey-font-style\">Maximum size: </span>\n    <span class=\"black-font-style\">{{ maxFileSizeDesc }}</span>\n    <span class=\"grey-font-style\"> | Maximum files: </span>\n    <span class=\"black-font-style\">{{ maxFilesDesc }}</span>\n  </div>\n</div>\n", styles: [".browser-container{display:flex;align-items:center;flex-direction:column;border:1px dashed #7f8ca4;background-color:#f5f8fe;border-radius:1.25rem;transition:border-color .15s ease-in-out,background-color .15s ease-in-out,box-shadow .15s ease-in-out}@media screen and (max-width: 575px){.browser-container{padding:1rem}}@media screen and (min-width: 576px){.browser-container{padding:1.875rem}}.browser-container.is-drag-over{border-color:var(--color-primary-9);box-shadow:inset 0 0 0 1px var(--color-primary-9);background-color:#e8f0ff}.icon-fallback{font-size:2.8rem;color:var(--color-primary-9)}.click-here-style{font-size:var(--font-size-3);color:var(--color-primary-9);font-weight:600;display:inline-block;margin:0;background:none;border:0;cursor:pointer}.line-1-style{font-size:1.25rem;font-weight:400;color:var(--color-text-1)}.grey-font-style{color:var(--color-text-2);font-size:var(--font-size-6);font-weight:400}.black-font-style{color:var(--color-text-1);font-size:var(--font-size-6);font-weight:500}\n"] }]
+        }], propDecorators: { uploader: [{
+                type: Input,
+                args: [{ required: true }]
+            }], allowFileTypeDesc: [{
+                type: Input,
+                args: [{ required: true }]
+            }], maxFileSizeDesc: [{
+                type: Input,
+                args: [{ required: true }]
+            }], maxFilesDesc: [{
+                type: Input,
+                args: [{ required: true }]
+            }], iconSrc: [{
+                type: Input
+            }] } });
+
+class PlaPendingFileComponent {
+    config = inject(PrimeNG);
+    isDefaultUploadButton = false;
+    fileList = [];
+    removeFileCallback;
+    uploadCallback;
+    title = 'File Upload';
+    uploadText = 'Upload';
+    confirmTitle = 'Confirm Upload';
+    confirmDescription = 'Do you want to upload files?';
+    visibleModalUpload = false;
+    onRemoveTemplatingFile(file) {
+        this.removeFileCallback?.(file);
+    }
+    openModalConfirmUpload() {
+        this.visibleModalUpload = true;
+    }
+    onUploadClick() {
+        this.uploadCallback?.(this.fileList);
+        this.visibleModalUpload = false;
+    }
+    formatSize(bytes) {
+        const k = 1024;
+        const dm = 3;
+        const sizes = this.config.translation.fileSizeTypes;
+        if (!sizes) {
+            return `${bytes} B`;
+        }
+        if (bytes === 0) {
+            return `0 ${sizes[0]}`;
+        }
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        const formattedSize = Number.parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+        return `${formattedSize} ${sizes[i]}`;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaPendingFileComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: PlaPendingFileComponent, isStandalone: true, selector: "pla-pending-file", inputs: { isDefaultUploadButton: "isDefaultUploadButton", fileList: "fileList", removeFileCallback: "removeFileCallback", uploadCallback: "uploadCallback", title: "title", uploadText: "uploadText", confirmTitle: "confirmTitle", confirmDescription: "confirmDescription" }, ngImport: i0, template: "<div class=\"flex align-items-center flex-wrap\">\n  <div class=\"flex align-items-center mb-3\">\n    <span class=\"file-upload-title\">{{ title }}</span>\n    <span class=\"badge-container ml-2\">{{ fileList.length }}</span>\n  </div>\n\n  @for (item of fileList; track item.name + item.size + item.lastModified) {\n    <div\n      class=\"w-full flex flex-wrap flex-column md:flex-row justify-content-between align-items-center mb-3 pending-file-item\">\n      <div class=\"w-full flex align-items-center justify-content-between\">\n        <div class=\"flex align-items-center\">\n          <i class=\"pi pi-file mr-3 mb-1 text-primary text-2xl\"></i>\n          <div>\n            <span class=\"ellipsis font-semibold\" [pTooltip]=\"item.name\" tooltipPosition=\"top\">\n              {{ item.name }}\n            </span>\n            <div>{{ formatSize(item.size) }}</div>\n          </div>\n        </div>\n\n        <p-button\n          id=\"button-delete-file\"\n          class=\"btn-back-icon ml-2\"\n          icon=\"pi pi-trash\"\n          variant=\"outlined\"\n          severity=\"secondary\"\n          (click)=\"onRemoveTemplatingFile(item)\" />\n      </div>\n    </div>\n  }\n</div>\n\n@if (isDefaultUploadButton) {\n  <div class=\"flex justify-content-end\">\n    <button\n      id=\"button-confirm-upload-2\"\n      class=\"btn-small btn-primary-linear-gradient\"\n      icon=\"pi pi-upload\"\n      pButton\n      (click)=\"openModalConfirmUpload()\">\n      {{ uploadText }}\n    </button>\n  </div>\n}\n\n<pla-confirm-modal\n  [(isVisible)]=\"visibleModalUpload\"\n  [title]=\"confirmTitle\"\n  [description]=\"confirmDescription\"\n  [saveText]=\"'Confirm'\"\n  [cancelText]=\"'Cancel'\"\n  (isSubmit)=\"onUploadClick()\" />\n", styles: [".file-upload-title{font-size:var(--font-size-4);font-weight:700;color:var(--color-primary-9)}.pending-file-item{border-radius:10px;border:1px solid var(--color-text-3);background:var(--color-white);padding:1.375rem}.badge-container{width:2rem;height:2rem;border-radius:2rem;line-height:2.1rem;color:var(--color-white);background-color:var(--color-primary-1);text-align:center}.ellipsis{display:block;max-width:18.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\n"], dependencies: [{ kind: "ngmodule", type: ButtonModule }, { kind: "directive", type: i1.ButtonDirective, selector: "[pButton]", inputs: ["iconPos", "loadingIcon", "loading", "severity", "raised", "rounded", "text", "outlined", "size", "plain", "fluid", "label", "icon", "buttonProps"] }, { kind: "component", type: i1.Button, selector: "p-button", inputs: ["type", "iconPos", "icon", "badge", "label", "disabled", "loading", "loadingIcon", "raised", "rounded", "text", "plain", "severity", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "fluid", "buttonProps"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "ngmodule", type: TooltipModule }, { kind: "directive", type: i2$5.Tooltip, selector: "[pTooltip]", inputs: ["tooltipPosition", "tooltipEvent", "appendTo", "positionStyle", "tooltipStyleClass", "tooltipZIndex", "escape", "showDelay", "hideDelay", "life", "positionTop", "positionLeft", "autoHide", "fitContent", "hideOnEscape", "pTooltip", "tooltipDisabled", "tooltipOptions"] }, { kind: "component", type: PlaConfirmModalComponent, selector: "pla-confirm-modal", inputs: ["isVisible", "image", "title", "description", "saveText", "cancelText"], outputs: ["isVisibleChange", "isCancel", "isSubmit"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaPendingFileComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'pla-pending-file', imports: [ButtonModule, TooltipModule, PlaConfirmModalComponent], template: "<div class=\"flex align-items-center flex-wrap\">\n  <div class=\"flex align-items-center mb-3\">\n    <span class=\"file-upload-title\">{{ title }}</span>\n    <span class=\"badge-container ml-2\">{{ fileList.length }}</span>\n  </div>\n\n  @for (item of fileList; track item.name + item.size + item.lastModified) {\n    <div\n      class=\"w-full flex flex-wrap flex-column md:flex-row justify-content-between align-items-center mb-3 pending-file-item\">\n      <div class=\"w-full flex align-items-center justify-content-between\">\n        <div class=\"flex align-items-center\">\n          <i class=\"pi pi-file mr-3 mb-1 text-primary text-2xl\"></i>\n          <div>\n            <span class=\"ellipsis font-semibold\" [pTooltip]=\"item.name\" tooltipPosition=\"top\">\n              {{ item.name }}\n            </span>\n            <div>{{ formatSize(item.size) }}</div>\n          </div>\n        </div>\n\n        <p-button\n          id=\"button-delete-file\"\n          class=\"btn-back-icon ml-2\"\n          icon=\"pi pi-trash\"\n          variant=\"outlined\"\n          severity=\"secondary\"\n          (click)=\"onRemoveTemplatingFile(item)\" />\n      </div>\n    </div>\n  }\n</div>\n\n@if (isDefaultUploadButton) {\n  <div class=\"flex justify-content-end\">\n    <button\n      id=\"button-confirm-upload-2\"\n      class=\"btn-small btn-primary-linear-gradient\"\n      icon=\"pi pi-upload\"\n      pButton\n      (click)=\"openModalConfirmUpload()\">\n      {{ uploadText }}\n    </button>\n  </div>\n}\n\n<pla-confirm-modal\n  [(isVisible)]=\"visibleModalUpload\"\n  [title]=\"confirmTitle\"\n  [description]=\"confirmDescription\"\n  [saveText]=\"'Confirm'\"\n  [cancelText]=\"'Cancel'\"\n  (isSubmit)=\"onUploadClick()\" />\n", styles: [".file-upload-title{font-size:var(--font-size-4);font-weight:700;color:var(--color-primary-9)}.pending-file-item{border-radius:10px;border:1px solid var(--color-text-3);background:var(--color-white);padding:1.375rem}.badge-container{width:2rem;height:2rem;border-radius:2rem;line-height:2.1rem;color:var(--color-white);background-color:var(--color-primary-1);text-align:center}.ellipsis{display:block;max-width:18.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\n"] }]
+        }], propDecorators: { isDefaultUploadButton: [{
+                type: Input,
+                args: [{ required: true }]
+            }], fileList: [{
+                type: Input
+            }], removeFileCallback: [{
+                type: Input
+            }], uploadCallback: [{
+                type: Input
+            }], title: [{
+                type: Input
+            }], uploadText: [{
+                type: Input
+            }], confirmTitle: [{
+                type: Input
+            }], confirmDescription: [{
+                type: Input
+            }] } });
+
+class PlaFileUploaderComponent {
+    uploader;
+    allowFileType = [];
+    isDefaultUploadButton = true;
+    uploadCallback;
+    /** Extra async validation applied after the built-in type/size/count checks. */
+    fileValidator;
+    /** Max size per file, in bytes. Enforced and shown in the browse panel. */
+    maxFileSize = 10485760;
+    /** Max number of pending files. Enforced and shown in the browse panel. */
+    maxFiles = 10;
+    /** Illustration shown in the browse panel. Pass '' to fall back to a PrimeNG icon. */
+    iconSrc = 'assets/svg/icon-files.svg';
+    title = 'File Upload';
+    confirmTitle = 'Confirm Upload';
+    confirmDescription = 'Do you want to upload files?';
+    validationErrors = new EventEmitter();
+    fileListChange = new EventEmitter();
+    plaToastService = inject(PlaToastService);
+    fileList = [];
+    async onSelectedFiles(event) {
+        // Remark: event.files is a native FileList at runtime (from input.files/dataTransfer.files),
+        // not a real array — Array.from() is required before filtering.
+        const selectedFiles = Array.from(event.files);
+        // Remark: files PrimeNG rejected for not matching [accept] — replace its default p-message with a toast
+        const invalidTypeFiles = selectedFiles.filter((f) => !event.currentFiles.some((cf) => this.isSameFile(f, cf)));
+        let files = event.currentFiles;
+        const errors = [
+            ...invalidTypeFiles.map((f) => `"${f.name}" is not a supported file type. Supported formats: ${this.allowedFileTypes}`),
+        ];
+        // Built-in size check — drop anything larger than maxFileSize
+        const oversizedFiles = files.filter((f) => f.size > this.maxFileSize);
+        if (oversizedFiles.length > 0) {
+            files = this.rejectFiles(files, oversizedFiles);
+            errors.push(...oversizedFiles.map((f) => `"${f.name}" exceeds the maximum size of ${this.maxFileSizeDesc}.`));
+        }
+        // Built-in count check — keep the first maxFiles and drop the rest
+        if (files.length > this.maxFiles) {
+            const excessFiles = files.slice(this.maxFiles);
+            files = this.rejectFiles(files, excessFiles);
+            errors.push(`You can upload up to ${this.maxFilesDesc} at a time.`);
+        }
+        if (this.fileValidator) {
+            const { errors: customErrors, invalidFiles = [] } = await this.fileValidator(files);
+            errors.push(...customErrors);
+            if (invalidFiles.length > 0) {
+                files = this.rejectFiles(files, invalidFiles);
+            }
+        }
+        if (errors.length > 0) {
+            // Remark: suppress PrimeNG's own inline messages, we surface everything through the toast
+            this.uploader.msgs = [];
+            this.validationErrors.emit(errors);
+            this.plaToastService.show({
+                severity: 'error',
+                summary: 'File Validation Failed',
+                description: errors.join('<br>'),
+                life: 3000,
+            });
+        }
+        this.setFileList(files);
+        if (!this.isDefaultUploadButton) {
+            this.uploadCallback(this.fileList);
+        }
+    }
+    removeFile = (fileToRemove) => {
+        this.setFileList(this.fileList.filter((f) => !this.isSameFile(f, fileToRemove)));
+        this.removeFromUploader([fileToRemove]);
+    };
+    clearFiles() {
+        this.setFileList([]);
+        this.uploader.files = [];
+    }
+    get allowedFileTypes() {
+        return this.allowFileType.join(', ');
+    }
+    /** maxFileSize in bytes rendered as a "X MB"/"X KB" display string. */
+    get maxFileSizeDesc() {
+        const mb = this.maxFileSize / (1024 * 1024);
+        if (mb >= 1) {
+            return `${this.trimTrailingZeros(mb)} MB`;
+        }
+        const kb = this.maxFileSize / 1024;
+        return `${this.trimTrailingZeros(kb)} KB`;
+    }
+    /** maxFiles pluralized into a "1 file"/"N files" display string. */
+    get maxFilesDesc() {
+        return `${this.maxFiles} ${this.maxFiles === 1 ? 'file' : 'files'}`;
+    }
+    setFileList(files) {
+        this.fileList = files;
+        this.fileListChange.emit(files);
+    }
+    /** Drops rejected files from both the incoming list and PrimeNG's internal one. */
+    rejectFiles(files, rejected) {
+        this.removeFromUploader(rejected);
+        return files.filter((f) => !rejected.some((r) => this.isSameFile(f, r)));
+    }
+    removeFromUploader(filesToRemove) {
+        filesToRemove.forEach((toRemove) => {
+            const index = this.uploader.files.findIndex((f) => this.isSameFile(f, toRemove));
+            if (index !== -1) {
+                this.uploader.files.splice(index, 1);
+            }
+        });
+    }
+    isSameFile(a, b) {
+        return a.name === b.name && a.size === b.size && a.lastModified === b.lastModified;
+    }
+    trimTrailingZeros(value) {
+        return Number.parseFloat(value.toFixed(2)).toString();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaFileUploaderComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: PlaFileUploaderComponent, isStandalone: true, selector: "pla-file-uploader", inputs: { allowFileType: "allowFileType", isDefaultUploadButton: "isDefaultUploadButton", uploadCallback: "uploadCallback", fileValidator: "fileValidator", maxFileSize: "maxFileSize", maxFiles: "maxFiles", iconSrc: "iconSrc", title: "title", confirmTitle: "confirmTitle", confirmDescription: "confirmDescription" }, outputs: { validationErrors: "validationErrors", fileListChange: "fileListChange" }, viewQueries: [{ propertyName: "uploader", first: true, predicate: ["uploader"], descendants: true }], ngImport: i0, template: "<div>\n  <p-fileupload\n    #uploader\n    name=\"myfile[]\"\n    [multiple]=\"true\"\n    [customUpload]=\"true\"\n    [accept]=\"allowedFileTypes\"\n    (onSelect)=\"onSelectedFiles($event)\">\n    <!-- Remark: an empty #header template hides PrimeNG's default choose/upload/cancel bar -->\n    <ng-template #header></ng-template>\n\n    <ng-template #content>\n      <div class=\"flex flex-column p-3\">\n        <div class=\"mb-3\">\n          <pla-browse-panel\n            [uploader]=\"uploader\"\n            [iconSrc]=\"iconSrc\"\n            [allowFileTypeDesc]=\"allowedFileTypes\"\n            [maxFileSizeDesc]=\"maxFileSizeDesc\"\n            [maxFilesDesc]=\"maxFilesDesc\" />\n        </div>\n\n        @if (fileList.length > 0) {\n          <div class=\"pla-uploader-content mb-3\">\n            <pla-pending-file\n              [title]=\"title\"\n              [fileList]=\"fileList\"\n              [removeFileCallback]=\"removeFile\"\n              [uploadCallback]=\"uploadCallback\"\n              [isDefaultUploadButton]=\"isDefaultUploadButton\"\n              [confirmTitle]=\"confirmTitle\"\n              [confirmDescription]=\"confirmDescription\" />\n          </div>\n        }\n      </div>\n    </ng-template>\n\n    <!-- Remark: an empty #file template hides PrimeNG's default pending-file list -->\n    <ng-template #file></ng-template>\n  </p-fileupload>\n</div>\n", styles: [":host ::ng-deep .p-fileupload-header{display:none!important}:host ::ng-deep .p-fileupload-content{padding:0!important;border:0!important}:host ::ng-deep .p-fileupload-content p-progressbar{display:none}:host ::ng-deep .p-fileupload-advanced{border:0!important}.pla-uploader-content{border-radius:1.25rem;border:1px solid var(--color-text-3)}@media screen and (max-width: 575px){.pla-uploader-content{padding:1rem}}@media screen and (min-width: 576px){.pla-uploader-content{padding:1.875rem}}\n"], dependencies: [{ kind: "component", type: FileUpload, selector: "p-fileupload, p-fileUpload", inputs: ["name", "url", "method", "multiple", "accept", "disabled", "auto", "withCredentials", "maxFileSize", "invalidFileSizeMessageSummary", "invalidFileSizeMessageDetail", "invalidFileTypeMessageSummary", "invalidFileTypeMessageDetail", "invalidFileLimitMessageDetail", "invalidFileLimitMessageSummary", "style", "styleClass", "previewWidth", "chooseLabel", "uploadLabel", "cancelLabel", "chooseIcon", "uploadIcon", "cancelIcon", "showUploadButton", "showCancelButton", "mode", "headers", "customUpload", "fileLimit", "uploadStyleClass", "cancelStyleClass", "removeStyleClass", "chooseStyleClass", "chooseButtonProps", "uploadButtonProps", "cancelButtonProps", "files"], outputs: ["onBeforeUpload", "onSend", "onUpload", "onError", "onClear", "onRemove", "onSelect", "onProgress", "uploadHandler", "onImageError", "onRemoveUploadedFile"] }, { kind: "component", type: PlaBrowsePanelComponent, selector: "pla-browse-panel", inputs: ["uploader", "allowFileTypeDesc", "maxFileSizeDesc", "maxFilesDesc", "iconSrc"] }, { kind: "component", type: PlaPendingFileComponent, selector: "pla-pending-file", inputs: ["isDefaultUploadButton", "fileList", "removeFileCallback", "uploadCallback", "title", "uploadText", "confirmTitle", "confirmDescription"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaFileUploaderComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'pla-file-uploader', imports: [FileUpload, PlaBrowsePanelComponent, PlaPendingFileComponent], template: "<div>\n  <p-fileupload\n    #uploader\n    name=\"myfile[]\"\n    [multiple]=\"true\"\n    [customUpload]=\"true\"\n    [accept]=\"allowedFileTypes\"\n    (onSelect)=\"onSelectedFiles($event)\">\n    <!-- Remark: an empty #header template hides PrimeNG's default choose/upload/cancel bar -->\n    <ng-template #header></ng-template>\n\n    <ng-template #content>\n      <div class=\"flex flex-column p-3\">\n        <div class=\"mb-3\">\n          <pla-browse-panel\n            [uploader]=\"uploader\"\n            [iconSrc]=\"iconSrc\"\n            [allowFileTypeDesc]=\"allowedFileTypes\"\n            [maxFileSizeDesc]=\"maxFileSizeDesc\"\n            [maxFilesDesc]=\"maxFilesDesc\" />\n        </div>\n\n        @if (fileList.length > 0) {\n          <div class=\"pla-uploader-content mb-3\">\n            <pla-pending-file\n              [title]=\"title\"\n              [fileList]=\"fileList\"\n              [removeFileCallback]=\"removeFile\"\n              [uploadCallback]=\"uploadCallback\"\n              [isDefaultUploadButton]=\"isDefaultUploadButton\"\n              [confirmTitle]=\"confirmTitle\"\n              [confirmDescription]=\"confirmDescription\" />\n          </div>\n        }\n      </div>\n    </ng-template>\n\n    <!-- Remark: an empty #file template hides PrimeNG's default pending-file list -->\n    <ng-template #file></ng-template>\n  </p-fileupload>\n</div>\n", styles: [":host ::ng-deep .p-fileupload-header{display:none!important}:host ::ng-deep .p-fileupload-content{padding:0!important;border:0!important}:host ::ng-deep .p-fileupload-content p-progressbar{display:none}:host ::ng-deep .p-fileupload-advanced{border:0!important}.pla-uploader-content{border-radius:1.25rem;border:1px solid var(--color-text-3)}@media screen and (max-width: 575px){.pla-uploader-content{padding:1rem}}@media screen and (min-width: 576px){.pla-uploader-content{padding:1.875rem}}\n"] }]
+        }], propDecorators: { uploader: [{
+                type: ViewChild,
+                args: ['uploader']
+            }], allowFileType: [{
+                type: Input,
+                args: [{ required: true }]
+            }], isDefaultUploadButton: [{
+                type: Input
+            }], uploadCallback: [{
+                type: Input,
+                args: [{ required: true }]
+            }], fileValidator: [{
+                type: Input
+            }], maxFileSize: [{
+                type: Input
+            }], maxFiles: [{
+                type: Input
+            }], iconSrc: [{
+                type: Input
+            }], title: [{
+                type: Input
+            }], confirmTitle: [{
+                type: Input
+            }], confirmDescription: [{
+                type: Input
+            }], validationErrors: [{
+                type: Output
+            }], fileListChange: [{
+                type: Output
+            }] } });
+
 var FILTER_TYPE;
 (function (FILTER_TYPE) {
     FILTER_TYPE["INPUT_TEXT"] = "INPUT_TEXT";
@@ -2295,7 +2560,7 @@ class PlaStepperComponent {
         this.activeIndexChange.emit(index);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaStepperComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaStepperComponent, isStandalone: true, selector: "pla-stepper", inputs: { activeStep: "activeStep", activeIndex: "activeIndex", stepItems: "stepItems", formValid: "formValid", showValidationErrors: "showValidationErrors" }, outputs: { activeIndexChange: "activeIndexChange" }, ngImport: i0, template: "<p-stepper [(value)]=\"activeStep\" class=\"basis-[50rem]\">\n  <p-step-list>\n    <ng-container *ngFor=\"let item of stepItems; index as i\">\n      <p-step [value]=\"i + 1\" *ngIf=\"item['active']\">\n        <ng-template\n          #content\n          let-activateCallback=\"activateCallback\"\n          let-active=\"active\"\n        >\n          <div class=\"flex align-items-center flex-col items-center gap-2\">\n            <button\n              style=\"width: 3.125rem; height: 3.125rem; border-radius: 3.125rem\"\n              type=\"button\"\n              class=\"flex align-items-center justify-content-center border-none cursor-pointer\"\n              [ngClass]=\"{\n                'button-step-error': isStepInvalid(item.id || ''),\n                'button-step-selected': i === activeIndex,\n                'button-step-active': i <= activeIndex,\n                'button-step-default': i > activeIndex,\n              }\"\n              (click)=\"onStepClick(activateCallback, i)\"\n            >\n              <svg-icon\n                [src]=\"item.icon\"\n                [svgStyle]=\"{\n                        'height.rem': 1.75,\n                        'width.rem': 1.75,\n                      }\"\n              >\n              </svg-icon>\n            </button>\n            <span\n              class=\"p-stepper-title text-sm text-color-secondary text-center cursor-pointer\"\n              [ngClass]=\"{\n                'steps-title-error': isStepInvalid(item.id || ''),\n                'selected-step-title': !isStepInvalid(item.id || '') && i === activeIndex,\n                'steps-title-default': !isStepInvalid(item.id || '') && i !== activeIndex,\n              }\"\n              (click)=\"onStepClick(activateCallback, i)\"\n            >\n              {{ item.label }}\n            </span>\n          </div>\n        </ng-template>\n      </p-step>\n    </ng-container>\n  </p-step-list>\n</p-stepper>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: i1$1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "directive", type: i1$1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: StepperModule }, { kind: "component", type: i2$5.Stepper, selector: "p-stepper", inputs: ["value", "linear", "transitionOptions"], outputs: ["valueChange"] }, { kind: "component", type: i2$5.StepList, selector: "p-step-list" }, { kind: "component", type: i2$5.Step, selector: "p-step", inputs: ["value", "disabled"], outputs: ["valueChange"] }, { kind: "ngmodule", type: StepsModule }, { kind: "ngmodule", type: AngularSvgIconModule }, { kind: "component", type: i2$1.SvgIconComponent, selector: "svg-icon", inputs: ["src", "name", "stretch", "applyClass", "svgClass", "class", "viewBox", "svgAriaLabel", "onSVGLoaded", "svgStyle"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: PlaStepperComponent, isStandalone: true, selector: "pla-stepper", inputs: { activeStep: "activeStep", activeIndex: "activeIndex", stepItems: "stepItems", formValid: "formValid", showValidationErrors: "showValidationErrors" }, outputs: { activeIndexChange: "activeIndexChange" }, ngImport: i0, template: "<p-stepper [(value)]=\"activeStep\" class=\"basis-[50rem]\">\n  <p-step-list>\n    <ng-container *ngFor=\"let item of stepItems; index as i\">\n      <p-step [value]=\"i + 1\" *ngIf=\"item['active']\">\n        <ng-template\n          #content\n          let-activateCallback=\"activateCallback\"\n          let-active=\"active\"\n        >\n          <div class=\"flex align-items-center flex-col items-center gap-2\">\n            <button\n              style=\"width: 3.125rem; height: 3.125rem; border-radius: 3.125rem\"\n              type=\"button\"\n              class=\"flex align-items-center justify-content-center border-none cursor-pointer\"\n              [ngClass]=\"{\n                'button-step-error': isStepInvalid(item.id || ''),\n                'button-step-selected': i === activeIndex,\n                'button-step-active': i <= activeIndex,\n                'button-step-default': i > activeIndex,\n              }\"\n              (click)=\"onStepClick(activateCallback, i)\"\n            >\n              <svg-icon\n                [src]=\"item.icon\"\n                [svgStyle]=\"{\n                        'height.rem': 1.75,\n                        'width.rem': 1.75,\n                      }\"\n              >\n              </svg-icon>\n            </button>\n            <span\n              class=\"p-stepper-title text-sm text-color-secondary text-center cursor-pointer\"\n              [ngClass]=\"{\n                'steps-title-error': isStepInvalid(item.id || ''),\n                'selected-step-title': !isStepInvalid(item.id || '') && i === activeIndex,\n                'steps-title-default': !isStepInvalid(item.id || '') && i !== activeIndex,\n              }\"\n              (click)=\"onStepClick(activateCallback, i)\"\n            >\n              {{ item.label }}\n            </span>\n          </div>\n        </ng-template>\n      </p-step>\n    </ng-container>\n  </p-step-list>\n</p-stepper>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$1.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: i1$1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "directive", type: i1$1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: StepperModule }, { kind: "component", type: i2$6.Stepper, selector: "p-stepper", inputs: ["value", "linear", "transitionOptions"], outputs: ["valueChange"] }, { kind: "component", type: i2$6.StepList, selector: "p-step-list" }, { kind: "component", type: i2$6.Step, selector: "p-step", inputs: ["value", "disabled"], outputs: ["valueChange"] }, { kind: "ngmodule", type: StepsModule }, { kind: "ngmodule", type: AngularSvgIconModule }, { kind: "component", type: i2$1.SvgIconComponent, selector: "svg-icon", inputs: ["src", "name", "stretch", "applyClass", "svgClass", "class", "viewBox", "svgAriaLabel", "onSVGLoaded", "svgStyle"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: PlaStepperComponent, decorators: [{
             type: Component,
@@ -2957,5 +3222,5 @@ const AUTH_INTERCEPTOR_PROVIDER = {
  * Generated bundle index. Do not edit.
  */
 
-export { AUTH_INTERCEPTOR_PROVIDER, AccessMenuGuard, AuthStateService, BuddhistDatePipe, CharCountDirective, ErrorModalService, FILTER_TYPE, HasMenuUAMDirective, HasPermissionDirective, IdentityNoPipe, LoginService, MSG_MODAL, MenuService, NumberDecimalPipe, OPERATOR, OverlayTextDirective, PermissionService, PhoneNoPipe, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaClientDetailComponent, PlaClientHeaderComponent, PlaConfirmModalComponent, PlaContainerLayoutComponent, PlaContentContainerComponent, PlaDialogComponent, PlaDynamicForm, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormSelectObsComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTableComponent, PlaToastComponent, PlaToastService, PlaTopbar, TYPE, UserProfileService, authInterceptor, clientLabels, messageModels };
+export { AUTH_INTERCEPTOR_PROVIDER, AccessMenuGuard, AuthStateService, BuddhistDatePipe, CharCountDirective, ErrorModalService, FILTER_TYPE, HasMenuUAMDirective, HasPermissionDirective, IdentityNoPipe, LoginService, MSG_MODAL, MenuService, NumberDecimalPipe, OPERATOR, OverlayTextDirective, PermissionService, PhoneNoPipe, PlaBrowsePanelComponent, PlaButtonOutlinedComponent, PlaButtonPrimaryComponent, PlaButtonPrimaryIconComponent, PlaButtonSaveComponent, PlaButtonSecondaryComponent, PlaClientDetailComponent, PlaClientHeaderComponent, PlaConfirmModalComponent, PlaContainerLayoutComponent, PlaContentContainerComponent, PlaDialogComponent, PlaDynamicForm, PlaFileUploaderComponent, PlaFormDatePickerComponent, PlaFormInputArrayComponent, PlaFormInputGroupComponent, PlaFormInputNumberComponent, PlaFormInputTextComponent, PlaFormSelectComponent, PlaFormSelectObsComponent, PlaFormTextAreaComponent, PlaFormToggleSwitchComponent, PlaInputSelect, PlaInputText, PlaMessageMappingPipe, PlaPendingFileComponent, PlaSharedLibComponent, PlaSharedLibService, PlaStepperComponent, PlaTableComponent, PlaToastComponent, PlaToastService, PlaTopbar, TYPE, UserProfileService, authInterceptor, clientLabels, messageModels };
 //# sourceMappingURL=pla-shared-lib.mjs.map
