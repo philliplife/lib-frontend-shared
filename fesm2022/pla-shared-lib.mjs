@@ -2095,7 +2095,13 @@ class PlaTableComponent {
     // toggle) so consumers can read the current selection without piecing it together
     // from rowSelect/rowUnselect. Emits T for selectionMode: 'single' and T[] for 'multiple'.
     selectionChange = new EventEmitter();
-    metaKey = true;
+    // Remark: With a checkbox/radio selection column, a plain row click must toggle that
+    // row (same as clicking its checkbox). PrimeNG's metaKeySelection would instead replace
+    // the whole selection on click in 'multiple' mode (unchecking every other row) and
+    // require Ctrl/Cmd to unselect in 'single' mode.
+    get metaKey() {
+        return !this.tableConfig.isShowSelectionColumn;
+    }
     selectedRow = null;
     rows = DEFAULT_ROW_PER_PAGE;
     skeletonTable = Array.from({

@@ -78,8 +78,32 @@
     padding: var(--p-datatable-body-cell-padding);
   }
 
+  // Remark: Selected background is highlight.background (= --p-primary-50, a dark navy here),
+  // so selected text must be white. Set it through PrimeNG's own token rather than only a
+  // plain `color` rule: the striped variant
+  // (.p-datatable-striped .p-datatable-tbody > tr:nth-child(odd).p-datatable-row-selected)
+  // is more specific than our rule and would otherwise re-apply highlight.color (dark) on
+  // every odd striped row, making its text blend into the background.
+  --p-datatable-row-selected-color: var(--color-white);
+
   .p-datatable-tbody > tr.p-datatable-row-selected {
     color: var(--color-white);
+
+    // Action icon buttons are forced to #757575 below, which is unreadable on the dark
+    // selected background.
+    .p-button-text:not(:disabled):not(:hover) {
+      color: inherit !important;
+    }
+
+    // The checked checkbox/radio fill is also a dark primary shade; a white border keeps
+    // the selection-column control visible against the selected row.
+    .p-checkbox,
+    .p-radiobutton {
+      --p-checkbox-checked-border-color: var(--color-white);
+      --p-checkbox-checked-hover-border-color: var(--color-white);
+      --p-radiobutton-checked-border-color: var(--color-white);
+      --p-radiobutton-checked-hover-border-color: var(--color-white);
+    }
   }
 
   // .p-datatable-column-filter-button.p-button

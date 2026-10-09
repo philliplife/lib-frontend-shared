@@ -18,7 +18,7 @@ export declare class PlaTableComponent<T = unknown> implements OnInit, OnChanges
     rowSelect: EventEmitter<T>;
     rowUnselect: EventEmitter<T>;
     selectionChange: EventEmitter<T | T[] | null>;
-    metaKey: boolean;
+    get metaKey(): boolean;
     selectedRow: T | T[] | null;
     rows: number;
     skeletonTable: number[];
