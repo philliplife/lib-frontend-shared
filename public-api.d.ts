@@ -38,6 +38,7 @@ export * from './directives/char-count.directive';
 export * from './directives/overlay-text.directive';
 export * from './directives/has-permission.directive';
 export * from './directives/has-menu-uam.directive';
+export * from './directives/overflow-tooltip.directive';
 export * from './lib/pla-topbar/pla-topbar.component';
 export * from './lib/pla-dialog/pla-dialog.component';
 export * from './lib/pla-stepper/pla-stepper.component';

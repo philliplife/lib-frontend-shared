@@ -78,6 +78,58 @@
     padding: var(--p-datatable-body-cell-padding);
   }
 
+  // Remark: Every body row has the same height, whatever the cell holds (text, tag, action
+  // button, checkbox). Each cell's content box is fixed to --pla-table-cell-content-height
+  // and the action buttons are sized to fit inside it. Before this, the default 2.5rem
+  // icon button made rows with an action column noticeably taller than rows without one.
+  --pla-table-cell-content-height: 1.75rem;
+  --pla-table-cell-text-max-width: 20rem;
+
+  .p-datatable-tbody > tr > td .pla-table-cell {
+    display: flex;
+    align-items: center;
+    min-height: var(--pla-table-cell-content-height);
+    min-width: 0;
+  }
+
+  // Remark: Text stays on one line and is cut off with "..." (full text shows in a tooltip).
+  // Wrapping long text onto several lines would make that row taller than the others.
+  // Override the default width limit per column with ITableColumn.maxWidth.
+  .pla-table-cell-text {
+    display: block;
+    min-width: 0;
+    max-width: var(--pla-table-cell-text-max-width);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Remark: The multi-action ⋮ button is a p-button, and _buttons.scss forces every
+  // .p-button to height: var(--input-height) (3.125rem) with !important, which stretched
+  // the row. !important plus a more specific selector is needed to win over that rule.
+  // display: flex on the p-button host stops the inline button from adding baseline
+  // space under itself.
+  .p-datatable-tbody .pla-table-cell p-button {
+    display: flex;
+  }
+
+  .p-datatable-tbody .pla-table-cell p-button > .p-button,
+  .p-datatable-tbody .pla-table-cell .p-button.pla-table-action-trigger {
+    width: var(--pla-table-cell-content-height) !important;
+    height: var(--pla-table-cell-content-height) !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+  }
+
+  .p-datatable-tbody .pla-table-action-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--pla-table-cell-content-height);
+    height: var(--pla-table-cell-content-height);
+    padding: 0;
+  }
+
   // Remark: Selected background is highlight.background (= --p-primary-50, a dark navy here),
   // so selected text must be white. Set it through PrimeNG's own token rather than only a
   // plain `color` rule: the striped variant
